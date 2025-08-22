@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+  <base target="_top">
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: url('https://i.imgur.com/ulaJxcO.jpg') no-repeat center center fixed;
+      background-size: cover;
+      color: #1B1B1B;
+    }
+
+    .form-container {
+      margin: 20px;
+      padding: 25px;
+      background-color: rgba(224, 247, 250, 0.8);
+      border-radius: 12px;
+      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.08);
+      text-align: center;
+    }
+
+    h1 {
+      color: #00838F;
+      font-size: 30px;
+      margin-bottom: 12px;
+    }
+
+    h2 {
+      color: #0277BD;
+      font-size: 26px;
+      margin-bottom: 18px;
+    }
+
+    h3 {
+      color: #0288D1;
+      font-size: 24px;
+      margin-bottom: 18px;
+    }
+
+    input[type="text"] {
+      padding: 12px;
+      border-radius: 8px;
+      border: 1px solid #81D4FA;
+      margin-bottom: 12px;
+      width: 60%;
+      transition: border-color 0.3s;
+    }
+
+    input[type="text"]:focus {
+      border-color: #0288D1;
+      outline: none;
+    }
+
+    button {
+      padding: 12px 24px;
+      background-color: #00796B;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 16px;
+      transition: background-color 0.3s;
+    }
+
+    button:hover {
+      background-color: #004D40;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+    }
+
+    table, th, td {
+      border: 1px solid #81D4FA;
+      padding: 12px;
+      text-align: center;
+    }
+
+    th {
+      background-color: #0288D1;
+      color: white;
+    }
+
+    td {
+      background-color: #FFFFFF;
+    }
+
+    /* Loader (spinner) */
+    .spinner {
+      border: 6px solid #f3f3f3;
+      border-top: 6px solid #0288D1;
+      border-radius: 50%;
+      width: 50px;
+      height: 50px;
+      animation: spin 1s linear infinite;
+      margin: 20px auto;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+  </style>
+</head>
+<body>
+  <div class="form-container">
+    <h1>Mrs. Hoda Ismail wishes you the best of luck!</h1>
+    <h2>Fun Search for Student Code Or Arabic Names!</h2>
+    <h3>البحث بالكود</h3>
+    <input type="text" id="codeInput" placeholder="ادخل كود الطالب">
+    <button onclick="searchCode()">بحث</button>
+
+    <!-- مكان النتيجة -->
+    <div id="result"></div>
+
+    <p id="messageText" style="display: none;">برجاء الاحتفاظ بصورة التحويل</p>
+  </div>
+
+  <script>
+    function searchCode() {
+      var code = document.getElementById('codeInput').value;
+
+      // Show spinner instead of text
+      document.getElementById('result').innerHTML = '<div class="spinner"></div><p>...جاري التحميل</p>';
+
+      // Make API call to our Node.js backend
+      fetch('/api/search', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ code: code })
+      })
+      .then(response => response.json())
+      .then(data => {
+        if (data.success) {
+          document.getElementById('result').innerHTML = data.html;
+        } else {
+          document.getElementById('result').innerHTML = data.html;
+        }
+      })
+      .catch(error => {
+        console.error('Error:', error);
+        document.getElementById('result').innerHTML = '<p style="color: red; font-weight: bold;">حدث خطأ في الاتصال بالخادم</p>';
+      });
+    }
+
+    function checkDateForReservation() {
+      var currentDate = new Date();
+      var targetDate = new Date('2024-11-07');
+    }
+
+    window.onload = checkDateForReservation;
+  </script>
+</body>
+</html>

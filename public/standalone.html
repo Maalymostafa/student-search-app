@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Student Search App - Mrs. Hoda Ismail (Standalone)</title>
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: url('https://i.imgur.com/ulaJxcO.jpg') no-repeat center center fixed;
+      background-size: cover;
+      color: #1B1B1B;
+    }
+
+    .form-container {
+      margin: 20px;
+      padding: 25px;
+      background-color: rgba(224, 247, 250, 0.8);
+      border-radius: 12px;
+      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.08);
+      text-align: center;
+    }
+
+    h1 {
+      color: #00838F;
+      font-size: 30px;
+      margin-bottom: 12px;
+    }
+
+    h2 {
+      color: #0277BD;
+      font-size: 26px;
+      margin-bottom: 18px;
+    }
+
+    h3 {
+      color: #0288D1;
+      font-size: 24px;
+      margin-bottom: 18px;
+    }
+
+    input[type="text"] {
+      padding: 12px;
+      border-radius: 8px;
+      border: 1px solid #81D4FA;
+      margin-bottom: 12px;
+      width: 60%;
+      transition: border-color 0.3s;
+    }
+
+    input[type="text"]:focus {
+      border-color: #0288D1;
+      outline: none;
+    }
+
+    button {
+      padding: 12px 24px;
+      background-color: #00796B;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 16px;
+      transition: background-color 0.3s;
+    }
+
+    button:hover {
+      background-color: #004D40;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+    }
+
+    table, th, td {
+      border: 1px solid #81D4FA;
+      padding: 12px;
+      text-align: center;
+    }
+
+    th {
+      background-color: #0288D1;
+      color: white;
+    }
+
+    td {
+      background-color: #FFFFFF;
+    }
+
+    /* Loader (spinner) */
+    .spinner {
+      border: 6px solid #f3f3f3;
+      border-top: 6px solid #0288D1;
+      border-radius: 50%;
+      width: 50px;
+      height: 50px;
+      animation: spin 1s linear infinite;
+      margin: 20px auto;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    .demo-notice {
+      background: rgba(255, 193, 7, 0.9);
+      color: #856404;
+      padding: 10px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <div class="form-container">
+    <div class="demo-notice">
+      🚀 Demo Mode - This is a standalone version for testing
+    </div>
+    
+    <h1>Mrs. Hoda Ismail wishes you the best of luck!</h1>
+    <h2>Fun Search for Student Code Or Arabic Names!</h2>
+    <h3>البحث بالكود</h3>
+    <input type="text" id="codeInput" placeholder="ادخل كود الطالب">
+    <button onclick="searchCode()">بحث</button>
+
+    <!-- مكان النتيجة -->
+    <div id="result"></div>
+
+    <p id="messageText" style="display: none;">برجاء الاحتفاظ بصورة التحويل</p>
+  </div>
+
+  <script>
+    // Demo data - matches the Google Apps Script structure
+    const demoData = {
+      'G4001': {
+        name: 'Ahmed Mohamed',
+        student_code: 'G4001',
+        is_confirmed: true,
+        september: ['A', '90', 'A', '85', 'B+', '88', 'A', '92', 'A'],
+        october: ['A', '95', 'A', '87', 'A', '91', 'B+', '89', 'A'],
+        november: ['A', '93', 'A', '88', 'A', '90', 'A', '94', 'A'],
+        december: ['A', '96', 'A', '89', 'A', '92', 'A', '95', 'A']
+      },
+      'G5001': {
+        name: 'Fatima Ali',
+        student_code: 'G5001',
+        is_confirmed: true,
+        september: ['A', '88', 'B+', '82', 'A', '90', 'A', '87', 'A'],
+        october: ['A', '92', 'A', '85', 'B+', '88', 'A', '91', 'A'],
+        november: ['A', '89', 'A', '93', 'A', '86', 'B+', '90', 'A'],
+        december: ['A', '94', 'A', '88', 'A', '91', 'A', '93', 'A']
+      },
+      'G6001': {
+        name: 'Omar Hassan',
+        student_code: 'G6001',
+        is_confirmed: false,
+        september: ['B+', '85', 'A', '90', 'A', '87', 'B+', '89', 'B+'],
+        october: ['A', '91', 'B+', '86', 'A', '92', 'A', '88', 'A'],
+        november: ['A', '88', 'A', '94', 'B+', '85', 'A', '91', 'A'],
+        december: ['A', '93', 'A', '87', 'A', '89', 'A', '92', 'A']
+      },
+      'P1001': {
+        name: 'Layla Ahmed',
+        student_code: 'P1001',
+        is_confirmed: true,
+        september: ['A', '92', 'A', '88', 'A', '90', 'A', '94', 'A'],
+        october: ['A', '89', 'A', '93', 'A', '87', 'A', '91', 'A'],
+        november: ['A', '95', 'A', '86', 'A', '92', 'A', '88', 'A'],
+        december: ['A', '90', 'A', '94', 'A', '89', 'A', '93', 'A']
+      }
+    };
+
+    function searchCode() {
+      var code = document.getElementById('codeInput').value;
+
+      // Show spinner
+      document.getElementById('result').innerHTML = '<div class="spinner"></div><p>...جاري التحميل</p>';
+
+      // Simulate API delay
+      setTimeout(() => {
+        const result = searchByCode(code);
+        document.getElementById('result').innerHTML = result;
+      }, 1000);
+    }
+
+    function searchByCode(code) {
+      if (!code || code.length < 2) {
+        return '<p style="color: red; font-weight: bold;">برجاء كتابة الكود</p>';
+      }
+
+      const sheetPrefix = code.substring(0, 2).toUpperCase();
+      const allowedSheets = ['G4', 'G5', 'G6', 'P1'];
+
+      if (!allowedSheets.includes(sheetPrefix)) {
+        return '<p style="color: red; font-weight: bold;">الكود غير صالح أو لا ينتمي لأي مستوى معروف</p>';
+      }
+
+      const normalizedInputCode = code.toLowerCase().replace(/[^a-zA-Z0-9]/g, '');
+      let found = false;
+      let result = '';
+
+      // Search in demo data
+      for (const [demoCode, data] of Object.entries(demoData)) {
+        const demoCodeNormalized = demoCode.toLowerCase().replace(/[^a-zA-Z0-9]/g, '');
+        
+        if (demoCodeNormalized === normalizedInputCode) {
+          found = true;
+          result += '<table><thead><tr><th>Name</th><th>Student Code</th></tr></thead><tbody>';
+          result += '<tr>' +
+                  '<td style="font-size: 30px; font-weight: bold;">' + data.name + '</td>' +
+                  '<td style="font-size: 30px; font-weight: bold;">' + data.student_code + '</td>' +
+                '</tr>';
+          result += '</tbody></table>';
+
+          result += createPerformanceTable(data);
+          result += additionalInfo(data);
+          break;
+        }
+      }
+
+      if (!found) {
+        result = '<p style="color: red; font-weight: bold;">الكود غير صحيح تاكد من الكود</p>';
+      }
+
+      return result;
+    }
+
+    function createPerformanceTable(data) {
+      return `
+        <table>
+          <thead>
+            <tr>
+              <th rowspan="2" style="font-size: 18px; font-weight: bold;">Month</th>
+              <th colspan="2" style="font-size: 18px; font-weight: bold;">Session 1</th>
+              <th colspan="2" style="font-size: 18px; font-weight: bold;">Session 2</th>
+              <th colspan="2" style="font-size: 18px; font-weight: bold;">Session 3</th>
+              <th colspan="2" style="font-size: 18px; font-weight: bold;">Session 4</th>
+              <th rowspan="2" style="font-size: 18px; font-weight: bold;">Final Evaluation</th>
+            </tr>
+            <tr>
+              <th style="font-size: 16px; font-weight: bold;">Perf.</th>
+              <th style="font-size: 16px; font-weight: bold;">Quiz</th>
+              <th style="font-size: 16px; font-weight: bold;">Perf.</th>
+              <th style="font-size: 16px; font-weight: bold;">Quiz</th>
+              <th style="font-size: 16px; font-weight: bold;">Perf.</th>
+              <th style="font-size: 16px; font-weight: bold;">Quiz</th>
+              <th style="font-size: 16px; font-weight: bold;">Perf.</th>
+              <th style="font-size: 16px; font-weight: bold;">Quiz</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${renderMonthRow("September", data.september)}
+            ${renderMonthRow("October", data.october)}
+            ${renderMonthRow("November", data.november)}
+            ${renderMonthRow("December", data.december)}
+          </tbody>
+        </table>
+      `;
+    }
+
+    function renderMonthRow(month, monthData) {
+      return `
+        <tr>
+          <td>${month}</td>
+          <td>${monthData[0] || ''}</td><td>${monthData[1] || ''}</td>
+          <td>${monthData[2] || ''}</td><td>${monthData[3] || ''}</td>
+          <td>${monthData[4] || ''}</td><td>${monthData[5] || ''}</td>
+          <td>${monthData[6] || ''}</td><td>${monthData[7] || ''}</td>
+          <td>${monthData[8] || ''}</td>
+        </tr>
+      `;
+    }
+
+    function additionalInfo(data) {
+      const isConfirmed = data.is_confirmed === true || data.is_confirmed === "TRUE";
+      
+      return `
+    <p style="color: ${isConfirmed ? 'green' : 'red'}; font-weight: bold; font-size: 50px;">
+      ${isConfirmed ? 'تم تأكيد الحجز' : 'لم يتم تأكيد الحجز بعد'}
+    </p>
+      `;
+    }
+
+    function checkDateForReservation() {
+      var currentDate = new Date();
+      var targetDate = new Date('2024-11-07');
+    }
+
+    // Add Enter key support
+    document.getElementById('codeInput').addEventListener('keypress', function(e) {
+      if (e.key === 'Enter') {
+        searchCode();
+      }
+    });
+
+    window.onload = checkDateForReservation;
+  </script>
+</body>
+</html>
