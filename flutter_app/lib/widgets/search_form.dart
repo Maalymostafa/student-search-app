@@ -103,7 +103,6 @@ class _SearchFormState extends State<SearchForm> {
         // Search Button
         SizedBox(
           width: double.infinity,
-          constraints: const BoxConstraints(maxWidth: 200),
           height: AppSizes.buttonHeight,
           child: ElevatedButton(
             onPressed: _isValid ? _handleSearch : null,

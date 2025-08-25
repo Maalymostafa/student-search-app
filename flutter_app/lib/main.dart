@@ -1,40 +1,51 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import 'package:student_search_app/providers/student_provider.dart';
-import 'package:student_search_app/screens/home_screen.dart';
-import 'package:student_search_app/utils/constants.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
+import 'screens/home_screen.dart';
+import 'screens/search_screen.dart';
+import 'screens/student_details_screen.dart';
+import 'screens/analytics_screen.dart';
+import 'utils/constants.dart';
 
-void main() {
-  runApp(const StudentSearchApp());
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  
+  // Initialize Supabase
+  await Supabase.initialize(
+    url: 'YOUR_SUPABASE_URL', // Replace with your Supabase URL
+    anonKey: 'YOUR_SUPABASE_ANON_KEY', // Replace with your Supabase anon key
+  );
+  
+  runApp(StudentSearchApp());
 }
 
 class StudentSearchApp extends StatelessWidget {
-  const StudentSearchApp({super.key});
-
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-      create: (context) => StudentProvider(),
-      child: MaterialApp(
-        title: 'Student Search App - Mrs. Hoda Ismail',
-        debugShowCheckedModeBanner: false,
-        theme: ThemeData(
-          primarySwatch: Colors.blue,
-          fontFamily: 'Poppins',
-          scaffoldBackgroundColor: Colors.transparent,
-          appBarTheme: const AppBarTheme(
-            backgroundColor: Colors.transparent,
-            elevation: 0,
-            centerTitle: true,
-            titleTextStyle: TextStyle(
-              color: Colors.white,
-              fontSize: 20,
-              fontWeight: FontWeight.w600,
-            ),
+    return MaterialApp(
+      title: 'Student Search App',
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
+        primaryColor: Colors.blue[600],
+        colorScheme: ColorScheme.fromSwatch().copyWith(
+          secondary: Colors.blue[400],
+        ),
+        fontFamily: 'Roboto',
+        appBarTheme: AppBarTheme(
+          backgroundColor: Colors.blue[600],
+          elevation: 0,
+          titleTextStyle: TextStyle(
+            color: Colors.white,
+            fontSize: 20,
+            fontWeight: FontWeight.bold,
           ),
         ),
-        home: const HomeScreen(),
       ),
+      home: HomeScreen(),
+      routes: {
+        '/search': (context) => SearchScreen(),
+        '/student_details': (context) => StudentDetailsScreen(),
+        '/analytics': (context) => AnalyticsScreen(),
+      },
     );
   }
 }

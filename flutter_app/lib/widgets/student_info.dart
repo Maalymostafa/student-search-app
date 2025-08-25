@@ -65,7 +65,7 @@ class StudentInfo extends StatelessWidget {
                   padding: const EdgeInsets.all(12),
                   child: Text(
                     student.name,
-                    style: const AppTextStyles.resultText,
+                    style: AppTextStyles.resultText,
                     textAlign: TextAlign.center,
                   ),
                 ),
@@ -75,7 +75,7 @@ class StudentInfo extends StatelessWidget {
                   padding: const EdgeInsets.all(12),
                   child: Text(
                     student.studentCode,
-                    style: const AppTextStyles.resultText,
+                    style: AppTextStyles.resultText,
                     textAlign: TextAlign.center,
                   ),
                 ),

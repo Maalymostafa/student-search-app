@@ -1,50 +1,49 @@
 name: student_search_app
-description: Student search application with database integration - Mrs. Hoda Ismail
+description: A Flutter app for searching and managing student information with Supabase integration.
+
 publish_to: 'none'
+
 version: 1.0.0+1
 
 environment:
-  sdk: '>=3.0.0 <4.0.0'
+  sdk: ">=3.0.0 <4.0.0"
 
 dependencies:
   flutter:
     sdk: flutter
   
+  # Supabase integration
+  supabase_flutter: ^2.3.4
+  
+  # UI components
+  cupertino_icons: ^1.0.6
+  
+  # HTTP and networking
+  http: ^1.1.2
+  
   # State management
   provider: ^6.1.1
-  
-  # HTTP requests
-  http: ^1.1.0
   
   # Local storage
   shared_preferences: ^2.2.2
   
-  # UI components
-  cupertino_icons: ^1.0.6
-  flutter_staggered_animations: ^1.1.1
+  # Date formatting
+  intl: ^0.19.0
   
-  # Web support
-  flutter_web_plugins:
-    sdk: flutter
+  # Charts for analytics
+  fl_chart: ^0.66.2
+  
+  # Image handling
+  cached_network_image: ^3.3.1
+  
+  # URL launcher for external links
+  url_launcher: ^6.2.5
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  flutter_lints: ^6.0.0
+  
+  flutter_lints: ^4.0.0
 
 flutter:
   uses-material-design: true
-  
-  assets:
-    - assets/images/
-  
-  fonts:
-    - family: Poppins
-      fonts:
-        - asset: assets/fonts/Poppins-Regular.ttf
-        - asset: assets/fonts/Poppins-Medium.ttf
-          weight: 500
-        - asset: assets/fonts/Poppins-SemiBold.ttf
-          weight: 600
-        - asset: assets/fonts/Poppins-Bold.ttf
-          weight: 700

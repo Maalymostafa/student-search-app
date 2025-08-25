@@ -1,80 +1,52 @@
 import 'package:flutter/material.dart';
 
 class AppColors {
-  static const Color primary = Color(0xFF00838F);
-  static const Color secondary = Color(0xFF0277BD);
-  static const Color accent = Color(0xFF0288D1);
-  static const Color buttonColor = Color(0xFF00796B);
-  static const Color buttonHoverColor = Color(0xFF004D40);
-  static const Color inputBorderColor = Color(0xFF81D4FA);
-  static const Color tableHeaderColor = Color(0xFF0288D1);
-  static const Color successColor = Colors.green;
-  static const Color errorColor = Colors.red;
-  static const Color warningColor = Color(0xFFFFC107);
-  static const Color backgroundOverlay = Color(0xCCE0F7FA);
+  static const Color primary = Color(0xFF1976D2);
+  static const Color secondary = Color(0xFF42A5F5);
+  static const Color accent = Color(0xFF2196F3);
+  static const Color background = Color(0xFFF5F5F5);
+  static const Color surface = Color(0xFFFFFFFF);
+  static const Color error = Color(0xFFD32F2F);
+  static const Color success = Color(0xFF388E3C);
+  static const Color warning = Color(0xFFF57C00);
+  static const Color info = Color(0xFF1976D2);
+}
+
+class AppSizes {
+  static const double padding = 16.0;
+  static const double smallPadding = 8.0;
+  static const double largePadding = 24.0;
+  static const double borderRadius = 12.0;
+  static const double cardElevation = 4.0;
 }
 
 class AppTextStyles {
   static const TextStyle heading1 = TextStyle(
-    color: AppColors.primary,
-    fontSize: 30,
-    fontWeight: FontWeight.w700,
-  );
-
-  static const TextStyle heading2 = TextStyle(
-    color: AppColors.secondary,
-    fontSize: 26,
-    fontWeight: FontWeight.w600,
-  );
-
-  static const TextStyle heading3 = TextStyle(
-    color: AppColors.accent,
     fontSize: 24,
-    fontWeight: FontWeight.w500,
-  );
-
-  static const TextStyle bodyText = TextStyle(
+    fontWeight: FontWeight.bold,
     color: Colors.black87,
-    fontSize: 16,
-    fontWeight: FontWeight.w400,
   );
-
-  static const TextStyle buttonText = TextStyle(
-    color: Colors.white,
-    fontSize: 16,
+  
+  static const TextStyle heading2 = TextStyle(
+    fontSize: 20,
     fontWeight: FontWeight.w600,
+    color: Colors.black87,
   );
-
-  static const TextStyle tableHeader = TextStyle(
-    color: Colors.white,
-    fontSize: 18,
-    fontWeight: FontWeight.bold,
-  );
-
-  static const TextStyle tableSubHeader = TextStyle(
-    color: Colors.white,
+  
+  static const TextStyle body1 = TextStyle(
     fontSize: 16,
-    fontWeight: FontWeight.bold,
+    color: Colors.black87,
   );
-
-  static const TextStyle resultText = TextStyle(
-    fontSize: 30,
-    fontWeight: FontWeight.bold,
+  
+  static const TextStyle body2 = TextStyle(
+    fontSize: 14,
+    color: Colors.black54,
   );
-
-  static const TextStyle statusText = TextStyle(
-    fontSize: 50,
-    fontWeight: FontWeight.bold,
+  
+  static const TextStyle caption = TextStyle(
+    fontSize: 12,
+    color: Colors.black45,
   );
-}
-
-class AppSizes {
-  static const double padding = 20.0;
-  static const double smallPadding = 12.0;
-  static const double largePadding = 25.0;
-  static const double borderRadius = 12.0;
-  static const double inputHeight = 50.0;
-  static const double buttonHeight = 50.0;
 }
 
 class ApiConfig {

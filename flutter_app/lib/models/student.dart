@@ -1,81 +1,89 @@
 class Student {
-  final String id;
-  final String name;
+  final int id;
   final String studentCode;
+  final String fullNameArabic;
+  final String gradeLevel;
+  final String? subscriptionType;
+  final String? transferPhone;
+  final String? whatsappPhone;
+  final String? transferTime;
+  final String? transferDate;
+  final String? transferImageUrl;
   final bool isConfirmed;
-  final Map<String, List<String>> performance;
+  final String? enrollmentDate;
+  final String? notes;
+  final DateTime createdAt;
+  final DateTime updatedAt;
 
   Student({
     required this.id,
-    required this.name,
     required this.studentCode,
+    required this.fullNameArabic,
+    required this.gradeLevel,
+    this.subscriptionType,
+    this.transferPhone,
+    this.whatsappPhone,
+    this.transferTime,
+    this.transferDate,
+    this.transferImageUrl,
     required this.isConfirmed,
-    required this.performance,
+    this.enrollmentDate,
+    this.notes,
+    required this.createdAt,
+    required this.updatedAt,
   });
 
   factory Student.fromJson(Map<String, dynamic> json) {
     return Student(
-      id: json['id']?.toString() ?? '',
-      name: json['name'] ?? '',
+      id: json['id'],
       studentCode: json['student_code'] ?? '',
-      isConfirmed: json['is_confirmed'] == true || json['is_confirmed'] == 'TRUE',
-      performance: {
-        'september': List<String>.from(json['september'] ?? []),
-        'october': List<String>.from(json['october'] ?? []),
-        'november': List<String>.from(json['november'] ?? []),
-        'december': List<String>.from(json['december'] ?? []),
-      },
-    );
-  }
-
-  factory Student.fromDemoData(String code, Map<String, dynamic> data) {
-    return Student(
-      id: '1',
-      name: data['name'] ?? '',
-      studentCode: data['student_code'] ?? code,
-      isConfirmed: data['is_confirmed'] ?? false,
-      performance: {
-        'september': List<String>.from(data['september'] ?? []),
-        'october': List<String>.from(data['october'] ?? []),
-        'november': List<String>.from(data['november'] ?? []),
-        'december': List<String>.from(data['december'] ?? []),
-      },
+      fullNameArabic: json['full_name_arabic'] ?? '',
+      gradeLevel: json['grade_level'] ?? '',
+      subscriptionType: json['subscription_type'],
+      transferPhone: json['transfer_phone'],
+      whatsappPhone: json['whatsapp_phone'],
+      transferTime: json['transfer_time'],
+      transferDate: json['transfer_date'],
+      transferImageUrl: json['transfer_image_url'],
+      isConfirmed: json['is_confirmed'] ?? false,
+      enrollmentDate: json['enrollment_date'],
+      notes: json['notes'],
+      createdAt: DateTime.parse(json['created_at']),
+      updatedAt: DateTime.parse(json['updated_at']),
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
       'id': id,
-      'name': name,
       'student_code': studentCode,
+      'full_name_arabic': fullNameArabic,
+      'grade_level': gradeLevel,
+      'subscription_type': subscriptionType,
+      'transfer_phone': transferPhone,
+      'whatsapp_phone': whatsappPhone,
+      'transfer_time': transferTime,
+      'transfer_date': transferDate,
+      'transfer_image_url': transferImageUrl,
       'is_confirmed': isConfirmed,
-      'september': performance['september'] ?? [],
-      'october': performance['october'] ?? [],
-      'november': performance['november'] ?? [],
-      'december': performance['december'] ?? [],
+      'enrollment_date': enrollmentDate,
+      'notes': notes,
+      'created_at': createdAt.toIso8601String(),
+      'updated_at': updatedAt.toIso8601String(),
     };
   }
 
-  List<String> getMonthData(String month) {
-    return performance[month.toLowerCase()] ?? List.filled(9, '');
+  @override
+  String toString() {
+    return 'Student(id: $id, studentCode: $studentCode, fullNameArabic: $fullNameArabic, gradeLevel: $gradeLevel)';
   }
 
-  String getSessionPerformance(String month, int session, int type) {
-    final monthData = getMonthData(month);
-    final index = (session - 1) * 2 + type;
-    return index < monthData.length ? monthData[index] : '';
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    return other is Student && other.id == id;
   }
 
-  String getSessionQuiz(String month, int session) {
-    return getSessionPerformance(month, session, 1);
-  }
-
-  String getSessionPerf(String month, int session) {
-    return getSessionPerformance(month, session, 0);
-  }
-
-  String getFinalEvaluation(String month) {
-    final monthData = getMonthData(month);
-    return monthData.length > 8 ? monthData[8] : '';
-  }
+  @override
+  int get hashCode => id.hashCode;
 }
