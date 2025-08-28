@@ -522,6 +522,11 @@ app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'startup.html'));
 });
 
+// Serve standalone demo page
+app.get('/demo', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'standalone.html'));
+});
+
 // Serve student login
 app.get('/student-login', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'student-login.html'));
