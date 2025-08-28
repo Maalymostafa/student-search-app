@@ -337,23 +337,10 @@
                     </div>
                 </div>
 
-                <h2>📈 Monthly Performance Details</h2>
-                <table class="performance-table">
-                    <thead>
-                        <tr>
-                            <th>Month</th>
-                            <th>اللغة العربية</th>
-                            <th>الرياضيات</th>
-                            <th>العلوم</th>
-                            <th>اللغة الإنجليزية</th>
-                            <th>Final Grade</th>
-                            <th>Attendance</th>
-                        </tr>
-                    </thead>
-                    <tbody id="performanceTableBody">
-                        <!-- Data will be populated by JavaScript -->
-                    </tbody>
-                </table>
+                <h2>📈 Detailed Session Results - تفاصيل نتائج الجلسات</h2>
+                <div id="detailedSessionResults">
+                    <!-- Detailed session results will be populated by JavaScript -->
+                </div>
 
                 <button class="back-btn" onclick="goBack()">
                     ← Back to Login - العودة لتسجيل الدخول
@@ -367,9 +354,9 @@
         const urlParams = new URLSearchParams(window.location.search);
         const studentCode = urlParams.get('code');
 
-        // Sample performance data (replace with API call)
+        // Detailed session performance data
         const performanceData = {
-            student_name: "فارس سامح عيد سالم",
+            student_name: "أحمد حسن",
             student_code: studentCode || "G4001",
             final_result: 92,
             attendance: 95,
@@ -379,30 +366,49 @@
                 { name: "العلوم", grade: "A", score: 88 },
                 { name: "اللغة الإنجليزية", grade: "A", score: 96 }
             ],
-            monthly_performance: [
-                {
-                    month: "September",
-                    sections: [
-                        { name: "اللغة العربية", grade: "A", score: 95 },
-                        { name: "الرياضيات", grade: "A", score: 92 },
-                        { name: "العلوم", grade: "A", score: 88 },
-                        { name: "اللغة الإنجليزية", grade: "A", score: 96 }
-                    ],
-                    final_grade: "A",
-                    attendance: 95
+            // Detailed session data
+            detailed_sessions: {
+                september: {
+                    session1: { attendance: 1, question1: 2, question2: 1, quiz: 18 },
+                    session2: { attendance: 0, question1: 1, question2: 0, quiz: 12 },
+                    session3: { attendance: 1, question1: 2, question2: 2, quiz: 20 },
+                    session4: { attendance: 1, question1: 1, question2: 2, quiz: 16 },
+                    total_attendance: 3,
+                    total_questions: 11,
+                    total_quiz: 66,
+                    total_score: 80
                 },
-                {
-                    month: "October",
-                    sections: [
-                        { name: "اللغة العربية", grade: "A", score: 94 },
-                        { name: "الرياضيات", grade: "A", score: 91 },
-                        { name: "العلوم", grade: "B+", score: 87 },
-                        { name: "اللغة الإنجليزية", grade: "A", score: 93 }
-                    ],
-                    final_grade: "A",
-                    attendance: 92
+                october: {
+                    session1: { attendance: 1, question1: 2, question2: 2, quiz: 20 },
+                    session2: { attendance: 1, question1: 1, question2: 2, quiz: 15 },
+                    session3: { attendance: 0, question1: 0, question2: 0, quiz: 0 },
+                    session4: { attendance: 1, question1: 2, question2: 1, quiz: 18 },
+                    total_attendance: 3,
+                    total_questions: 8,
+                    total_quiz: 53,
+                    total_score: 64
+                },
+                november: {
+                    session1: { attendance: 1, question1: 2, question2: 2, quiz: 20 },
+                    session2: { attendance: 1, question1: 2, question2: 2, quiz: 20 },
+                    session3: { attendance: 1, question1: 2, question2: 2, quiz: 20 },
+                    session4: { attendance: 1, question1: 2, question2: 2, quiz: 20 },
+                    total_attendance: 4,
+                    total_questions: 16,
+                    total_quiz: 80,
+                    total_score: 100
+                },
+                december: {
+                    session1: { attendance: 1, question1: 2, question2: 2, quiz: 20 },
+                    session2: { attendance: 1, question1: 2, question2: 2, quiz: 20 },
+                    session3: { attendance: 1, question1: 2, question2: 2, quiz: 20 },
+                    session4: { attendance: 1, question1: 2, question2: 2, quiz: 20 },
+                    total_attendance: 4,
+                    total_questions: 16,
+                    total_quiz: 80,
+                    total_score: 100
                 }
-            ]
+            }
         };
 
         function animateGrade(element, targetGrade, delay = 0) {
@@ -474,8 +480,8 @@
             // Populate sections overview
             populateSections();
             
-            // Populate performance table
-            populatePerformanceTable();
+                    // Populate detailed session results
+        populateDetailedSessionResults();
         }
 
         function populateSections() {
@@ -498,30 +504,137 @@
             });
         }
 
-        function populatePerformanceTable() {
-            const tableBody = document.getElementById('performanceTableBody');
-            tableBody.innerHTML = '';
-            
-            performanceData.monthly_performance.forEach((monthData, index) => {
-                const row = document.createElement('tr');
-                row.innerHTML = `
-                    <td>${monthData.month}</td>
-                    <td class="grade-cell" data-grade="${monthData.sections[0].grade}">-</td>
-                    <td class="grade-cell" data-grade="${monthData.sections[1].grade}">-</td>
-                    <td class="grade-cell" data-grade="${monthData.sections[2].grade}">-</td>
-                    <td class="grade-cell" data-grade="${monthData.sections[3].grade}">-</td>
-                    <td class="grade-cell" data-grade="${monthData.final_grade}">-</td>
-                    <td>${monthData.attendance}%</td>
+        function populateDetailedSessionResults() {
+            const container = document.getElementById('detailedSessionResults');
+            container.innerHTML = '';
+
+            const months = [
+                { name: 'September', key: 'september', arabic: 'سبتمبر' },
+                { name: 'October', key: 'october', arabic: 'أكتوبر' },
+                { name: 'November', key: 'november', arabic: 'نوفمبر' },
+                { name: 'December', key: 'december', arabic: 'ديسمبر' }
+            ];
+
+            months.forEach(month => {
+                const monthData = performanceData.detailed_sessions[month.key];
+                if (!monthData) return;
+
+                const monthSection = document.createElement('div');
+                monthSection.className = 'month-section';
+                monthSection.style.cssText = `
+                    margin-bottom: 30px;
+                    border: 2px solid #4CAF50;
+                    border-radius: 15px;
+                    overflow: hidden;
+                    background: white;
                 `;
-                tableBody.appendChild(row);
-                
-                // Animate grades with delays
-                const gradeCells = row.querySelectorAll('.grade-cell');
-                gradeCells.forEach((cell, cellIndex) => {
-                    const grade = cell.getAttribute('data-grade');
-                    animateGrade(cell, grade, (index * 1000) + (cellIndex * 200));
-                });
+
+                // Month header
+                const monthHeader = document.createElement('div');
+                monthHeader.style.cssText = `
+                    background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
+                    color: white;
+                    padding: 20px;
+                    text-align: center;
+                    font-size: 1.5rem;
+                    font-weight: bold;
+                `;
+                monthHeader.innerHTML = `
+                    <div>${month.name} - ${month.arabic}</div>
+                    <div style="font-size: 1rem; margin-top: 5px;">
+                        Total Score: ${monthData.total_score} | Grade: ${getGradeFromScore(monthData.total_score)}
+                    </div>
+                `;
+                monthSection.appendChild(monthHeader);
+
+                // Sessions container
+                const sessionsContainer = document.createElement('div');
+                sessionsContainer.style.cssText = `
+                    padding: 20px;
+                    display: grid;
+                    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+                    gap: 20px;
+                `;
+
+                // Create session cards
+                for (let sessionNum = 1; sessionNum <= 4; sessionNum++) {
+                    const sessionData = monthData[`session${sessionNum}`];
+                    if (!sessionData) continue;
+
+                    const sessionCard = createSessionCard(sessionNum, sessionData);
+                    sessionsContainer.appendChild(sessionCard);
+                }
+
+                monthSection.appendChild(sessionsContainer);
+                container.appendChild(monthSection);
             });
+        }
+
+        function createSessionCard(sessionNum, sessionData) {
+            const card = document.createElement('div');
+            card.style.cssText = `
+                background: #f8f9fa;
+                border-radius: 12px;
+                padding: 20px;
+                border: 1px solid #e9ecef;
+                box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            `;
+
+            const sessionTotal = sessionData.attendance + sessionData.question1 + sessionData.question2 + (sessionData.quiz / 10);
+            const totalScore = sessionData.attendance + sessionData.question1 + sessionData.question2 + sessionData.quiz;
+
+            card.innerHTML = `
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                    <h3 style="color: #4CAF50; margin: 0;">Session ${sessionNum}</h3>
+                    <span style="background: ${getScoreColor(sessionTotal)}; color: white; padding: 5px 10px; border-radius: 8px; font-weight: bold;">
+                        Total: ${sessionTotal}/7
+                    </span>
+                </div>
+                
+                <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px;">
+                    <div style="text-align: center; padding: 10px; background: white; border-radius: 8px;">
+                        <div style="font-size: 0.8rem; color: #666;">Attendance</div>
+                        <div style="font-size: 1.2rem; font-weight: bold; color: ${getScoreColor(sessionData.attendance)};">
+                            ${sessionData.attendance}/1
+                        </div>
+                    </div>
+                    <div style="text-align: center; padding: 10px; background: white; border-radius: 8px;">
+                        <div style="font-size: 0.8rem; color: #666;">Question 1</div>
+                        <div style="font-size: 1.2rem; font-weight: bold; color: ${getScoreColor(sessionData.question1)};">
+                            ${sessionData.question1}/2
+                        </div>
+                    </div>
+                    <div style="text-align: center; padding: 10px; background: white; border-radius: 8px;">
+                        <div style="font-size: 0.8rem; color: #666;">Question 2</div>
+                        <div style="font-size: 1.2rem; font-weight: bold; color: ${getScoreColor(sessionData.question2)};">
+                            ${sessionData.question2}/2
+                        </div>
+                    </div>
+                    <div style="text-align: center; padding: 10px; background: white; border-radius: 8px;">
+                        <div style="font-size: 0.8rem; color: #666;">Quiz</div>
+                        <div style="font-size: 1.2rem; font-weight: bold; color: ${getScoreColor(sessionData.quiz / 10)};">
+                            ${sessionData.quiz}/20
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            return card;
+        }
+
+        function getScoreColor(score) {
+            if (score >= 2) return '#4CAF50'; // Green
+            if (score >= 1) return '#FF9800'; // Orange
+            return '#F44336'; // Red
+        }
+
+        function getGradeFromScore(score) {
+            if (score >= 100) return 'A';
+            if (score >= 80) return 'B+';
+            if (score >= 60) return 'B';
+            if (score >= 40) return 'C+';
+            if (score >= 20) return 'C';
+            return 'D';
         }
 
         function getGradeClass(grade) {

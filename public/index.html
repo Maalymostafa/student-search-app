@@ -1,500 +1,349 @@
 <!DOCTYPE html>
-<html lang="ar">
+<html lang="ar" dir="rtl">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Student Search App - Mrs. Hoda Ismail (Standalone)</title>
-  <style>
-    body {
-      font-family: 'Poppins', sans-serif;
-      background: url('https://i.imgur.com/ulaJxcO.jpg') no-repeat center center fixed;
-      background-size: cover;
-      color: #1B1B1B;
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Management System - نظام إدارة الطلاب</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-    .form-container {
-      margin: 20px;
-      padding: 25px;
-      background-color: rgba(224, 247, 250, 0.8);
-      border-radius: 12px;
-      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.08);
-      text-align: center;
-    }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
 
-    h1 {
-      color: #00838F;
-      font-size: 30px;
-      margin-bottom: 12px;
-    }
+        .startup-container {
+            background: white;
+            border-radius: 30px;
+            box-shadow: 0 30px 60px rgba(0,0,0,0.2);
+            overflow: hidden;
+            max-width: 1000px;
+            width: 100%;
+            animation: slideIn 1s ease-out;
+        }
 
-    h2 {
-      color: #0277BD;
-      font-size: 26px;
-      margin-bottom: 18px;
-    }
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
 
-    h3 {
-      color: #0288D1;
-      font-size: 24px;
-      margin-bottom: 18px;
-    }
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 50px 40px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
 
-    input[type="text"] {
-      padding: 12px;
-      border-radius: 8px;
-      border: 1px solid #81D4FA;
-      margin-bottom: 12px;
-      width: 60%;
-      transition: border-color 0.3s;
-    }
+        .logo-container {
+            margin-bottom: 30px;
+            position: relative;
+        }
 
-    input[type="text"]:focus {
-      border-color: #0288D1;
-      outline: none;
-    }
+        .logo {
+            width: 120px;
+            height: 120px;
+            background: #8B5CF6;
+            border-radius: 50%;
+            margin: 0 auto 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 48px;
+            font-weight: bold;
+            color: white;
+            box-shadow: 0 10px 30px rgba(139, 92, 246, 0.4);
+            animation: logoFloat 3s ease-in-out infinite;
+        }
 
-    button {
-      padding: 12px 24px;
-      background-color: #00796B;
-      color: white;
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
-      font-size: 16px;
-      transition: background-color 0.3s;
-    }
+        @keyframes logoFloat {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
 
-    button:hover {
-      background-color: #004D40;
-    }
+        .logo-text {
+            font-size: 2.5rem;
+            font-weight: bold;
+            margin-bottom: 10px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
 
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 20px;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
-    }
+        .logo-subtitle {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
 
-    table, th, td {
-      border: 1px solid #81D4FA;
-      padding: 12px;
-      text-align: center;
-    }
+        .login-options {
+            padding: 50px 40px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+        }
 
-    th {
-      background-color: #0288D1;
-      color: white;
-    }
+        .login-card {
+            background: #f8f9fa;
+            border-radius: 20px;
+            padding: 30px;
+            text-align: center;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
 
-    td {
-      background-color: #FFFFFF;
-    }
+        .login-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+            transition: left 0.5s;
+        }
 
-    /* Loader (spinner) */
-    .spinner {
-      border: 6px solid #f3f3f3;
-      border-top: 6px solid #0288D1;
-      border-radius: 50%;
-      width: 50px;
-      height: 50px;
-      animation: spin 1s linear infinite;
-      margin: 20px auto;
-    }
+        .login-card:hover::before {
+            left: 100%;
+        }
 
-    @keyframes spin {
-      0% { transform: rotate(0deg); }
-      100% { transform: rotate(360deg); }
-    }
+        .login-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            border-color: #667eea;
+        }
 
-    .demo-notice {
-      background: rgba(255, 193, 7, 0.9);
-      color: #856404;
-      padding: 10px;
-      border-radius: 8px;
-      margin-bottom: 20px;
-      font-weight: bold;
-    }
-  </style>
+        .login-icon {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            margin: 0 auto 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            color: white;
+        }
+
+        .student-icon { background: linear-gradient(135deg, #4CAF50, #45a049); }
+        .parent-icon { background: linear-gradient(135deg, #2196F3, #1976D2); }
+        .teacher-icon { background: linear-gradient(135deg, #FF9800, #F57C00); }
+        .assistant-icon { background: linear-gradient(135deg, #9C27B0, #7B1FA2); }
+
+        .login-title {
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #333;
+        }
+
+        .login-description {
+            color: #666;
+            line-height: 1.5;
+            margin-bottom: 20px;
+        }
+
+        .login-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 12px 30px;
+            border: none;
+            border-radius: 25px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+        }
+
+        .login-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        .footer {
+            background: #f8f9fa;
+            padding: 20px;
+            text-align: center;
+            color: #666;
+            border-top: 1px solid #e9ecef;
+        }
+
+        @media (max-width: 768px) {
+            .login-options {
+                grid-template-columns: 1fr;
+                padding: 30px 20px;
+            }
+            
+            .header {
+                padding: 30px 20px;
+            }
+            
+            .logo-text {
+                font-size: 2rem;
+            }
+        }
+
+        /* Particle effects */
+        .particles {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+        }
+
+        .particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: rgba(255,255,255,0.5);
+            border-radius: 50%;
+            animation: particleFloat 6s infinite linear;
+        }
+
+        @keyframes particleFloat {
+            0% {
+                transform: translateY(100vh) rotate(0deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+            }
+            90% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-100px) rotate(360deg);
+                opacity: 0;
+            }
+        }
+    </style>
 </head>
 <body>
-  <div class="form-container">
-    <div class="demo-notice">
-      🚀 Demo Mode - This is a standalone version for testing
-    </div>
-    
-    <h1>Mrs. Hoda Ismail wishes you the best of luck!</h1>
-    <h2>Fun Search for Student Code Or Arabic Names!</h2>
-    <h3>البحث بالكود</h3>
-    <input type="text" id="codeInput" placeholder="ادخل كود الطالب">
-    <button onclick="searchCode()">بحث</button>
-
-    <!-- مكان النتيجة -->
-    <div id="result"></div>
-
-    <p id="messageText" style="display: none;">برجاء الاحتفاظ بصورة التحويل</p>
-  </div>
-
-  <script>
-    // Demo data - matches new detailed session structure
-    const demoData = {
-      'G4001': {
-        name: 'Ahmed Hassan',
-        student_code: 'G4001',
-        is_confirmed: true,
-        // September
-        'september_session1_attendance': 1,
-        'september_session1_question1': 2,
-        'september_session1_question2': 1,
-        'september_session1_quiz': 18,
-        'september_session2_attendance': 0,
-        'september_session2_question1': 1,
-        'september_session2_question2': 0,
-        'september_session2_quiz': 12,
-        'september_session3_attendance': 1,
-        'september_session3_question1': 2,
-        'september_session3_question2': 2,
-        'september_session3_quiz': 20,
-        'september_session4_attendance': 1,
-        'september_session4_question1': 1,
-        'september_session4_question2': 2,
-        'september_session4_quiz': 16,
-        'september_total_attendance': 3,
-        'september_total_questions': 11,
-        'september_total_quiz': 66,
-        'september_total_score': 80,
-        // October
-        'october_session1_attendance': 1,
-        'october_session1_question1': 2,
-        'october_session1_question2': 2,
-        'october_session1_quiz': 20,
-        'october_session2_attendance': 1,
-        'october_session2_question1': 1,
-        'october_session2_question2': 2,
-        'october_session2_quiz': 15,
-        'october_session3_attendance': 0,
-        'october_session3_question1': 0,
-        'october_session3_question2': 0,
-        'october_session3_quiz': 0,
-        'october_session4_attendance': 1,
-        'october_session4_question1': 2,
-        'october_session4_question2': 1,
-        'october_session4_quiz': 18,
-        'october_total_attendance': 3,
-        'october_total_questions': 8,
-        'october_total_quiz': 53,
-        'october_total_score': 64,
-        // November
-        'november_session1_attendance': 1,
-        'november_session1_question1': 2,
-        'november_session1_question2': 2,
-        'november_session1_quiz': 20,
-        'november_session2_attendance': 1,
-        'november_session2_question1': 2,
-        'november_session2_question2': 2,
-        'november_session2_quiz': 20,
-        'november_session3_attendance': 1,
-        'november_session3_question1': 2,
-        'november_session3_question2': 2,
-        'november_session3_quiz': 20,
-        'november_session4_attendance': 1,
-        'november_session4_question1': 2,
-        'november_session4_question2': 2,
-        'november_session4_quiz': 20,
-        'november_total_attendance': 4,
-        'november_total_questions': 16,
-        'november_total_quiz': 80,
-        'november_total_score': 100,
-        // December
-        'december_session1_attendance': 1,
-        'december_session1_question1': 2,
-        'december_session1_question2': 2,
-        'december_session1_quiz': 20,
-        'december_session2_attendance': 1,
-        'december_session2_question1': 2,
-        'december_session2_question2': 2,
-        'december_session2_quiz': 20,
-        'december_session3_attendance': 1,
-        'december_session3_question1': 2,
-        'december_session3_question2': 2,
-        'december_session3_quiz': 20,
-        'december_session4_attendance': 1,
-        'december_session4_question1': 2,
-        'december_session4_question2': 2,
-        'december_session4_quiz': 20,
-        'december_total_attendance': 4,
-        'december_total_questions': 16,
-        'december_total_quiz': 80,
-        'december_total_score': 100
-      }
-    };
-
-    function searchCode() {
-      var code = document.getElementById('codeInput').value;
-
-      // Show spinner
-      document.getElementById('result').innerHTML = '<div class="spinner"></div><p>...جاري التحميل</p>';
-
-      // Simulate API delay
-      setTimeout(() => {
-        const result = searchByCode(code);
-        document.getElementById('result').innerHTML = result;
-      }, 1000);
-    }
-
-    function searchByCode(code) {
-      if (!code || code.length < 2) {
-        return '<p style="color: red; font-weight: bold;">برجاء كتابة الكود</p>';
-      }
-
-      const sheetPrefix = code.substring(0, 2).toUpperCase();
-      const allowedSheets = ['G4', 'G5', 'G6', 'P1'];
-
-      if (!allowedSheets.includes(sheetPrefix)) {
-        return '<p style="color: red; font-weight: bold;">الكود غير صالح أو لا ينتمي لأي مستوى معروف</p>';
-      }
-
-      const normalizedInputCode = code.toLowerCase().replace(/[^a-zA-Z0-9]/g, '');
-      let found = false;
-      let result = '';
-
-      // Search in demo data
-      for (const [demoCode, data] of Object.entries(demoData)) {
-        const demoCodeNormalized = demoCode.toLowerCase().replace(/[^a-zA-Z0-9]/g, '');
-        
-        if (demoCodeNormalized === normalizedInputCode) {
-          found = true;
-          result += '<table><thead><tr><th>Name</th><th>Student Code</th></tr></thead><tbody>';
-          result += '<tr>' +
-                  '<td style="font-size: 30px; font-weight: bold;">' + data.name + '</td>' +
-                  '<td style="font-size: 30px; font-weight: bold;">' + data.student_code + '</td>' +
-                '</tr>';
-          result += '</tbody></table>';
-
-          result += createPerformanceTable(data);
-          result += additionalInfo(data);
-          break;
-        }
-      }
-
-      if (!found) {
-        result = '<p style="color: red; font-weight: bold;">الكود غير صحيح تاكد من الكود</p>';
-      }
-
-      return result;
-    }
-
-    function createPerformanceTable(data) {
-      return `
-        <div style="margin: 20px 0; overflow-x: auto;">
-          <table style="width: 100%; border-collapse: collapse; border: 1px solid #ddd;">
-            <tr style="background-color: #0288D1; color: white;">
-              <th style="padding: 12px; border: 1px solid #ddd; text-align: center;">Month</th>
-              <th style="padding: 8px; border: 1px solid #ddd; text-align: center;">Session 1</th>
-              <th style="padding: 8px; border: 1px solid #ddd; text-align: center;">Session 2</th>
-              <th style="padding: 8px; border: 1px solid #ddd; text-align: center;">Session 3</th>
-              <th style="padding: 8px; border: 1px solid #ddd; text-align: center;">Session 4</th>
-              <th style="padding: 12px; border: 1px solid #ddd; text-align: center;">Monthly Total</th>
-            </tr>
-            <tr style="background-color: #0288D1; color: white;">
-              <th style="padding: 12px; border: 1px solid #ddd; text-align: center;"></th>
-              <th style="padding: 4px; border: 1px solid #ddd; text-align: center; font-size: 12px;">Att.<br>Q1<br>Q2<br>Quiz</th>
-              <th style="padding: 4px; border: 1px solid #ddd; text-align: center; font-size: 12px;">Att.<br>Q1<br>Q2<br>Quiz</th>
-              <th style="padding: 4px; border: 1px solid #ddd; text-align: center; font-size: 12px;">Att.<br>Q1<br>Q2<br>Quiz</th>
-              <th style="padding: 4px; border: 1px solid #ddd; text-align: center; font-size: 12px;">Att.<br>Q1<br>Q2<br>Quiz</th>
-              <th style="padding: 4px; border: 1px solid #ddd; text-align: center; font-size: 12px;">Att.<br>Ques.<br>Quiz<br>Total</th>
-            </tr>
-            ${renderMonthRow("September", data)}
-            ${renderMonthRow("October", data)}
-            ${renderMonthRow("November", data)}
-            ${renderMonthRow("December", data)}
-            <tr style="background-color: #E3F2FD;">
-              <td style="padding: 12px; border: 1px solid #ddd; text-align: center; font-weight: bold; font-size: 16px; color: #00838F;">OVERALL</td>
-              <td colspan="4" style="border: 1px solid #ddd;"></td>
-              <td style="padding: 8px; border: 1px solid #ddd; text-align: center; font-weight: bold; color: #00838F;">
-                <div>Total Score: ${getTotalScore(data)}</div>
-                <div style="font-size: 16px; color: #0288D1;">Grade: ${getGradeFromScore(getTotalScore(data))}</div>
-              </td>
-            </tr>
-          </table>
+    <div class="startup-container">
+        <div class="header">
+            <div class="particles" id="particles"></div>
+            
+                               <div class="logo-container">
+                       <div class="logo">🎓</div>
+                       <h1 class="logo-text">Student Management System</h1>
+                       <p class="logo-subtitle">نظام إدارة الطلاب المتقدم</p>
+                   </div>
         </div>
-        
-        ${createDetailedSessionResults(data)}
-      `;
-    }
 
-    function renderMonthRow(month, data) {
-      const monthKey = month.toLowerCase();
-      const totalScore = data[`${monthKey}_total_score`] || 0;
-      
-      return `
-        <tr>
-          <td style="padding: 12px; border: 1px solid #ddd; text-align: center; font-weight: 600; font-size: 16px;">${month}</td>
-          <td style="padding: 4px; border: 1px solid #ddd; text-align: center; font-size: 12px;">
-            <div style="color: ${getScoreColor(data[`${monthKey}_session1_attendance`])};">${data[`${monthKey}_session1_attendance`] || 0}</div>
-            <div style="color: ${getScoreColor(data[`${monthKey}_session1_question1`])};">${data[`${monthKey}_session1_question1`] || 0}</div>
-            <div style="color: ${getScoreColor(data[`${monthKey}_session1_question2`])};">${data[`${monthKey}_session1_question2`] || 0}</div>
-            <div style="color: ${getScoreColor(data[`${monthKey}_session1_quiz`])};">${data[`${monthKey}_session1_quiz`] || 0}</div>
-          </td>
-          <td style="padding: 4px; border: 1px solid #ddd; text-align: center; font-size: 12px;">
-            <div style="color: ${getScoreColor(data[`${monthKey}_session2_attendance`])};">${data[`${monthKey}_session2_attendance`] || 0}</div>
-            <div style="color: ${getScoreColor(data[`${monthKey}_session2_question1`])};">${data[`${monthKey}_session2_question1`] || 0}</div>
-            <div style="color: ${getScoreColor(data[`${monthKey}_session2_question2`])};">${data[`${monthKey}_session2_question2`] || 0}</div>
-            <div style="color: ${getScoreColor(data[`${monthKey}_session2_quiz`])};">${data[`${monthKey}_session2_quiz`] || 0}</div>
-          </td>
-          <td style="padding: 4px; border: 1px solid #ddd; text-align: center; font-size: 12px;">
-            <div style="color: ${getScoreColor(data[`${monthKey}_session3_attendance`])};">${data[`${monthKey}_session3_attendance`] || 0}</div>
-            <div style="color: ${getScoreColor(data[`${monthKey}_session3_question1`])};">${data[`${monthKey}_session3_question1`] || 0}</div>
-            <div style="color: ${getScoreColor(data[`${monthKey}_session3_question2`])};">${data[`${monthKey}_session3_question2`] || 0}</div>
-            <div style="color: ${getScoreColor(data[`${monthKey}_session3_quiz`])};">${data[`${monthKey}_session3_quiz`] || 0}</div>
-          </td>
-          <td style="padding: 4px; border: 1px solid #ddd; text-align: center; font-size: 12px;">
-            <div style="color: ${getScoreColor(data[`${monthKey}_session4_attendance`])};">${data[`${monthKey}_session4_attendance`] || 0}</div>
-            <div style="color: ${getScoreColor(data[`${monthKey}_session4_question1`])};">${data[`${monthKey}_session4_question1`] || 0}</div>
-            <div style="color: ${getScoreColor(data[`${monthKey}_session4_question2`])};">${data[`${monthKey}_session4_question2`] || 0}</div>
-            <div style="color: ${getScoreColor(data[`${monthKey}_session4_quiz`])};">${data[`${monthKey}_session4_quiz`] || 0}</div>
-          </td>
-          <td style="padding: 4px; border: 1px solid #ddd; text-align: center; font-size: 12px; font-weight: bold; color: #00838F;">
-            <div>${data[`${monthKey}_total_attendance`] || 0}</div>
-            <div>${data[`${monthKey}_total_questions`] || 0}</div>
-            <div>${data[`${monthKey}_total_quiz`] || 0}</div>
-            <div>${totalScore}</div>
-          </td>
-        </tr>
-      `;
-    }
+        <div class="login-options">
+            <div class="login-card" onclick="goToLogin('student')">
+                <div class="login-icon student-icon">👨‍🎓</div>
+                <h3 class="login-title">Student Login</h3>
+                <p class="login-description">تسجيل دخول الطالب<br>View your results and attend quizzes</p>
+                <button class="login-btn">دخول الطالب</button>
+            </div>
 
-    function createDetailedSessionResults(data) {
-      let html = '<div style="margin: 30px 0; padding: 20px; background-color: white; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">';
-      
-      // Section Header
-      html += '<div style="background-color: #00838F; color: white; padding: 16px; border-radius: 12px 12px 0 0; margin: -20px -20px 20px -20px;">';
-      html += '<h2 style="margin: 0; text-align: center; font-size: 18px; font-weight: bold;">Detailed Session Results</h2>';
-      html += '</div>';
-      
-      const months = [
-        { name: 'September', key: 'september' },
-        { name: 'October', key: 'october' },
-        { name: 'November', key: 'november' },
-        { name: 'December', key: 'december' }
-      ];
-      
-      months.forEach(month => {
-        const monthScore = data[`${month.key}_total_score`] || 0;
-        const monthGrade = getGradeFromScore(monthScore);
-        
-        html += '<div style="margin-bottom: 20px; border: 1px solid #ddd; border-radius: 8px; overflow: hidden;">';
-        
-        // Month Header
-        html += '<div style="background-color: #E3F2FD; padding: 12px; display: flex; justify-content: space-between; align-items: center;">';
-        html += `<h3 style="margin: 0; font-size: 16px; font-weight: bold; color: #00838F;">${month.name}</h3>`;
-        html += '<div style="display: flex; align-items: center; gap: 8px;">';
-        html += `<span style="font-weight: 600; font-size: 14px;">Score: ${monthScore}</span>`;
-        html += `<span style="background-color: ${getGradeColor(monthGrade)}; color: white; padding: 4px 8px; border-radius: 4px; font-weight: bold; font-size: 12px;">Grade: ${monthGrade}</span>`;
-        html += '</div>';
-        html += '</div>';
-        
-        // Sessions Details
-        html += '<div style="padding: 16px;">';
-        
-        for (let session = 1; session <= 4; session++) {
-          const attendance = data[`${month.key}_session${session}_attendance`] || 0;
-          const q1 = data[`${month.key}_session${session}_question1`] || 0;
-          const q2 = data[`${month.key}_session${session}_question2`] || 0;
-          const quiz = data[`${month.key}_session${session}_quiz`] || 0;
-          const sessionTotal = attendance + q1 + q2 + (quiz / 10); // Convert quiz score to 0-2 scale for display
-          
-          html += '<div style="margin-bottom: 12px; padding: 12px; background-color: #f8f9fa; border-radius: 8px; border: 1px solid #e9ecef;">';
-          
-          // Session Header
-          html += '<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">';
-          html += `<h4 style="margin: 0; font-size: 14px; font-weight: bold; color: #0277BD;">Session ${session}</h4>`;
-          html += `<span style="background-color: ${getScoreColor(sessionTotal)}; color: white; padding: 2px 6px; border-radius: 4px; font-weight: bold; font-size: 12px;">Total: ${sessionTotal}/7</span>`;
-          html += '</div>';
-          
-          // Session Details Grid
-          html += '<div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px;">';
-          
-          html += createDetailItem('Attendance', attendance, 1);
-          html += createDetailItem('Question 1', q1, 2);
-          html += createDetailItem('Question 2', q2, 2);
-          html += createDetailItem('Quiz', quiz, 20);
-          
-          html += '</div>';
-          html += '</div>';
+            <div class="login-card" onclick="goToLogin('parent')">
+                <div class="login-icon parent-icon">👨‍👩‍👧‍👦</div>
+                <h3 class="login-title">Parent Login</h3>
+                <p class="login-description">تسجيل دخول ولي الأمر<br>View all your children's results</p>
+                <button class="login-btn">دخول ولي الأمر</button>
+            </div>
+
+            <div class="login-card" onclick="goToLogin('teacher')">
+                <div class="login-icon teacher-icon">👨‍🏫</div>
+                <h3 class="login-title">Teacher Login</h3>
+                <p class="login-description">تسجيل دخول المعلم<br>Manage classes and view analytics</p>
+                <button class="login-btn">دخول المعلم</button>
+            </div>
+
+            <div class="login-card" onclick="goToLogin('assistant')">
+                <div class="login-icon assistant-icon">📊</div>
+                <h3 class="login-title">Assistant Login</h3>
+                <p class="login-description">تسجيل دخول المساعد<br>Enter performance data and manage records</p>
+                <button class="login-btn">دخول المساعد</button>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p>© 2025 Student Management System - جميع الحقوق محفوظة</p>
+        </div>
+    </div>
+
+    <script>
+        // Create floating particles
+        function createParticles() {
+            const particlesContainer = document.getElementById('particles');
+            const particleCount = 20;
+
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.animationDelay = Math.random() * 6 + 's';
+                particle.style.animationDuration = (Math.random() * 3 + 3) + 's';
+                particlesContainer.appendChild(particle);
+            }
         }
-        
-        html += '</div>';
-        html += '</div>';
-      });
-      
-      html += '</div>';
-      return html;
-    }
 
-    function createDetailItem(label, score, maxScore) {
-      const color = score >= 2 ? 'green' : score >= 1 ? 'orange' : 'red';
-      return `<div style="text-align: center; padding: 8px; background-color: white; border-radius: 6px; border: 1px solid #dee2e6;">
-        <div style="font-size: 11px; font-weight: 500; color: #6c757d; margin-bottom: 4px;">${label}</div>
-        <div style="font-size: 14px; font-weight: bold; color: ${color};">${score}/${maxScore}</div>
-      </div>`;
-    }
+        // Navigation function
+        function goToLogin(userType) {
+            // Add loading animation
+            const card = event.currentTarget;
+            card.style.transform = 'scale(0.95)';
+            
+            setTimeout(() => {
+                switch(userType) {
+                    case 'student':
+                        window.location.href = '/student-login';
+                        break;
+                    case 'parent':
+                        window.location.href = '/parent-login';
+                        break;
+                    case 'teacher':
+                        window.location.href = '/teacher-login';
+                        break;
+                    case 'assistant':
+                        window.location.href = '/assistant-login';
+                        break;
+                }
+            }, 200);
+        }
 
-    function getScoreColor(score) {
-      if (score >= 2) return 'green';
-      if (score >= 1) return 'orange';
-      return 'red';
-    }
+        // Initialize particles on load
+        document.addEventListener('DOMContentLoaded', createParticles);
 
-    function getGradeColor(grade) {
-      switch (grade) {
-        case 'A': return 'green';
-        case 'B+': return 'lightgreen';
-        case 'B': return 'blue';
-        case 'C+': return 'orange';
-        case 'C': return 'deeporange';
-        default: return 'red';
-      }
-    }
-
-    function getTotalScore(data) {
-      return (data.september_total_score || 0) + 
-             (data.october_total_score || 0) + 
-             (data.november_total_score || 0) + 
-             (data.december_total_score || 0);
-    }
-
-    function getGradeFromScore(score) {
-      if (score >= 100) return 'A';
-      if (score >= 80) return 'B+';
-      if (score >= 60) return 'B';
-      if (score >= 40) return 'C+';
-      if (score >= 20) return 'C';
-      return 'D';
-    }
-
-    function additionalInfo(data) {
-      const isConfirmed = data.is_confirmed === true || data.is_confirmed === "TRUE";
-      
-      return `
-    <p style="color: ${isConfirmed ? 'green' : 'red'}; font-weight: bold; font-size: 50px;">
-      ${isConfirmed ? 'تم تأكيد الحجز' : 'لم يتم تأكيد الحجز بعد'}
-    </p>
-      `;
-    }
-
-    function checkDateForReservation() {
-      var currentDate = new Date();
-      var targetDate = new Date('2024-11-07');
-    }
-
-    // Add Enter key support
-    document.getElementById('codeInput').addEventListener('keypress', function(e) {
-      if (e.key === 'Enter') {
-        searchCode();
-      }
-    });
-
-    window.onload = checkDateForReservation;
-  </script>
+        // Add keyboard navigation
+        document.addEventListener('keydown', function(e) {
+            switch(e.key) {
+                case '1':
+                    goToLogin('student');
+                    break;
+                case '2':
+                    goToLogin('parent');
+                    break;
+                case '3':
+                    goToLogin('teacher');
+                    break;
+                case '4':
+                    goToLogin('assistant');
+                    break;
+            }
+        });
+    </script>
 </body>
 </html>
