@@ -12,14 +12,44 @@
       "dest": "/server.js"
     },
     {
+      "src": "/",
+      "dest": "/server.js"
+    },
+    {
+      "src": "/student-login",
+      "dest": "/server.js"
+    },
+    {
+      "src": "/student-results",
+      "dest": "/server.js"
+    },
+    {
+      "src": "/parent-login",
+      "dest": "/server.js"
+    },
+    {
+      "src": "/parent-dashboard",
+      "dest": "/server.js"
+    },
+    {
+      "src": "/subject-selection",
+      "dest": "/server.js"
+    },
+    {
+      "src": "/subject-results",
+      "dest": "/server.js"
+    },
+    {
+      "src": "/test-subject-selection",
+      "dest": "/server.js"
+    },
+    {
+      "src": "/register",
+      "dest": "/server.js"
+    },
+    {
       "src": "/(.*)",
       "dest": "/public/$1"
     }
-  ],
-  "env": {
-    "DB_TYPE": "@db_type",
-    "SUPABASE_URL": "@supabase_url",
-    "SUPABASE_ANON_KEY": "@supabase_anon_key",
-    "FIREBASE_SERVICE_ACCOUNT": "@firebase_service_account"
-  }
+  ]
 }

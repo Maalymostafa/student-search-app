@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Subject Selection - اختيار المادة</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .selection-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 25px;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.2);
+            overflow: hidden;
+            animation: slideIn 0.8s ease-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .header {
+            background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
+            color: white;
+            padding: 40px 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+
+        .student-info {
+            background: rgba(255,255,255,0.1);
+            padding: 20px;
+            border-radius: 15px;
+            margin-top: 20px;
+        }
+
+        .student-info h3 {
+            margin-bottom: 10px;
+        }
+
+        .content {
+            padding: 30px;
+        }
+
+        .subjects-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .subject-card {
+            background: #f8f9fa;
+            border-radius: 20px;
+            padding: 25px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 3px solid transparent;
+        }
+
+        .subject-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.2);
+            border-color: #4CAF50;
+        }
+
+        .subject-card.selected {
+            border-color: #4CAF50;
+            background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
+            color: white;
+        }
+
+        .subject-icon {
+            font-size: 3rem;
+            margin-bottom: 15px;
+        }
+
+        .subject-name {
+            font-size: 1.3rem;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .subject-grade {
+            font-size: 2rem;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .subject-score {
+            font-size: 1rem;
+            opacity: 0.8;
+        }
+
+        .excellent-grade { color: #4CAF50; }
+        .good-grade { color: #2196F3; }
+        .average-grade { color: #FF9800; }
+        .needs-improvement { color: #f44336; }
+
+        .selected .excellent-grade,
+        .selected .good-grade,
+        .selected .average-grade,
+        .selected .needs-improvement {
+            color: white;
+        }
+
+        .view-results-btn {
+            background: linear-gradient(135deg, #2196F3 0%, #1976D2 100%);
+            color: white;
+            border: none;
+            padding: 18px 40px;
+            border-radius: 15px;
+            font-size: 1.2rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+            margin-bottom: 20px;
+        }
+
+        .view-results-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(33, 150, 243, 0.3);
+        }
+
+        .view-results-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .back-btn {
+            background: #6c757d;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            width: 100%;
+        }
+
+        .back-btn:hover {
+            background: #5a6268;
+            transform: translateY(-2px);
+        }
+
+        .loading {
+            text-align: center;
+            padding: 50px;
+            font-size: 1.2rem;
+            color: #666;
+        }
+
+        @media (max-width: 768px) {
+            .subjects-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .header h1 {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="selection-container">
+        <div class="header">
+            <h1>📚 Subject Selection</h1>
+            <p>اختر المادة التي تريد عرض نتائجها</p>
+            
+            <div class="student-info">
+                <h3 id="studentName">فارس سامح عيد سالم</h3>
+                <p id="studentCode">G4001</p>
+            </div>
+        </div>
+
+        <div class="content">
+            <div id="loading" class="loading">
+                🔄 Loading subjects...
+            </div>
+
+            <div id="subjectsContent" style="display: none;">
+                <div class="subjects-grid" id="subjectsGrid">
+                    <!-- Subject cards will be populated here -->
+                </div>
+
+                <button class="view-results-btn" id="viewResultsBtn" onclick="viewSubjectResults()" disabled>
+                    <span id="buttonText">Select a subject first - اختر مادة أولاً</span>
+                </button>
+
+                <button class="back-btn" onclick="goBack()">
+                    ← Back to Login - العودة لتسجيل الدخول
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Get student code from URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const studentCode = urlParams.get('code');
+        let selectedSubject = null;
+
+        // Sample subjects data (replace with API call)
+        const subjectsData = [
+            {
+                id: "arabic",
+                name: "اللغة العربية",
+                icon: "📖",
+                grade: "A",
+                score: 95,
+                color: "#4CAF50"
+            },
+            {
+                id: "math",
+                name: "الرياضيات",
+                icon: "🔢",
+                grade: "A",
+                score: 92,
+                color: "#2196F3"
+            },
+            {
+                id: "science",
+                name: "العلوم",
+                icon: "🔬",
+                grade: "A",
+                score: 88,
+                color: "#FF9800"
+            },
+            {
+                id: "english",
+                name: "اللغة الإنجليزية",
+                icon: "🌍",
+                grade: "A",
+                score: 96,
+                color: "#9C27B0"
+            }
+        ];
+
+        function getGradeClass(grade) {
+            if (grade === 'A') return 'excellent-grade';
+            if (grade === 'B+') return 'good-grade';
+            if (grade === 'B') return 'average-grade';
+            return 'needs-improvement';
+        }
+
+        function populateSubjects() {
+            const subjectsGrid = document.getElementById('subjectsGrid');
+            subjectsGrid.innerHTML = '';
+
+            subjectsData.forEach(subject => {
+                const subjectCard = document.createElement('div');
+                subjectCard.className = 'subject-card';
+                subjectCard.setAttribute('data-subject-id', subject.id);
+                subjectCard.onclick = () => selectSubject(subject.id);
+
+                subjectCard.innerHTML = `
+                    <div class="subject-icon">${subject.icon}</div>
+                    <div class="subject-name">${subject.name}</div>
+                    <div class="subject-grade ${getGradeClass(subject.grade)}">${subject.grade}</div>
+                    <div class="subject-score">${subject.score}%</div>
+                `;
+
+                subjectsGrid.appendChild(subjectCard);
+            });
+        }
+
+        function selectSubject(subjectId) {
+            console.log('Subject selected:', subjectId);
+            
+            // Remove previous selection
+            document.querySelectorAll('.subject-card').forEach(card => {
+                card.classList.remove('selected');
+            });
+
+            // Add selection to clicked card
+            const selectedCard = document.querySelector(`[data-subject-id="${subjectId}"]`);
+            if (selectedCard) {
+                selectedCard.classList.add('selected');
+                console.log('Card selected successfully');
+            } else {
+                console.log('Card not found for subject:', subjectId);
+            }
+
+            selectedSubject = subjectId;
+            document.getElementById('viewResultsBtn').disabled = false;
+            
+            // Update button text to show selected subject
+            const subject = subjectsData.find(s => s.id === subjectId);
+            if (subject) {
+                document.getElementById('buttonText').textContent = `View ${subject.name} Results - عرض نتائج ${subject.name}`;
+            }
+            
+            console.log('View results button enabled');
+        }
+
+        function viewSubjectResults() {
+            if (selectedSubject) {
+                window.location.href = `/subject-results?code=${studentCode}&subject=${selectedSubject}`;
+            }
+        }
+
+        function goBack() {
+            window.location.href = '/student-login';
+        }
+
+        // Load subjects after page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            // Update student info
+            document.getElementById('studentName').textContent = 'فارس سامح عيد سالم';
+            document.getElementById('studentCode').textContent = studentCode || 'G4001';
+
+            setTimeout(() => {
+                document.getElementById('loading').style.display = 'none';
+                document.getElementById('subjectsContent').style.display = 'block';
+                populateSubjects();
+            }, 1000);
+        });
+    </script>
+</body>
+</html>

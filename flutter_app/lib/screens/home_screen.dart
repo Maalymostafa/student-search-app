@@ -1,266 +1,261 @@
 import 'package:flutter/material.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
-import '../widgets/feature_card.dart';
-import '../utils/constants.dart';
+import 'package:provider/provider.dart';
+import 'package:student_search_app/providers/student_provider.dart';
+import 'package:student_search_app/utils/constants.dart';
+import 'package:student_search_app/widgets/performance_table.dart';
+import 'package:student_search_app/widgets/search_form.dart';
+import 'package:student_search_app/widgets/student_info.dart';
 
 class HomeScreen extends StatefulWidget {
+  const HomeScreen({super.key});
+
   @override
-  _HomeScreenState createState() => _HomeScreenState();
+  State<HomeScreen> createState() => _HomeScreenState();
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  final supabase = Supabase.instance.client;
-  Map<String, dynamic>? analytics;
+  final TextEditingController _codeController = TextEditingController();
 
   @override
-  void initState() {
-    super.initState();
-    _loadAnalytics();
-  }
-
-  Future<void> _loadAnalytics() async {
-    try {
-      // Get basic analytics
-      final studentsResponse = await supabase
-          .from('students')
-          .select('*');
-      
-      final performanceResponse = await supabase
-          .from('student_performance')
-          .select('*');
-
-      setState(() {
-        analytics = {
-          'total_students': studentsResponse.length,
-          'total_performance_records': performanceResponse.length,
-        };
-      });
-    } catch (e) {
-      print('Error loading analytics: $e');
-    }
+  void dispose() {
+    _codeController.dispose();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Student Search App'),
-        centerTitle: true,
-        elevation: 0,
-      ),
       body: Container(
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: [
-              Colors.blue[600]!,
-              Colors.blue[400]!,
-              Colors.white,
-            ],
-            stops: [0.0, 0.3, 0.8],
+        decoration: const BoxDecoration(
+          image: DecorationImage(
+            image: NetworkImage('https://i.imgur.com/ulaJxcO.jpg'),
+            fit: BoxFit.cover,
           ),
         ),
         child: SafeArea(
-          child: Column(
-            children: [
-              // Header Section
-              Container(
-                padding: EdgeInsets.all(20),
-                child: Column(
-                  children: [
-                    Icon(
-                      Icons.school,
-                      size: 80,
-                      color: Colors.white,
-                    ),
-                    SizedBox(height: 16),
-                    Text(
-                      'Student Management System',
-                      style: TextStyle(
-                        fontSize: 24,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white,
-                      ),
-                      textAlign: TextAlign.center,
-                    ),
-                    SizedBox(height: 8),
-                    Text(
-                      'Search and manage student information',
-                      style: TextStyle(
-                        fontSize: 16,
-                        color: Colors.white70,
-                      ),
-                      textAlign: TextAlign.center,
-                    ),
-                  ],
-                ),
-              ),
-              
-              // Analytics Cards
-              if (analytics != null)
-                Container(
-                  padding: EdgeInsets.symmetric(horizontal: 20),
-                  child: Row(
-                    children: [
-                      Expanded(
-                        child: _buildAnalyticsCard(
-                          'Total Students',
-                          '${analytics!['total_students']}',
-                          Icons.people,
-                          Colors.green,
-                        ),
-                      ),
-                      SizedBox(width: 12),
-                      Expanded(
-                        child: _buildAnalyticsCard(
-                          'Performance Records',
-                          '${analytics!['total_performance_records']}',
-                          Icons.assessment,
-                          Colors.orange,
-                        ),
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.all(AppSizes.padding),
+            child: Center(
+              child: ConstrainedBox(
+                constraints: const BoxConstraints(maxWidth: 800),
+                child: Container(
+                  padding: const EdgeInsets.all(AppSizes.largePadding),
+                  decoration: BoxDecoration(
+                    color: AppColors.backgroundOverlay,
+                    borderRadius: BorderRadius.circular(AppSizes.borderRadius),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.08),
+                        blurRadius: 12,
+                        offset: const Offset(0, 6),
                       ),
                     ],
                   ),
-                ),
-              
-              SizedBox(height: 30),
-              
-              // Features Section
-              Expanded(
-                child: Container(
-                  padding: EdgeInsets.symmetric(horizontal: 20),
                   child: Column(
                     children: [
-                      Text(
-                        'Quick Actions',
-                        style: TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.grey[800],
+                      // Demo mode notice
+                      Consumer<StudentProvider>(
+                        builder: (context, provider, child) {
+                          if (provider.useDemoMode) {
+                            return Container(
+                              padding: const EdgeInsets.all(AppSizes.smallPadding),
+                              margin: const EdgeInsets.only(bottom: AppSizes.padding),
+                              decoration: BoxDecoration(
+                                color: AppColors.warningColor.withOpacity(0.9),
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                              child: Row(
+                                children: [
+                                  const Icon(Icons.info_outline, color: Colors.white),
+                                  const SizedBox(width: 8),
+                                  const Expanded(
+                                    child: Text(
+                                      '🚀 Demo Mode - Testing with sample data',
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ),
+                                  Switch(
+                                    value: provider.useDemoMode,
+                                    onChanged: provider.setUseDemoMode,
+                                    activeColor: Colors.white,
+                                  ),
+                                ],
+                              ),
+                            );
+                          }
+                          return const SizedBox.shrink();
+                        },
+                      ),
+
+                      // Headers
+                      const Text(
+                        'Mrs. Hoda Ismail wishes you the best of luck!',
+                        style: AppTextStyles.heading1,
+                        textAlign: TextAlign.center,
+                      ),
+                      const SizedBox(height: AppSizes.smallPadding),
+                      const Text(
+                        'Fun Search for Student Code Or Arabic Names!',
+                        style: AppTextStyles.heading2,
+                        textAlign: TextAlign.center,
+                      ),
+                      const SizedBox(height: AppSizes.smallPadding),
+                      const Text(
+                        'البحث بالكود',
+                        style: AppTextStyles.heading3,
+                        textAlign: TextAlign.center,
+                      ),
+                      const SizedBox(height: AppSizes.padding),
+
+                      // Search Form
+                      SearchForm(
+                        controller: _codeController,
+                        onSearch: (code) {
+                          context.read<StudentProvider>().searchStudent(code);
+                        },
+                      ),
+
+                      const SizedBox(height: AppSizes.smallPadding),
+
+                      // Registration Button
+                      ElevatedButton.icon(
+                        onPressed: () {
+                          Navigator.pushNamed(context, '/register');
+                        },
+                        icon: const Icon(Icons.person_add, color: Colors.white),
+                        label: const Text(
+                          'تسجيل طالب جديد',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16,
+                          ),
+                        ),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: AppColors.accent,
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: AppSizes.padding,
+                            vertical: AppSizes.smallPadding,
+                          ),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(AppSizes.borderRadius),
+                          ),
                         ),
                       ),
-                      SizedBox(height: 20),
-                      
-                      // Feature Cards
-                      FeatureCard(
-                        title: 'Search Students',
-                        subtitle: 'Find students by code or name',
-                        icon: Icons.search,
-                        color: Colors.blue,
-                        onTap: () => Navigator.pushNamed(context, '/search'),
+
+                      const SizedBox(height: AppSizes.padding),
+
+                      // Results
+                      Consumer<StudentProvider>(
+                        builder: (context, provider, child) {
+                          if (provider.isLoading) {
+                            return const Center(
+                              child: Column(
+                                children: [
+                                  CircularProgressIndicator(
+                                    color: AppColors.accent,
+                                  ),
+                                  SizedBox(height: 16),
+                                  Text(
+                                    '...جاري التحميل',
+                                    style: TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            );
+                          }
+
+                          if (provider.error != null) {
+                            return Container(
+                              padding: const EdgeInsets.all(AppSizes.padding),
+                              decoration: BoxDecoration(
+                                color: AppColors.errorColor.withOpacity(0.1),
+                                borderRadius: BorderRadius.circular(AppSizes.borderRadius),
+                                border: Border.all(color: AppColors.errorColor),
+                              ),
+                              child: Text(
+                                provider.error!,
+                                style: const TextStyle(
+                                  color: AppColors.errorColor,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 16,
+                                ),
+                                textAlign: TextAlign.center,
+                              ),
+                            );
+                          }
+
+                          if (provider.student != null) {
+                            return Column(
+                              children: [
+                                // Student Info
+                                StudentInfo(student: provider.student!),
+                                const SizedBox(height: AppSizes.padding),
+                                
+                                // Performance Table
+                                PerformanceTable(student: provider.student!),
+                                const SizedBox(height: AppSizes.padding),
+                                
+                                // Status
+                                Container(
+                                  padding: const EdgeInsets.all(AppSizes.padding),
+                                  decoration: BoxDecoration(
+                                    color: provider.student!.isConfirmed
+                                        ? AppColors.successColor.withOpacity(0.1)
+                                        : AppColors.errorColor.withOpacity(0.1),
+                                    borderRadius: BorderRadius.circular(AppSizes.borderRadius),
+                                    border: Border.all(
+                                      color: provider.student!.isConfirmed
+                                          ? AppColors.successColor
+                                          : AppColors.errorColor,
+                                    ),
+                                  ),
+                                  child: Text(
+                                    provider.student!.isConfirmed
+                                        ? 'تم تأكيد الحجز'
+                                        : 'لم يتم تأكيد الحجز بعد',
+                                    style: TextStyle(
+                                      color: provider.student!.isConfirmed
+                                          ? AppColors.successColor
+                                          : AppColors.errorColor,
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 50,
+                                    ),
+                                    textAlign: TextAlign.center,
+                                  ),
+                                ),
+                              ],
+                            );
+                          }
+
+                          return const SizedBox.shrink();
+                        },
                       ),
-                      
-                      SizedBox(height: 16),
-                      
-                      FeatureCard(
-                        title: 'View Analytics',
-                        subtitle: 'Student performance insights',
-                        icon: Icons.analytics,
-                        color: Colors.green,
-                        onTap: () => Navigator.pushNamed(context, '/analytics'),
-                      ),
-                      
-                      SizedBox(height: 16),
-                      
-                      FeatureCard(
-                        title: 'Database Status',
-                        subtitle: 'Check connection and tables',
-                        icon: Icons.storage,
-                        color: Colors.orange,
-                        onTap: () => _checkDatabaseStatus(),
+
+                      const SizedBox(height: AppSizes.padding),
+
+                      // Footer message
+                      const Text(
+                        'برجاء الاحتفاظ بصورة التحويل',
+                        style: TextStyle(
+                          fontSize: 14,
+                          color: Colors.grey,
+                        ),
                       ),
                     ],
                   ),
                 ),
               ),
-            ],
+            ),
           ),
         ),
       ),
     );
-  }
-
-  Widget _buildAnalyticsCard(String title, String value, IconData icon, Color color) {
-    return Container(
-      padding: EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.1),
-            blurRadius: 8,
-            offset: Offset(0, 4),
-          ),
-        ],
-      ),
-      child: Column(
-        children: [
-          Icon(icon, size: 32, color: color),
-          SizedBox(height: 8),
-          Text(
-            value,
-            style: TextStyle(
-              fontSize: 24,
-              fontWeight: FontWeight.bold,
-              color: color,
-            ),
-          ),
-          SizedBox(height: 4),
-          Text(
-            title,
-            style: TextStyle(
-              fontSize: 12,
-              color: Colors.grey[600],
-            ),
-            textAlign: TextAlign.center,
-          ),
-        ],
-      ),
-    );
-  }
-
-  void _checkDatabaseStatus() async {
-    try {
-      // Test database connection
-      final result = await supabase.from('students').select('*').limit(1);
-      
-      showDialog(
-        context: context,
-        builder: (context) => AlertDialog(
-          title: Text('Database Status'),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text('✅ Connection: Successful'),
-              Text('✅ Students table: Accessible'),
-              Text('📊 Records found: ${result.length}'),
-            ],
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(context),
-              child: Text('OK'),
-            ),
-          ],
-        ),
-      );
-    } catch (e) {
-      showDialog(
-        context: context,
-        builder: (context) => AlertDialog(
-          title: Text('Database Error'),
-          content: Text('❌ Connection failed: $e'),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(context),
-              child: Text('OK'),
-            ),
-          ],
-        ),
-      );
-    }
   }
 }

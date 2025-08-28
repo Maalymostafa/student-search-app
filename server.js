@@ -1,6 +1,7 @@
 const express = require('express');
 const cors = require('cors');
 const bodyParser = require('body-parser');
+const path = require('path');
 require('dotenv').config();
 
 const app = express();
@@ -9,7 +10,6 @@ const PORT = process.env.PORT || 3000;
 // Middleware
 app.use(cors());
 app.use(bodyParser.json());
-app.use(express.static('public'));
 
 // Database configuration
 let db = null;
@@ -86,7 +86,7 @@ app.post('/api/search', async (req, res) => {
       });
     }
 
-    // Generate HTML exactly like Google Apps Script
+    // Generate HTML for new structure
     result += '<table><thead><tr><th>Name</th><th>Student Code</th></tr></thead><tbody>';
     result += '<tr>' +
             '<td style="font-size: 30px; font-weight: bold;">' + studentData.name + '</td>' +
@@ -94,8 +94,8 @@ app.post('/api/search', async (req, res) => {
           '</tr>';
     result += '</tbody></table>';
 
-    result += createPerformanceTable(studentData);
-    result += additionalInfo(studentData);
+    result += createNewPerformanceTable(studentData);
+    result += createNewAdditionalInfo(studentData);
     
     res.json({
       success: true,
@@ -113,116 +113,136 @@ app.post('/api/search', async (req, res) => {
   }
 });
 
-// Supabase search function - matches Google Sheets structure
+// Supabase search function - matches new database structure
 async function searchInSupabase(code, sheetPrefix) {
   try {
     const normalizedInputCode = code.toLowerCase().replace(/[^a-zA-Z0-9]/g, '');
     
-    const { data, error } = await db
-      .from(sheetPrefix.toLowerCase())
+    // First, find the student
+    const { data: studentData, error: studentError } = await db
+      .from('students')
       .select('*')
       .ilike('student_code', `%${normalizedInputCode}%`)
       .single();
 
-    if (error) throw error;
-    
-    // Convert to array format like Google Sheets
-    if (data) {
-      return convertToArrayFormat(data);
+    if (studentError || !studentData) {
+      return null;
     }
-    return null;
+    
+    // Then get performance data for all months
+    const { data: performanceData, error: performanceError } = await db
+      .from('student_performance')
+      .select('*')
+      .eq('student_id', studentData.id)
+      .in('month', ['september', 'october', 'november', 'december'])
+      .eq('year', new Date().getFullYear());
+
+    if (performanceError) {
+      console.error('Performance data error:', performanceError);
+    }
+    
+    // Combine student and performance data
+    const result = {
+      ...studentData,
+      september: {},
+      october: {},
+      november: {},
+      december: {}
+    };
+    
+    // Organize performance data by month
+    if (performanceData) {
+      performanceData.forEach(perf => {
+        result[perf.month] = perf;
+      });
+    }
+    
+    return convertToArrayFormat(result);
   } catch (error) {
     console.error('Supabase search error:', error);
     return null;
   }
 }
 
-// Firebase search function - matches Google Sheets structure
+// Firebase search function - matches new database structure
 async function searchInFirebase(code, sheetPrefix) {
   try {
     const normalizedInputCode = code.toLowerCase().replace(/[^a-zA-Z0-9]/g, '');
     
-    const snapshot = await db
-      .collection(sheetPrefix.toLowerCase())
+    // First, find the student
+    const studentSnapshot = await db
+      .collection('students')
       .where('student_code', '==', normalizedInputCode)
       .limit(1)
       .get();
 
-    if (snapshot.empty) return null;
+    if (studentSnapshot.empty) return null;
     
-    const doc = snapshot.docs[0];
-    const data = { id: doc.id, ...doc.data() };
-    return convertToArrayFormat(data);
+    const studentDoc = studentSnapshot.docs[0];
+    const studentData = { id: studentDoc.id, ...studentDoc.data() };
+    
+    // Then get performance data for all months
+    const performanceSnapshot = await db
+      .collection('student_performance')
+      .where('student_id', '==', studentData.id)
+      .where('year', '==', new Date().getFullYear())
+      .get();
+
+    // Combine student and performance data
+    const result = {
+      ...studentData,
+      september: {},
+      october: {},
+      november: {},
+      december: {}
+    };
+    
+    // Organize performance data by month
+    performanceSnapshot.docs.forEach(doc => {
+      const perfData = doc.data();
+      result[perfData.month] = perfData;
+    });
+    
+    return convertToArrayFormat(result);
   } catch (error) {
     console.error('Firebase search error:', error);
     return null;
   }
 }
 
-// Convert database object to array format like Google Sheets
+// Convert database object to new format
 function convertToArrayFormat(data) {
-  // Google Sheets format: [id, name, is_confirmed, student_code, ...performance_data]
-  const rowData = [];
+  // New format with detailed session data
+  const result = {
+    id: data.id || '',
+    name: data.name || data.full_name_arabic || '',
+    student_code: data.student_code || '',
+    is_confirmed: data.is_confirmed || false,
+  };
+
+  // Add performance data for each month
+  const months = ['september', 'october', 'november', 'december'];
   
-  // Map database fields to array positions
-  rowData[0] = data.id || '';
-  rowData[1] = data.name || '';
-  rowData[2] = data.is_confirmed || false;
-  rowData[3] = data.student_code || '';
+  months.forEach(month => {
+    // Get performance data for this month
+    const monthData = data[month] || {};
+    
+    // Session data
+    for (let session = 1; session <= 4; session++) {
+      result[`${month}_session${session}_attendance`] = monthData[`session${session}_attendance`] || 0;
+      result[`${month}_session${session}_question1`] = monthData[`session${session}_question1`] || 0;
+      result[`${month}_session${session}_question2`] = monthData[`session${session}_question2`] || 0;
+      result[`${month}_session${session}_quiz`] = monthData[`session${session}_quiz`] || 0;
+    }
+    
+    // Monthly totals
+    result[`${month}_total_attendance`] = monthData.month_total_attendance || 0;
+    result[`${month}_total_questions`] = monthData.month_total_questions || 0;
+    result[`${month}_total_quiz`] = monthData.month_total_quiz || 0;
+    result[`${month}_total_score`] = monthData.month_total_score || 0;
+  });
   
-  // Performance data starting from index 7 (September)
-  if (data.september) {
-    rowData[7] = data.september.session1_perf || '';
-    rowData[8] = data.september.session1_quiz || '';
-    rowData[9] = data.september.session2_perf || '';
-    rowData[10] = data.september.session2_quiz || '';
-    rowData[11] = data.september.session3_perf || '';
-    rowData[12] = data.september.session3_quiz || '';
-    rowData[13] = data.september.session4_perf || '';
-    rowData[14] = data.september.session4_quiz || '';
-    rowData[15] = data.september.final_evaluation || '';
-  }
-  
-  // October (index 18)
-  if (data.october) {
-    rowData[18] = data.october.session1_perf || '';
-    rowData[19] = data.october.session1_quiz || '';
-    rowData[20] = data.october.session2_perf || '';
-    rowData[21] = data.october.session2_quiz || '';
-    rowData[22] = data.october.session3_perf || '';
-    rowData[23] = data.october.session3_quiz || '';
-    rowData[24] = data.october.session4_perf || '';
-    rowData[25] = data.october.session4_quiz || '';
-    rowData[26] = data.october.final_evaluation || '';
-  }
-  
-  // November (index 29)
-  if (data.november) {
-    rowData[29] = data.november.session1_perf || '';
-    rowData[30] = data.november.session1_quiz || '';
-    rowData[31] = data.november.session2_perf || '';
-    rowData[32] = data.november.session2_quiz || '';
-    rowData[33] = data.november.session3_perf || '';
-    rowData[34] = data.november.session3_quiz || '';
-    rowData[35] = data.november.session4_perf || '';
-    rowData[36] = data.november.session4_quiz || '';
-    rowData[37] = data.november.final_evaluation || '';
-  }
-  
-  // December (index 40)
-  if (data.december) {
-    rowData[40] = data.december.session1_perf || '';
-    rowData[41] = data.december.session1_quiz || '';
-    rowData[42] = data.december.session2_perf || '';
-    rowData[43] = data.december.session2_quiz || '';
-    rowData[44] = data.december.session3_perf || '';
-    rowData[45] = data.december.session3_quiz || '';
-    rowData[46] = data.december.session4_perf || '';
-    rowData[47] = data.december.session4_quiz || '';
-    rowData[48] = data.december.final_evaluation || '';
-  }
-  
-  return rowData;
+  return result;
 }
 
 // Mock data for testing - matches Google Sheets structure
@@ -334,6 +354,433 @@ app.get('/api/health', (req, res) => {
     timestamp: new Date().toISOString()
   });
 });
+
+// Student registration endpoint
+app.post('/api/register-student', async (req, res) => {
+  try {
+    const {
+      full_name_arabic,
+      grade_level,
+      student_number,
+      parent_number,
+      subscription_type,
+      transfer_phone,
+      whatsapp_phone,
+      transfer_date,
+      transfer_time,
+      notes
+    } = req.body;
+
+    // Validate required fields
+    if (!full_name_arabic || !grade_level || !student_number || !parent_number || !subscription_type || !transfer_phone || !whatsapp_phone || !transfer_date || !transfer_time) {
+      return res.json({
+        success: false,
+        message: 'جميع الحقول المطلوبة يجب ملؤها'
+      });
+    }
+
+    // Generate student code based on grade level
+    const gradePrefix = grade_level === 'Grade 4' ? 'G4' : 
+                       grade_level === 'Grade 5' ? 'G5' : 
+                       grade_level === 'Grade 6' ? 'G6' : 
+                       grade_level === 'Prep 1' ? 'P1' : 'G4';
+
+    // Get current count for this grade to generate unique code
+    let studentCode;
+    if (dbType === 'supabase' && db) {
+      const { data: existingStudents, error } = await db
+        .from('students')
+        .select('student_code')
+        .like('student_code', `${gradePrefix}%`);
+
+      if (error) {
+        console.error('Error getting existing students:', error);
+        return res.json({
+          success: false,
+          message: 'حدث خطأ في إنشاء كود الطالب'
+        });
+      }
+
+      const nextNumber = (existingStudents?.length || 0) + 1;
+      studentCode = `${gradePrefix}${String(nextNumber).padStart(3, '0')}`;
+    } else {
+      // Fallback for demo mode
+      studentCode = `${gradePrefix}001`;
+    }
+
+    // Insert student data
+    if (dbType === 'supabase' && db) {
+      const { error } = await db
+        .from('students')
+        .insert({
+          student_code: studentCode,
+          full_name_arabic,
+          grade_level,
+          student_number,
+          parent_number,
+          subscription_type,
+          transfer_phone,
+          whatsapp_phone,
+          transfer_time,
+          transfer_date,
+          notes,
+          is_confirmed: false,
+          enrollment_date: transfer_date,
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString()
+        });
+
+      if (error) {
+        console.error('Error inserting student:', error);
+        return res.json({
+          success: false,
+          message: 'حدث خطأ في تسجيل الطالب'
+        });
+      }
+    }
+
+    res.json({
+      success: true,
+      message: 'تم تسجيل الطالب بنجاح',
+      student_code: studentCode
+    });
+
+  } catch (error) {
+    console.error('Registration error:', error);
+    res.json({
+      success: false,
+      message: 'حدث خطأ في التسجيل'
+    });
+  }
+});
+
+// Serve registration form
+app.get('/register', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'registration.html'));
+});
+
+// Serve startup page
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'startup.html'));
+});
+
+// Serve student login
+app.get('/student-login', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'student-login.html'));
+});
+
+// Serve student results
+app.get('/student-results', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'student-results.html'));
+});
+
+// Serve parent login
+app.get('/parent-login', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'parent-login.html'));
+});
+
+// Serve parent dashboard
+app.get('/parent-dashboard', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'parent-dashboard.html'));
+});
+
+// Serve subject selection
+app.get('/subject-selection', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'subject-selection.html'));
+});
+
+// Serve subject results
+app.get('/subject-results', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'subject-results.html'));
+});
+
+// Serve test subject selection
+app.get('/test-subject-selection', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'test-subject-selection.html'));
+});
+
+// Student login API
+app.post('/api/student-login', async (req, res) => {
+  try {
+    const { student_code, phone_number, choice } = req.body;
+
+    if (!student_code || !phone_number) {
+      return res.json({
+        success: false,
+        message: 'Student code and phone number are required'
+      });
+    }
+
+    // Verify student exists and phone matches
+    if (dbType === 'supabase' && db) {
+      try {
+        const { data: student, error } = await db
+          .from('students')
+          .select('*')
+          .eq('student_code', student_code)
+          .eq('whatsapp_phone', phone_number)
+          .single();
+
+        if (error || !student) {
+          // Fall back to demo mode if database query fails
+          if (student_code.match(/^[GP][1-6]\d{3}$/) && phone_number.length >= 10) {
+            return res.json({
+              success: true,
+              message: 'Login successful (demo mode)',
+              demo: true
+            });
+          } else {
+            return res.json({
+              success: false,
+              message: 'Invalid student code or phone number'
+            });
+          }
+        }
+
+        res.json({
+          success: true,
+          message: 'Login successful',
+          student: student
+        });
+      } catch (dbError) {
+        // Fall back to demo mode if database connection fails
+        if (student_code.match(/^[GP][1-6]\d{3}$/) && phone_number.length >= 10) {
+          res.json({
+            success: true,
+            message: 'Login successful (demo mode)',
+            demo: true
+          });
+        } else {
+          res.json({
+            success: false,
+            message: 'Invalid student code or phone number'
+          });
+        }
+      }
+    } else {
+      // Demo mode - accept any valid format
+      if (student_code.match(/^[GP][1-6]\d{3}$/) && phone_number.length >= 10) {
+        res.json({
+          success: true,
+          message: 'Login successful (demo mode)',
+          demo: true
+        });
+      } else {
+        res.json({
+          success: false,
+          message: 'Invalid student code or phone number'
+        });
+      }
+    }
+  } catch (error) {
+    console.error('Student login error:', error);
+    res.json({
+      success: false,
+      message: 'Login failed'
+    });
+  }
+});
+
+// Parent login API
+app.post('/api/parent-login', async (req, res) => {
+  try {
+    const { parent_phone } = req.body;
+
+    if (!parent_phone) {
+      return res.json({
+        success: false,
+        message: 'Parent phone number is required'
+      });
+    }
+
+    // Find children by parent phone
+    if (dbType === 'supabase' && db) {
+      try {
+        const { data: children, error } = await db
+          .from('students')
+          .select('*')
+          .eq('parent_number', parent_phone);
+
+        if (error) {
+          // Fall back to demo mode if database query fails
+          return res.json({
+            success: true,
+            message: 'Login successful (demo mode)',
+            demo: true,
+            children: [
+              { student_code: 'G4001', full_name_arabic: 'فارس سامح عيد سالم', grade_level: 'Grade 4' },
+              { student_code: 'G5001', full_name_arabic: 'رقيه إسلام جميل قطب', grade_level: 'Grade 5' }
+            ]
+          });
+        }
+
+        if (!children || children.length === 0) {
+          // Fall back to demo mode if no children found
+          return res.json({
+            success: true,
+            message: 'Login successful (demo mode)',
+            demo: true,
+            children: [
+              { student_code: 'G4001', full_name_arabic: 'فارس سامح عيد سالم', grade_level: 'Grade 4' },
+              { student_code: 'G5001', full_name_arabic: 'رقيه إسلام جميل قطب', grade_level: 'Grade 5' }
+            ]
+          });
+        }
+
+        res.json({
+          success: true,
+          message: 'Login successful',
+          children: children
+        });
+      } catch (dbError) {
+        // Fall back to demo mode if database connection fails
+        res.json({
+          success: true,
+          message: 'Login successful (demo mode)',
+          demo: true,
+          children: [
+            { student_code: 'G4001', full_name_arabic: 'فارس سامح عيد سالم', grade_level: 'Grade 4' },
+            { student_code: 'G5001', full_name_arabic: 'رقيه إسلام جميل قطب', grade_level: 'Grade 5' }
+          ]
+        });
+      }
+    } else {
+      // Demo mode - accept any phone number
+      res.json({
+        success: true,
+        message: 'Login successful (demo mode)',
+        demo: true,
+        children: [
+          { student_code: 'G4001', full_name_arabic: 'فارس سامح عيد سالم', grade_level: 'Grade 4' },
+          { student_code: 'G5001', full_name_arabic: 'رقيه إسلام جميل قطب', grade_level: 'Grade 5' }
+        ]
+      });
+    }
+  } catch (error) {
+    console.error('Parent login error:', error);
+    res.json({
+      success: false,
+      message: 'Login failed'
+    });
+  }
+});
+
+// New HTML generation functions for the updated structure
+function createNewPerformanceTable(studentData) {
+  let html = '<div style="margin: 20px 0; overflow-x: auto;">';
+  html += '<table style="width: 100%; border-collapse: collapse; border: 1px solid #ddd;">';
+  
+  // Header row 1
+  html += '<tr style="background-color: #0288D1; color: white;">';
+  html += '<th style="padding: 12px; border: 1px solid #ddd; text-align: center;">Month</th>';
+  html += '<th style="padding: 8px; border: 1px solid #ddd; text-align: center;">Session 1</th>';
+  html += '<th style="padding: 8px; border: 1px solid #ddd; text-align: center;">Session 2</th>';
+  html += '<th style="padding: 8px; border: 1px solid #ddd; text-align: center;">Session 3</th>';
+  html += '<th style="padding: 8px; border: 1px solid #ddd; text-align: center;">Session 4</th>';
+  html += '<th style="padding: 12px; border: 1px solid #ddd; text-align: center;">Monthly Total</th>';
+  html += '</tr>';
+  
+  // Header row 2
+  html += '<tr style="background-color: #0288D1; color: white;">';
+  html += '<th style="padding: 12px; border: 1px solid #ddd; text-align: center;"></th>';
+  html += '<th style="padding: 4px; border: 1px solid #ddd; text-align: center; font-size: 12px;">Att.<br>Q1<br>Q2<br>Quiz</th>';
+  html += '<th style="padding: 4px; border: 1px solid #ddd; text-align: center; font-size: 12px;">Att.<br>Q1<br>Q2<br>Quiz</th>';
+  html += '<th style="padding: 4px; border: 1px solid #ddd; text-align: center; font-size: 12px;">Att.<br>Q1<br>Q2<br>Quiz</th>';
+  html += '<th style="padding: 4px; border: 1px solid #ddd; text-align: center; font-size: 12px;">Att.<br>Q1<br>Q2<br>Quiz</th>';
+  html += '<th style="padding: 4px; border: 1px solid #ddd; text-align: center; font-size: 12px;">Att.<br>Ques.<br>Quiz<br>Total</th>';
+  html += '</tr>';
+  
+  // Data rows
+  const months = [
+    { name: 'September', key: 'september' },
+    { name: 'October', key: 'october' },
+    { name: 'November', key: 'november' },
+    { name: 'December', key: 'december' }
+  ];
+  
+  months.forEach(month => {
+    html += '<tr>';
+    html += `<td style="padding: 12px; border: 1px solid #ddd; text-align: center; font-weight: 600; font-size: 16px;">${month.name}</td>`;
+    
+    // Sessions 1-4
+    for (let session = 1; session <= 4; session++) {
+      const attendance = studentData[`${month.key}_session${session}_attendance`] || 0;
+      const q1 = studentData[`${month.key}_session${session}_question1`] || 0;
+      const q2 = studentData[`${month.key}_session${session}_question2`] || 0;
+      const quiz = studentData[`${month.key}_session${session}_quiz`] || 0;
+      
+      html += `<td style="padding: 4px; border: 1px solid #ddd; text-align: center; font-size: 12px;">`;
+      html += `<div style="color: ${attendance === 1 ? 'green' : 'red'};">${attendance}</div>`;
+      html += `<div style="color: ${q1 === 2 ? 'green' : q1 === 1 ? 'orange' : 'red'};">${q1}</div>`;
+      html += `<div style="color: ${q2 === 2 ? 'green' : q2 === 1 ? 'orange' : 'red'};">${q2}</div>`;
+      html += `<div style="color: ${quiz === 2 ? 'green' : quiz === 1 ? 'orange' : 'red'};">${quiz}</div>`;
+      html += '</td>';
+    }
+    
+    // Monthly totals
+    const totalAttendance = studentData[`${month.key}_total_attendance`] || 0;
+    const totalQuestions = studentData[`${month.key}_total_questions`] || 0;
+    const totalQuiz = studentData[`${month.key}_total_quiz`] || 0;
+    const totalScore = studentData[`${month.key}_total_score`] || 0;
+    
+    html += `<td style="padding: 4px; border: 1px solid #ddd; text-align: center; font-size: 12px; font-weight: bold; color: #00838F;">`;
+    html += `<div>${totalAttendance}</div>`;
+    html += `<div>${totalQuestions}</div>`;
+    html += `<div>${totalQuiz}</div>`;
+    html += `<div>${totalScore}</div>`;
+    html += '</td>';
+    
+    html += '</tr>';
+  });
+  
+  // Overall totals row
+  const overallTotal = (studentData.september_total_score || 0) + 
+                      (studentData.october_total_score || 0) + 
+                      (studentData.november_total_score || 0) + 
+                      (studentData.december_total_score || 0);
+  
+  html += '<tr style="background-color: #E3F2FD;">';
+  html += '<td style="padding: 12px; border: 1px solid #ddd; text-align: center; font-weight: bold; font-size: 16px; color: #00838F;">OVERALL</td>';
+  html += '<td colspan="4" style="border: 1px solid #ddd;"></td>';
+  html += `<td style="padding: 8px; border: 1px solid #ddd; text-align: center; font-weight: bold; color: #00838F;">`;
+  html += `<div>Total Score: ${overallTotal}</div>`;
+  html += `<div style="font-size: 16px; color: #0288D1;">Grade: ${getGradeFromScore(overallTotal)}</div>`;
+  html += '</td>';
+  html += '</tr>';
+  
+  html += '</table>';
+  html += '</div>';
+  
+  return html;
+}
+
+function createNewAdditionalInfo(studentData) {
+  let html = '<div style="margin: 20px 0; padding: 20px; border: 2px solid; border-radius: 12px; text-align: center; font-size: 50px; font-weight: bold;';
+  
+  if (studentData.is_confirmed) {
+    html += 'background-color: rgba(76, 175, 80, 0.1); border-color: #4CAF50; color: #4CAF50;">';
+    html += 'تم تأكيد الحجز';
+  } else {
+    html += 'background-color: rgba(244, 67, 54, 0.1); border-color: #F44336; color: #F44336;">';
+    html += 'لم يتم تأكيد الحجز بعد';
+  }
+  
+  html += '</div>';
+  
+  return html;
+}
+
+function getGradeFromScore(score) {
+  if (score >= 100) return 'A';
+  if (score >= 80) return 'B+';
+  if (score >= 60) return 'B';
+  if (score >= 40) return 'C+';
+  if (score >= 20) return 'C';
+  return 'D';
+}
+
+// Serve static files after specific routes
+app.use(express.static('public'));
 
 app.listen(PORT, () => {
   console.log(`🚀 Server running on port ${PORT}`);

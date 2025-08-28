@@ -66,6 +66,22 @@
       background-color: #004D40;
     }
 
+    .register-btn {
+      display: inline-block;
+      padding: 12px 24px;
+      background-color: #FF6B35;
+      color: white;
+      text-decoration: none;
+      border-radius: 8px;
+      font-size: 16px;
+      transition: background-color 0.3s;
+      margin-top: 20px;
+    }
+
+    .register-btn:hover {
+      background-color: #E55A2B;
+    }
+
     table {
       width: 100%;
       border-collapse: collapse;
@@ -112,6 +128,12 @@
     <h3>البحث بالكود</h3>
     <input type="text" id="codeInput" placeholder="ادخل كود الطالب">
     <button onclick="searchCode()">بحث</button>
+    
+    <div style="margin-top: 20px;">
+      <a href="/register" class="register-btn">
+        تسجيل طالب جديد - Register New Student
+      </a>
+    </div>
 
     <!-- مكان النتيجة -->
     <div id="result"></div>
@@ -136,8 +158,12 @@
       })
       .then(response => response.json())
       .then(data => {
+        console.log('API Response:', data);
+        console.log('HTML Content:', data.html);
+        
         if (data.success) {
           document.getElementById('result').innerHTML = data.html;
+          console.log('Result div content:', document.getElementById('result').innerHTML);
         } else {
           document.getElementById('result').innerHTML = data.html;
         }

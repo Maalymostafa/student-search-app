@@ -7,7 +7,13 @@
     "start": "node server.js",
     "dev": "nodemon server.js",
     "build": "echo 'Build complete'",
-    "setup-db": "node database-setup.js"
+    "setup-db": "node database-setup.js",
+    "setup-multi-sheets": "node database-multi-sheets-setup.js",
+    "clean-structure": "node clean-and-prepare-structure.js",
+    "import-real-data": "node import-real-google-sheets.js",
+    "import-all-tabs": "node scripts/import-all-tabs.js",
+    "import-performance": "node scripts/import-performance.js",
+    "import-google-sheets": "node scripts/import-google-sheets.js"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.38.0",

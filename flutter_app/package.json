@@ -1,0 +1,14 @@
+{
+  "name": "student-search-app",
+  "version": "1.0.0",
+  "description": "Student Search Flutter Web App",
+  "scripts": {
+    "build": "bash vercel-build.sh",
+    "vercel-build": "bash vercel-build.sh"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "dependencies": {},
+  "devDependencies": {}
+}

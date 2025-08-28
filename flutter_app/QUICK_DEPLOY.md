@@ -12,47 +12,54 @@ await Supabase.initialize(
 );
 ```
 
-### Step 2: Push to GitHub
-```bash
-# Initialize git (if not already done)
-git init
-git add .
-git commit -m "Ready for Vercel deployment"
+### Step 2: Build and Deploy (Recommended Method)
+Use the automated deployment script:
 
-# Create a new repository on GitHub, then:
-git remote add origin https://github.com/yourusername/your-repo-name.git
-git branch -M main
-git push -u origin main
+```bash
+# Make sure you're in the flutter_app directory
+cd flutter_app
+
+# Run the deployment script
+./deploy-to-vercel.sh
 ```
 
-### Step 3: Deploy to Vercel
-1. Go to [vercel.com](https://vercel.com)
-2. Sign up/Login with GitHub
-3. Click "New Project"
-4. Import your repository
-5. Configure:
-   - **Framework**: Other
-   - **Build Command**: `flutter build web --release`
-   - **Output Directory**: `build/web`
-6. Click "Deploy"
+This script will:
+- Build your Flutter web app locally
+- Install Vercel CLI if needed
+- Deploy to Vercel automatically
+
+### Step 3: Manual Deployment (Alternative)
+If you prefer manual deployment:
+
+1. **Build locally first:**
+```bash
+flutter build web --release
+```
+
+2. **Deploy to Vercel:**
+```bash
+npm i -g vercel
+vercel login
+vercel --prod
+```
 
 ### Step 4: Get Your Live URL
 Vercel will give you a URL like: `https://your-app.vercel.app`
 
-## 🔧 Alternative: Vercel CLI
-```bash
-npm i -g vercel
-vercel login
-vercel
-```
-
 ## ✅ Done!
 Your Flutter web app is now live and accessible worldwide!
+
+## 🔄 Future Updates
+To update your deployed app:
+```bash
+./deploy-to-vercel.sh
+```
 
 ## 🐛 Troubleshooting
 - If build fails, check that Flutter is installed
 - If app doesn't work, verify Supabase credentials
 - Check browser console for errors
+- Make sure you're in the flutter_app directory
 
 ## 📞 Need Help?
 - See `DEPLOYMENT.md` for detailed instructions

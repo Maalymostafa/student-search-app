@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تسجيل طالب جديد - Student Registration</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        .form-container {
+            padding: 40px;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #333;
+            font-size: 1rem;
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e1e5e9;
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            font-family: inherit;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .required {
+            color: #e74c3c;
+        }
+
+        .submit-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 18px 40px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+            margin-top: 20px;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        .submit-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .success-message {
+            background: #d4edda;
+            color: #155724;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            border: 1px solid #c3e6cb;
+            display: none;
+        }
+
+        .error-message {
+            background: #f8d7da;
+            color: #721c24;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            border: 1px solid #f5c6cb;
+            display: none;
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        .spinner {
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #667eea;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 10px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .back-link {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .back-link a {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .back-link a:hover {
+            text-decoration: underline;
+        }
+
+        @media (max-width: 768px) {
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+            
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .form-container {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>تسجيل طالب جديد</h1>
+            <p>Student Registration Form</p>
+        </div>
+
+        <div class="form-container">
+            <div class="success-message" id="successMessage">
+                ✅ تم تسجيل الطالب بنجاح! Student registered successfully!
+            </div>
+
+            <div class="error-message" id="errorMessage">
+                ❌ حدث خطأ في التسجيل. Please try again.
+            </div>
+
+            <form id="registrationForm">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="fullName">الاسم الرباعي <span class="required">*</span></label>
+                        <input type="text" id="fullName" name="fullName" required placeholder="أدخل الاسم الرباعي">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="gradeLevel">المرحلة الدراسية <span class="required">*</span></label>
+                        <select id="gradeLevel" name="gradeLevel" required>
+                            <option value="">اختر المرحلة</option>
+                            <option value="Grade 4">Grade 4</option>
+                            <option value="Grade 5">Grade 5</option>
+                            <option value="Grade 6">Grade 6</option>
+                            <option value="Prep 1">Prep 1</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="studentNumber">رقم الطالب <span class="required">*</span></label>
+                        <input type="text" id="studentNumber" name="studentNumber" required placeholder="أدخل رقم الطالب">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="parentNumber">رقم ولي الأمر <span class="required">*</span></label>
+                        <input type="tel" id="parentNumber" name="parentNumber" required placeholder="أدخل رقم ولي الأمر">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="subscriptionType">نوع الاشتراك <span class="required">*</span></label>
+                        <select id="subscriptionType" name="subscriptionType" required>
+                            <option value="">اختر نوع الاشتراك</option>
+                            <option value="اشتراك شهري 120ج">اشتراك شهري 120ج</option>
+                            <option value="اشتراك الترم 600ج">اشتراك الترم 600ج</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="transferPhone">رقم الموبيل (التحويل) <span class="required">*</span></label>
+                        <input type="tel" id="transferPhone" name="transferPhone" required placeholder="أدخل رقم الموبيل">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="whatsappPhone">رقم الواتساب <span class="required">*</span></label>
+                        <input type="tel" id="whatsappPhone" name="whatsappPhone" required placeholder="أدخل رقم الواتساب">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="transferDate">تاريخ التحويل <span class="required">*</span></label>
+                        <input type="date" id="transferDate" name="transferDate" required>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="transferTime">وقت التحويل <span class="required">*</span></label>
+                        <input type="time" id="transferTime" name="transferTime" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="transferImage">صورة التحويل</label>
+                        <input type="file" id="transferImage" name="transferImage" accept="image/*">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="notes">ملاحظات إضافية</label>
+                    <textarea id="notes" name="notes" rows="3" placeholder="أي ملاحظات إضافية..."></textarea>
+                </div>
+
+                <div class="loading" id="loading">
+                    <div class="spinner"></div>
+                    <p>جاري التسجيل... Registering...</p>
+                </div>
+
+                <button type="submit" class="submit-btn" id="submitBtn">
+                    تسجيل الطالب - Register Student
+                </button>
+            </form>
+
+            <div class="back-link">
+                <a href="/">← العودة للبحث - Back to Search</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('registrationForm');
+            const successMessage = document.getElementById('successMessage');
+            const errorMessage = document.getElementById('errorMessage');
+            const loading = document.getElementById('loading');
+            const submitBtn = document.getElementById('submitBtn');
+
+            // Set default date to today
+            document.getElementById('transferDate').valueAsDate = new Date();
+
+            form.addEventListener('submit', async function(e) {
+                e.preventDefault();
+
+                // Show loading
+                loading.style.display = 'block';
+                submitBtn.disabled = true;
+                successMessage.style.display = 'none';
+                errorMessage.style.display = 'none';
+
+                // Get form data
+                const formData = new FormData(form);
+                const data = {
+                    full_name_arabic: formData.get('fullName'),
+                    grade_level: formData.get('gradeLevel'),
+                    student_number: formData.get('studentNumber'),
+                    parent_number: formData.get('parentNumber'),
+                    subscription_type: formData.get('subscriptionType'),
+                    transfer_phone: formData.get('transferPhone'),
+                    whatsapp_phone: formData.get('whatsappPhone'),
+                    transfer_date: formData.get('transferDate'),
+                    transfer_time: formData.get('transferTime'),
+                    notes: formData.get('notes')
+                };
+
+                try {
+                    const response = await fetch('/api/register-student', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify(data)
+                    });
+
+                    const result = await response.json();
+
+                    if (result.success) {
+                        successMessage.style.display = 'block';
+                        form.reset();
+                        document.getElementById('transferDate').valueAsDate = new Date();
+                        
+                        // Show student code if generated
+                        if (result.student_code) {
+                            successMessage.innerHTML = `
+                                ✅ تم تسجيل الطالب بنجاح!<br>
+                                <strong>كود الطالب: ${result.student_code}</strong><br>
+                                Student registered successfully!
+                            `;
+                        }
+                    } else {
+                        errorMessage.textContent = result.message || 'حدث خطأ في التسجيل';
+                        errorMessage.style.display = 'block';
+                    }
+                } catch (error) {
+                    console.error('Error:', error);
+                    errorMessage.textContent = 'حدث خطأ في الاتصال بالخادم';
+                    errorMessage.style.display = 'block';
+                } finally {
+                    loading.style.display = 'none';
+                    submitBtn.disabled = false;
+                }
+            });
+
+            // Auto-fill WhatsApp phone when transfer phone changes
+            document.getElementById('transferPhone').addEventListener('input', function() {
+                const whatsappPhone = document.getElementById('whatsappPhone');
+                if (!whatsappPhone.value) {
+                    whatsappPhone.value = this.value;
+                }
+            });
+        });
+    </script>
+</body>
+</html>

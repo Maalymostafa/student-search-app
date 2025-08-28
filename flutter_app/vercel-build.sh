@@ -3,36 +3,34 @@
 # Exit on any error
 set -e
 
-echo "🚀 Starting Flutter web build for production..."
+echo "🚀 Starting Flutter web build for Vercel..."
 
-# Install Flutter if not available
-if ! command -v flutter &> /dev/null; then
-    echo "📥 Installing Flutter..."
+# Check if we're in Vercel environment
+if [ -n "$VERCEL" ]; then
+    echo "📦 Vercel environment detected, installing Flutter..."
     
-    # Download Flutter
+    # Install Flutter using the official installation method
     FLUTTER_VERSION="3.35.1"
     FLUTTER_HOME="/opt/flutter"
     
     # Create Flutter directory
-    sudo mkdir -p $FLUTTER_HOME
-    sudo chown $USER:$USER $FLUTTER_HOME
+    mkdir -p $FLUTTER_HOME
     
     # Download and extract Flutter
     cd /tmp
-    wget -q https://storage.googleapis.com/flutter_infra_release/releases/stable/linux/flutter_linux_$FLUTTER_VERSION-stable.tar.xz
-    tar xf flutter_linux_$FLUTTER_VERSION-stable.tar.xz -C /opt/
+    curl -L https://storage.googleapis.com/flutter_infra_release/releases/stable/linux/flutter_linux_$FLUTTER_VERSION-stable.tar.xz -o flutter.tar.xz
+    tar xf flutter.tar.xz -C /opt/
     
     # Add Flutter to PATH
     export PATH="$FLUTTER_HOME/bin:$PATH"
     
-    # Accept licenses
-    flutter doctor --android-licenses || true
-    
     echo "✅ Flutter installed successfully"
+    
+    # Navigate back to project directory
+    cd /var/task/user_code
+else
+    echo "🔧 Local environment detected, using existing Flutter installation"
 fi
-
-# Navigate back to project directory
-cd /var/task/user_code
 
 # Clean previous builds
 echo "🧹 Cleaning previous builds..."
@@ -48,4 +46,3 @@ flutter build web --release --web-renderer html
 
 echo "✅ Build completed successfully!"
 echo "📁 Build output is in: build/web/"
-echo "🌐 Ready for deployment to Vercel!"

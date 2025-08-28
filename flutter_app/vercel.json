@@ -1,5 +1,5 @@
 {
-  "buildCommand": "flutter build web --release",
+  "buildCommand": "echo 'Using pre-built Flutter web files'",
   "outputDirectory": "build/web",
   "framework": null,
   "rewrites": [

@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Parent Dashboard - لوحة تحكم ولي الأمر</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #2196F3 0%, #1976D2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .dashboard-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 25px;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.2);
+            overflow: hidden;
+            animation: slideIn 0.8s ease-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .header {
+            background: linear-gradient(135deg, #2196F3 0%, #1976D2 100%);
+            color: white;
+            padding: 40px 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+
+        .content {
+            padding: 30px;
+        }
+
+        .children-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        .child-card {
+            background: #f8f9fa;
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+            cursor: pointer;
+        }
+
+        .child-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .child-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .child-avatar {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin-left: 15px;
+        }
+
+        .child-info h3 {
+            color: #333;
+            font-size: 1.3rem;
+            margin-bottom: 5px;
+        }
+
+        .child-info p {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .performance-summary {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .summary-item {
+            background: white;
+            padding: 15px;
+            border-radius: 12px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .summary-label {
+            font-size: 0.8rem;
+            color: #666;
+            margin-bottom: 5px;
+        }
+
+        .summary-value {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #2196F3;
+        }
+
+        .sections-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .section-item {
+            background: white;
+            padding: 12px;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+        }
+
+        .section-name {
+            font-size: 0.8rem;
+            color: #666;
+            margin-bottom: 5px;
+        }
+
+        .section-grade {
+            font-size: 1.2rem;
+            font-weight: bold;
+        }
+
+        .excellent-grade { color: #4CAF50; }
+        .good-grade { color: #2196F3; }
+        .average-grade { color: #FF9800; }
+        .needs-improvement { color: #f44336; }
+
+        .view-details-btn {
+            background: linear-gradient(135deg, #2196F3 0%, #1976D2 100%);
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 600;
+            width: 100%;
+            transition: all 0.3s ease;
+        }
+
+        .view-details-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(33, 150, 243, 0.3);
+        }
+
+        .add-child-btn {
+            background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
+            color: white;
+            border: none;
+            padding: 20px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 1.1rem;
+            font-weight: 600;
+            width: 100%;
+            transition: all 0.3s ease;
+            margin-top: 20px;
+        }
+
+        .add-child-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(76, 175, 80, 0.3);
+        }
+
+        .back-btn {
+            background: #6c757d;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            margin-top: 20px;
+        }
+
+        .back-btn:hover {
+            background: #5a6268;
+            transform: translateY(-2px);
+        }
+
+        .loading {
+            text-align: center;
+            padding: 50px;
+            font-size: 1.2rem;
+            color: #666;
+        }
+
+        @media (max-width: 768px) {
+            .children-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .performance-summary {
+                grid-template-columns: 1fr;
+            }
+            
+            .sections-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <div class="header">
+            <h1>👨‍👩‍👧‍👦 Parent Dashboard</h1>
+            <p>لوحة تحكم ولي الأمر - عرض نتائج جميع الأبناء</p>
+        </div>
+
+        <div class="content">
+            <div id="loading" class="loading">
+                🔄 Loading children's data...
+            </div>
+
+            <div id="childrenContent" style="display: none;">
+                <div class="children-grid" id="childrenGrid">
+                    <!-- Children cards will be populated here -->
+                </div>
+
+                <button class="add-child-btn" onclick="registerNewChild()">
+                    ➕ Register New Child - تسجيل طفل جديد
+                </button>
+
+                <button class="back-btn" onclick="goBack()">
+                    ← Back to Login - العودة لتسجيل الدخول
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Get parent phone from URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const parentPhone = urlParams.get('phone');
+
+        // Sample children data (replace with API call)
+        const childrenData = [
+            {
+                student_code: "G4001",
+                full_name_arabic: "فارس سامح عيد سالم",
+                grade_level: "Grade 4",
+                final_result: 92,
+                attendance: 95,
+                sections: [
+                    { name: "اللغة العربية", grade: "A", score: 95 },
+                    { name: "الرياضيات", grade: "A", score: 92 },
+                    { name: "العلوم", grade: "A", score: 88 },
+                    { name: "اللغة الإنجليزية", grade: "A", score: 96 }
+                ]
+            },
+            {
+                student_code: "G5001",
+                full_name_arabic: "رقيه إسلام جميل قطب",
+                grade_level: "Grade 5",
+                final_result: 89,
+                attendance: 92,
+                sections: [
+                    { name: "اللغة العربية", grade: "A", score: 91 },
+                    { name: "الرياضيات", grade: "B+", score: 87 },
+                    { name: "العلوم", grade: "A", score: 93 },
+                    { name: "اللغة الإنجليزية", grade: "A", score: 89 }
+                ]
+            }
+        ];
+
+        function getGradeClass(grade) {
+            if (grade === 'A') return 'excellent-grade';
+            if (grade === 'B+') return 'good-grade';
+            if (grade === 'B') return 'average-grade';
+            return 'needs-improvement';
+        }
+
+        function getInitials(name) {
+            return name.split(' ').map(word => word[0]).join('').substring(0, 2);
+        }
+
+        function populateChildren() {
+            const childrenGrid = document.getElementById('childrenGrid');
+            childrenGrid.innerHTML = '';
+
+            childrenData.forEach(child => {
+                const childCard = document.createElement('div');
+                childCard.className = 'child-card';
+                childCard.onclick = () => viewChildDetails(child.student_code);
+
+                childCard.innerHTML = `
+                    <div class="child-header">
+                        <div class="child-avatar">
+                            ${getInitials(child.full_name_arabic)}
+                        </div>
+                        <div class="child-info">
+                            <h3>${child.full_name_arabic}</h3>
+                            <p>${child.grade_level} - ${child.student_code}</p>
+                        </div>
+                    </div>
+
+                    <div class="performance-summary">
+                        <div class="summary-item">
+                            <div class="summary-label">Final Result</div>
+                            <div class="summary-value">${child.final_result}%</div>
+                        </div>
+                        <div class="summary-item">
+                            <div class="summary-label">Attendance</div>
+                            <div class="summary-value">${child.attendance}%</div>
+                        </div>
+                    </div>
+
+                    <div class="sections-grid">
+                        ${child.sections.map(section => `
+                            <div class="section-item">
+                                <div class="section-name">${section.name}</div>
+                                <div class="section-grade ${getGradeClass(section.grade)}">${section.grade}</div>
+                            </div>
+                        `).join('')}
+                    </div>
+
+                    <button class="view-details-btn" onclick="event.stopPropagation(); viewChildDetails('${child.student_code}')">
+                        View Full Details - عرض التفاصيل الكاملة
+                    </button>
+                `;
+
+                childrenGrid.appendChild(childCard);
+            });
+        }
+
+        function viewChildDetails(studentCode) {
+            window.location.href = `/student-results?code=${studentCode}&parent=true`;
+        }
+
+        function registerNewChild() {
+            window.location.href = '/register';
+        }
+
+        function goBack() {
+            window.location.href = '/parent-login';
+        }
+
+        // Load children data after page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            setTimeout(() => {
+                document.getElementById('loading').style.display = 'none';
+                document.getElementById('childrenContent').style.display = 'block';
+                populateChildren();
+            }, 1000);
+        });
+    </script>
+</body>
+</html>
+

@@ -8,7 +8,7 @@ class StudentProvider extends ChangeNotifier {
   Student? _student;
   bool _isLoading = false;
   String? _error;
-  bool _useDemoMode = true; // Default to demo mode
+  bool _useDemoMode = false; // Default to database mode
 
   Student? get student => _student;
   bool get isLoading => _isLoading;

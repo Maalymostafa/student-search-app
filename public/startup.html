@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Management System - نظام إدارة الطلاب</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .startup-container {
+            background: white;
+            border-radius: 30px;
+            box-shadow: 0 30px 60px rgba(0,0,0,0.2);
+            overflow: hidden;
+            max-width: 1000px;
+            width: 100%;
+            animation: slideIn 1s ease-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 50px 40px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .logo-container {
+            margin-bottom: 30px;
+            position: relative;
+        }
+
+        .logo {
+            width: 120px;
+            height: 120px;
+            background: #8B5CF6;
+            border-radius: 50%;
+            margin: 0 auto 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 48px;
+            font-weight: bold;
+            color: white;
+            box-shadow: 0 10px 30px rgba(139, 92, 246, 0.4);
+            animation: logoFloat 3s ease-in-out infinite;
+        }
+
+        @keyframes logoFloat {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .logo-text {
+            font-size: 2.5rem;
+            font-weight: bold;
+            margin-bottom: 10px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .logo-subtitle {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+
+        .login-options {
+            padding: 50px 40px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+        }
+
+        .login-card {
+            background: #f8f9fa;
+            border-radius: 20px;
+            padding: 30px;
+            text-align: center;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .login-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+            transition: left 0.5s;
+        }
+
+        .login-card:hover::before {
+            left: 100%;
+        }
+
+        .login-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            border-color: #667eea;
+        }
+
+        .login-icon {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            margin: 0 auto 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            color: white;
+        }
+
+        .student-icon { background: linear-gradient(135deg, #4CAF50, #45a049); }
+        .parent-icon { background: linear-gradient(135deg, #2196F3, #1976D2); }
+        .teacher-icon { background: linear-gradient(135deg, #FF9800, #F57C00); }
+        .assistant-icon { background: linear-gradient(135deg, #9C27B0, #7B1FA2); }
+
+        .login-title {
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #333;
+        }
+
+        .login-description {
+            color: #666;
+            line-height: 1.5;
+            margin-bottom: 20px;
+        }
+
+        .login-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 12px 30px;
+            border: none;
+            border-radius: 25px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+        }
+
+        .login-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        .footer {
+            background: #f8f9fa;
+            padding: 20px;
+            text-align: center;
+            color: #666;
+            border-top: 1px solid #e9ecef;
+        }
+
+        @media (max-width: 768px) {
+            .login-options {
+                grid-template-columns: 1fr;
+                padding: 30px 20px;
+            }
+            
+            .header {
+                padding: 30px 20px;
+            }
+            
+            .logo-text {
+                font-size: 2rem;
+            }
+        }
+
+        /* Particle effects */
+        .particles {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+        }
+
+        .particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: rgba(255,255,255,0.5);
+            border-radius: 50%;
+            animation: particleFloat 6s infinite linear;
+        }
+
+        @keyframes particleFloat {
+            0% {
+                transform: translateY(100vh) rotate(0deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+            }
+            90% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-100px) rotate(360deg);
+                opacity: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="startup-container">
+        <div class="header">
+            <div class="particles" id="particles"></div>
+            
+                               <div class="logo-container">
+                       <div class="logo">🎓</div>
+                       <h1 class="logo-text">Student Management System</h1>
+                       <p class="logo-subtitle">نظام إدارة الطلاب المتقدم</p>
+                   </div>
+        </div>
+
+        <div class="login-options">
+            <div class="login-card" onclick="goToLogin('student')">
+                <div class="login-icon student-icon">👨‍🎓</div>
+                <h3 class="login-title">Student Login</h3>
+                <p class="login-description">تسجيل دخول الطالب<br>View your results and attend quizzes</p>
+                <button class="login-btn">دخول الطالب</button>
+            </div>
+
+            <div class="login-card" onclick="goToLogin('parent')">
+                <div class="login-icon parent-icon">👨‍👩‍👧‍👦</div>
+                <h3 class="login-title">Parent Login</h3>
+                <p class="login-description">تسجيل دخول ولي الأمر<br>View all your children's results</p>
+                <button class="login-btn">دخول ولي الأمر</button>
+            </div>
+
+            <div class="login-card" onclick="goToLogin('teacher')">
+                <div class="login-icon teacher-icon">👨‍🏫</div>
+                <h3 class="login-title">Teacher Login</h3>
+                <p class="login-description">تسجيل دخول المعلم<br>Manage classes and view analytics</p>
+                <button class="login-btn">دخول المعلم</button>
+            </div>
+
+            <div class="login-card" onclick="goToLogin('assistant')">
+                <div class="login-icon assistant-icon">📊</div>
+                <h3 class="login-title">Assistant Login</h3>
+                <p class="login-description">تسجيل دخول المساعد<br>Enter performance data and manage records</p>
+                <button class="login-btn">دخول المساعد</button>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p>© 2025 Student Management System - جميع الحقوق محفوظة</p>
+        </div>
+    </div>
+
+    <script>
+        // Create floating particles
+        function createParticles() {
+            const particlesContainer = document.getElementById('particles');
+            const particleCount = 20;
+
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.animationDelay = Math.random() * 6 + 's';
+                particle.style.animationDuration = (Math.random() * 3 + 3) + 's';
+                particlesContainer.appendChild(particle);
+            }
+        }
+
+        // Navigation function
+        function goToLogin(userType) {
+            // Add loading animation
+            const card = event.currentTarget;
+            card.style.transform = 'scale(0.95)';
+            
+            setTimeout(() => {
+                switch(userType) {
+                    case 'student':
+                        window.location.href = '/student-login';
+                        break;
+                    case 'parent':
+                        window.location.href = '/parent-login';
+                        break;
+                    case 'teacher':
+                        window.location.href = '/teacher-login';
+                        break;
+                    case 'assistant':
+                        window.location.href = '/assistant-login';
+                        break;
+                }
+            }, 200);
+        }
+
+        // Initialize particles on load
+        document.addEventListener('DOMContentLoaded', createParticles);
+
+        // Add keyboard navigation
+        document.addEventListener('keydown', function(e) {
+            switch(e.key) {
+                case '1':
+                    goToLogin('student');
+                    break;
+                case '2':
+                    goToLogin('parent');
+                    break;
+                case '3':
+                    goToLogin('teacher');
+                    break;
+                case '4':
+                    goToLogin('assistant');
+                    break;
+            }
+        });
+    </script>
+</body>
+</html>

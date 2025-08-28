@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Subject Results - نتائج المادة</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .results-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 25px;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.2);
+            overflow: hidden;
+            animation: slideIn 0.8s ease-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .header {
+            background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
+            color: white;
+            padding: 40px 30px;
+            text-align: center;
+        }
+
+        .student-info {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .info-card {
+            background: rgba(255,255,255,0.1);
+            padding: 20px;
+            border-radius: 15px;
+            text-align: center;
+        }
+
+        .info-label {
+            font-size: 0.9rem;
+            opacity: 0.8;
+            margin-bottom: 5px;
+        }
+
+        .info-value {
+            font-size: 1.3rem;
+            font-weight: bold;
+        }
+
+        .subject-header {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+
+        .subject-icon {
+            font-size: 3rem;
+            margin-left: 15px;
+        }
+
+        .subject-title {
+            font-size: 2rem;
+            font-weight: bold;
+        }
+
+        .content {
+            padding: 30px;
+        }
+
+        .overview-section {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .overview-card {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .overview-label {
+            font-size: 0.9rem;
+            color: #666;
+            margin-bottom: 10px;
+        }
+
+        .overview-value {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #4CAF50;
+        }
+
+        .monthly-performance {
+            margin-bottom: 30px;
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin-bottom: 20px;
+            color: #333;
+            text-align: center;
+        }
+
+        .performance-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+        .performance-table th {
+            background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
+            color: white;
+            padding: 15px;
+            text-align: center;
+            font-weight: 600;
+        }
+
+        .performance-table td {
+            padding: 15px;
+            text-align: center;
+            border-bottom: 1px solid #e9ecef;
+            background: white;
+        }
+
+        .performance-table tr:hover {
+            background: #f8f9fa;
+        }
+
+        .quiz-section {
+            margin-bottom: 30px;
+        }
+
+        .quiz-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .quiz-card {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .quiz-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .quiz-name {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .quiz-grade {
+            font-size: 1.5rem;
+            font-weight: bold;
+            padding: 8px 15px;
+            border-radius: 10px;
+            color: white;
+        }
+
+        .excellent-grade { background: #4CAF50; }
+        .good-grade { background: #2196F3; }
+        .average-grade { background: #FF9800; }
+        .needs-improvement { background: #f44336; }
+
+        .quiz-details {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        .detail-item {
+            text-align: center;
+            padding: 10px;
+            background: white;
+            border-radius: 8px;
+        }
+
+        .detail-label {
+            font-size: 0.8rem;
+            color: #666;
+            margin-bottom: 5px;
+        }
+
+        .detail-value {
+            font-size: 1.1rem;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .back-btn {
+            background: #6c757d;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            margin-top: 20px;
+        }
+
+        .back-btn:hover {
+            background: #5a6268;
+            transform: translateY(-2px);
+        }
+
+        .loading {
+            text-align: center;
+            padding: 50px;
+            font-size: 1.2rem;
+            color: #666;
+        }
+
+        @media (max-width: 768px) {
+            .student-info {
+                grid-template-columns: 1fr;
+            }
+            
+            .overview-section {
+                grid-template-columns: 1fr;
+            }
+            
+            .quiz-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .quiz-details {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="results-container">
+        <div class="header">
+            <div class="student-info">
+                <div class="info-card">
+                    <div class="info-label">Student Name</div>
+                    <div class="info-value" id="studentName">فارس سامح عيد سالم</div>
+                </div>
+                <div class="info-card">
+                    <div class="info-label">Student Code</div>
+                    <div class="info-value" id="studentCode">G4001</div>
+                </div>
+            </div>
+
+            <div class="subject-header">
+                <div class="subject-icon" id="subjectIcon">📖</div>
+                <div class="subject-title" id="subjectTitle">اللغة العربية</div>
+            </div>
+        </div>
+
+        <div class="content">
+            <div id="loading" class="loading">
+                🔄 Loading subject results...
+            </div>
+
+            <div id="resultsContent" style="display: none;">
+                <div class="overview-section">
+                    <div class="overview-card">
+                        <div class="overview-label">Overall Grade</div>
+                        <div class="overview-value" id="overallGrade">A</div>
+                    </div>
+                    <div class="overview-card">
+                        <div class="overview-label">Average Score</div>
+                        <div class="overview-value" id="averageScore">95%</div>
+                    </div>
+                    <div class="overview-card">
+                        <div class="overview-label">Total Quizzes</div>
+                        <div class="overview-value" id="totalQuizzes">8</div>
+                    </div>
+                    <div class="overview-card">
+                        <div class="overview-label">Best Performance</div>
+                        <div class="overview-value" id="bestPerformance">98%</div>
+                    </div>
+                </div>
+
+                <div class="monthly-performance">
+                    <h2 class="section-title">📊 Monthly Performance Summary</h2>
+                    <table class="performance-table">
+                        <thead>
+                            <tr>
+                                <th>Month</th>
+                                <th>Quiz 1</th>
+                                <th>Quiz 2</th>
+                                <th>Quiz 3</th>
+                                <th>Quiz 4</th>
+                                <th>Monthly Average</th>
+                                <th>Monthly Grade</th>
+                            </tr>
+                        </thead>
+                        <tbody id="monthlyTableBody">
+                            <!-- Data will be populated by JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="quiz-section">
+                    <h2 class="section-title">📝 Detailed Quiz Results</h2>
+                    <div class="quiz-grid" id="quizGrid">
+                        <!-- Quiz cards will be populated by JavaScript -->
+                    </div>
+                </div>
+
+                <button class="back-btn" onclick="goBack()">
+                    ← Back to Subject Selection - العودة لاختيار المادة
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Get parameters from URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const studentCode = urlParams.get('code');
+        const subjectId = urlParams.get('subject');
+
+        // Subject configuration
+        const subjects = {
+            arabic: {
+                name: "اللغة العربية",
+                icon: "📖",
+                color: "#4CAF50"
+            },
+            math: {
+                name: "الرياضيات",
+                icon: "🔢",
+                color: "#2196F3"
+            },
+            science: {
+                name: "العلوم",
+                icon: "🔬",
+                color: "#FF9800"
+            },
+            english: {
+                name: "اللغة الإنجليزية",
+                icon: "🌍",
+                color: "#9C27B0"
+            }
+        };
+
+        // Sample detailed data for Arabic subject
+        const subjectData = {
+            arabic: {
+                overall_grade: "A",
+                average_score: 95,
+                total_quizzes: 8,
+                best_performance: 98,
+                monthly_data: [
+                    {
+                        month: "September",
+                        quizzes: [
+                            { name: "Grammar Quiz", grade: "A", score: 96, date: "2024-09-15" },
+                            { name: "Reading Quiz", grade: "A", score: 94, date: "2024-09-22" },
+                            { name: "Writing Quiz", grade: "A", score: 92, date: "2024-09-29" },
+                            { name: "Comprehension Quiz", grade: "A", score: 98, date: "2024-10-06" }
+                        ],
+                        monthly_average: 95,
+                        monthly_grade: "A"
+                    },
+                    {
+                        month: "October",
+                        quizzes: [
+                            { name: "Poetry Quiz", grade: "A", score: 93, date: "2024-10-13" },
+                            { name: "Literature Quiz", grade: "A", score: 97, date: "2024-10-20" },
+                            { name: "Grammar Advanced", grade: "A", score: 91, date: "2024-10-27" },
+                            { name: "Final Assessment", grade: "A", score: 96, date: "2024-11-03" }
+                        ],
+                        monthly_average: 94.25,
+                        monthly_grade: "A"
+                    }
+                ]
+            }
+        };
+
+        function getGradeClass(grade) {
+            if (grade === 'A') return 'excellent-grade';
+            if (grade === 'B+') return 'good-grade';
+            if (grade === 'B') return 'average-grade';
+            return 'needs-improvement';
+        }
+
+        function populateResults() {
+            const subject = subjects[subjectId];
+            const data = subjectData[subjectId] || subjectData.arabic; // Fallback to Arabic data
+
+            // Update header
+            document.getElementById('studentName').textContent = 'فارس سامح عيد سالم';
+            document.getElementById('studentCode').textContent = studentCode || 'G4001';
+            document.getElementById('subjectIcon').textContent = subject.icon;
+            document.getElementById('subjectTitle').textContent = subject.name;
+
+            // Update overview
+            document.getElementById('overallGrade').textContent = data.overall_grade;
+            document.getElementById('averageScore').textContent = data.average_score + '%';
+            document.getElementById('totalQuizzes').textContent = data.total_quizzes;
+            document.getElementById('bestPerformance').textContent = data.best_performance + '%';
+
+            // Populate monthly table
+            populateMonthlyTable(data.monthly_data);
+
+            // Populate quiz cards
+            populateQuizCards(data.monthly_data);
+        }
+
+        function populateMonthlyTable(monthlyData) {
+            const tableBody = document.getElementById('monthlyTableBody');
+            tableBody.innerHTML = '';
+
+            monthlyData.forEach(monthData => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${monthData.month}</td>
+                    <td class="grade-cell" data-grade="${monthData.quizzes[0].grade}">${monthData.quizzes[0].score}%</td>
+                    <td class="grade-cell" data-grade="${monthData.quizzes[1].grade}">${monthData.quizzes[1].score}%</td>
+                    <td class="grade-cell" data-grade="${monthData.quizzes[2].grade}">${monthData.quizzes[2].score}%</td>
+                    <td class="grade-cell" data-grade="${monthData.quizzes[3].grade}">${monthData.quizzes[3].score}%</td>
+                    <td>${monthData.monthly_average.toFixed(1)}%</td>
+                    <td class="grade-cell" data-grade="${monthData.monthly_grade}">${monthData.monthly_grade}</td>
+                `;
+                tableBody.appendChild(row);
+
+                // Animate grades
+                const gradeCells = row.querySelectorAll('.grade-cell');
+                gradeCells.forEach((cell, index) => {
+                    const grade = cell.getAttribute('data-grade');
+                    setTimeout(() => {
+                        cell.classList.add(getGradeClass(grade));
+                    }, index * 200);
+                });
+            });
+        }
+
+        function populateQuizCards(monthlyData) {
+            const quizGrid = document.getElementById('quizGrid');
+            quizGrid.innerHTML = '';
+
+            monthlyData.forEach(monthData => {
+                monthData.quizzes.forEach(quiz => {
+                    const quizCard = document.createElement('div');
+                    quizCard.className = 'quiz-card';
+                    quizCard.innerHTML = `
+                        <div class="quiz-header">
+                            <div class="quiz-name">${quiz.name}</div>
+                            <div class="quiz-grade ${getGradeClass(quiz.grade)}">${quiz.grade}</div>
+                        </div>
+                        <div class="quiz-details">
+                            <div class="detail-item">
+                                <div class="detail-label">Score</div>
+                                <div class="detail-value">${quiz.score}%</div>
+                            </div>
+                            <div class="detail-item">
+                                <div class="detail-label">Date</div>
+                                <div class="detail-value">${formatDate(quiz.date)}</div>
+                            </div>
+                        </div>
+                    `;
+                    quizGrid.appendChild(quizCard);
+                });
+            });
+        }
+
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            return date.toLocaleDateString('ar-EG', { 
+                year: 'numeric', 
+                month: 'short', 
+                day: 'numeric' 
+            });
+        }
+
+        function goBack() {
+            window.location.href = `/subject-selection?code=${studentCode}`;
+        }
+
+        // Load results after page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            setTimeout(() => {
+                document.getElementById('loading').style.display = 'none';
+                document.getElementById('resultsContent').style.display = 'block';
+                populateResults();
+            }, 1500);
+        });
+    </script>
+</body>
+</html>
+
