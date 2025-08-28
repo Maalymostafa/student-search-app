@@ -315,30 +315,10 @@
                     </div>
                 </div>
 
-                <div class="monthly-performance">
-                    <h2 class="section-title">📊 Monthly Performance Summary</h2>
-                    <table class="performance-table">
-                        <thead>
-                            <tr>
-                                <th>Month</th>
-                                <th>Quiz 1</th>
-                                <th>Quiz 2</th>
-                                <th>Quiz 3</th>
-                                <th>Quiz 4</th>
-                                <th>Monthly Average</th>
-                                <th>Monthly Grade</th>
-                            </tr>
-                        </thead>
-                        <tbody id="monthlyTableBody">
-                            <!-- Data will be populated by JavaScript -->
-                        </tbody>
-                    </table>
-                </div>
-
-                <div class="quiz-section">
-                    <h2 class="section-title">📝 Detailed Quiz Results</h2>
-                    <div class="quiz-grid" id="quizGrid">
-                        <!-- Quiz cards will be populated by JavaScript -->
+                <div class="detailed-sessions">
+                    <h2 class="section-title">📊 Detailed Session Results - تفاصيل نتائج الجلسات</h2>
+                    <div id="detailedSessionResults">
+                        <!-- Detailed session results will be populated by JavaScript -->
                     </div>
                 </div>
 
@@ -379,37 +359,199 @@
             }
         };
 
-        // Sample detailed data for Arabic subject
+        // Detailed session data for all subjects
         const subjectData = {
             arabic: {
                 overall_grade: "A",
                 average_score: 95,
                 total_quizzes: 8,
                 best_performance: 98,
-                monthly_data: [
-                    {
-                        month: "September",
-                        quizzes: [
-                            { name: "Grammar Quiz", grade: "A", score: 96, date: "2024-09-15" },
-                            { name: "Reading Quiz", grade: "A", score: 94, date: "2024-09-22" },
-                            { name: "Writing Quiz", grade: "A", score: 92, date: "2024-09-29" },
-                            { name: "Comprehension Quiz", grade: "A", score: 98, date: "2024-10-06" }
-                        ],
-                        monthly_average: 95,
-                        monthly_grade: "A"
+                detailed_sessions: {
+                    september: {
+                        session1: { attendance: 1, question1: 2, question2: 1, quiz: 18 },
+                        session2: { attendance: 0, question1: 1, question2: 0, quiz: 12 },
+                        session3: { attendance: 1, question1: 2, question2: 2, quiz: 20 },
+                        session4: { attendance: 1, question1: 1, question2: 2, quiz: 16 },
+                        total_attendance: 3,
+                        total_questions: 11,
+                        total_quiz: 66,
+                        total_score: 80
                     },
-                    {
-                        month: "October",
-                        quizzes: [
-                            { name: "Poetry Quiz", grade: "A", score: 93, date: "2024-10-13" },
-                            { name: "Literature Quiz", grade: "A", score: 97, date: "2024-10-20" },
-                            { name: "Grammar Advanced", grade: "A", score: 91, date: "2024-10-27" },
-                            { name: "Final Assessment", grade: "A", score: 96, date: "2024-11-03" }
-                        ],
-                        monthly_average: 94.25,
-                        monthly_grade: "A"
+                    october: {
+                        session1: { attendance: 1, question1: 2, question2: 2, quiz: 20 },
+                        session2: { attendance: 1, question1: 1, question2: 2, quiz: 15 },
+                        session3: { attendance: 0, question1: 0, question2: 0, quiz: 0 },
+                        session4: { attendance: 1, question1: 2, question2: 1, quiz: 18 },
+                        total_attendance: 3,
+                        total_questions: 8,
+                        total_quiz: 53,
+                        total_score: 64
+                    },
+                    november: {
+                        session1: { attendance: 1, question1: 2, question2: 2, quiz: 20 },
+                        session2: { attendance: 1, question1: 2, question2: 2, quiz: 20 },
+                        session3: { attendance: 1, question1: 2, question2: 2, quiz: 20 },
+                        session4: { attendance: 1, question1: 2, question2: 2, quiz: 20 },
+                        total_attendance: 4,
+                        total_questions: 16,
+                        total_quiz: 80,
+                        total_score: 100
+                    },
+                    december: {
+                        session1: { attendance: 1, question1: 2, question2: 2, quiz: 20 },
+                        session2: { attendance: 1, question1: 2, question2: 2, quiz: 20 },
+                        session3: { attendance: 1, question1: 2, question2: 2, quiz: 20 },
+                        session4: { attendance: 1, question1: 2, question2: 2, quiz: 20 },
+                        total_attendance: 4,
+                        total_questions: 16,
+                        total_quiz: 80,
+                        total_score: 100
                     }
-                ]
+                }
+            },
+            math: {
+                overall_grade: "A",
+                average_score: 92,
+                total_quizzes: 8,
+                best_performance: 96,
+                detailed_sessions: {
+                    september: {
+                        session1: { attendance: 1, question1: 2, question2: 2, quiz: 20 },
+                        session2: { attendance: 1, question1: 1, question2: 2, quiz: 15 },
+                        session3: { attendance: 1, question1: 2, question2: 1, quiz: 18 },
+                        session4: { attendance: 1, question1: 2, question2: 2, quiz: 20 },
+                        total_attendance: 4,
+                        total_questions: 14,
+                        total_quiz: 73,
+                        total_score: 91
+                    },
+                    october: {
+                        session1: { attendance: 1, question1: 2, question2: 2, quiz: 20 },
+                        session2: { attendance: 0, question1: 1, question2: 1, quiz: 12 },
+                        session3: { attendance: 1, question1: 2, question2: 2, quiz: 20 },
+                        session4: { attendance: 1, question1: 1, question2: 2, quiz: 16 },
+                        total_attendance: 3,
+                        total_questions: 12,
+                        total_quiz: 68,
+                        total_score: 83
+                    },
+                    november: {
+                        session1: { attendance: 1, question1: 2, question2: 2, quiz: 20 },
+                        session2: { attendance: 1, question1: 2, question2: 2, quiz: 20 },
+                        session3: { attendance: 1, question1: 2, question2: 2, quiz: 20 },
+                        session4: { attendance: 1, question1: 2, question2: 2, quiz: 20 },
+                        total_attendance: 4,
+                        total_questions: 16,
+                        total_quiz: 80,
+                        total_score: 100
+                    },
+                    december: {
+                        session1: { attendance: 1, question1: 2, question2: 2, quiz: 20 },
+                        session2: { attendance: 1, question1: 2, question2: 2, quiz: 20 },
+                        session3: { attendance: 1, question1: 2, question2: 2, quiz: 20 },
+                        session4: { attendance: 1, question1: 2, question2: 2, quiz: 20 },
+                        total_attendance: 4,
+                        total_questions: 16,
+                        total_quiz: 80,
+                        total_score: 100
+                    }
+                }
+            },
+            science: {
+                overall_grade: "A",
+                average_score: 88,
+                total_quizzes: 8,
+                best_performance: 94,
+                detailed_sessions: {
+                    september: {
+                        session1: { attendance: 1, question1: 2, question2: 1, quiz: 16 },
+                        session2: { attendance: 1, question1: 1, question2: 2, quiz: 14 },
+                        session3: { attendance: 0, question1: 1, question2: 1, quiz: 10 },
+                        session4: { attendance: 1, question1: 2, question2: 2, quiz: 18 },
+                        total_attendance: 3,
+                        total_questions: 10,
+                        total_quiz: 58,
+                        total_score: 71
+                    },
+                    october: {
+                        session1: { attendance: 1, question1: 2, question2: 2, quiz: 18 },
+                        session2: { attendance: 1, question1: 1, question2: 1, quiz: 12 },
+                        session3: { attendance: 1, question1: 2, question2: 2, quiz: 20 },
+                        session4: { attendance: 1, question1: 1, question2: 2, quiz: 16 },
+                        total_attendance: 4,
+                        total_questions: 12,
+                        total_quiz: 66,
+                        total_score: 82
+                    },
+                    november: {
+                        session1: { attendance: 1, question1: 2, question2: 2, quiz: 20 },
+                        session2: { attendance: 1, question1: 2, question2: 2, quiz: 20 },
+                        session3: { attendance: 1, question1: 2, question2: 2, quiz: 20 },
+                        session4: { attendance: 1, question1: 2, question2: 2, quiz: 20 },
+                        total_attendance: 4,
+                        total_questions: 16,
+                        total_quiz: 80,
+                        total_score: 100
+                    },
+                    december: {
+                        session1: { attendance: 1, question1: 2, question2: 2, quiz: 20 },
+                        session2: { attendance: 1, question1: 2, question2: 2, quiz: 20 },
+                        session3: { attendance: 1, question1: 2, question2: 2, quiz: 20 },
+                        session4: { attendance: 1, question1: 2, question2: 2, quiz: 20 },
+                        total_attendance: 4,
+                        total_questions: 16,
+                        total_quiz: 80,
+                        total_score: 100
+                    }
+                }
+            },
+            english: {
+                overall_grade: "A",
+                average_score: 96,
+                total_quizzes: 8,
+                best_performance: 100,
+                detailed_sessions: {
+                    september: {
+                        session1: { attendance: 1, question1: 2, question2: 2, quiz: 20 },
+                        session2: { attendance: 1, question1: 2, question2: 2, quiz: 20 },
+                        session3: { attendance: 1, question1: 2, question2: 2, quiz: 20 },
+                        session4: { attendance: 1, question1: 2, question2: 2, quiz: 20 },
+                        total_attendance: 4,
+                        total_questions: 16,
+                        total_quiz: 80,
+                        total_score: 100
+                    },
+                    october: {
+                        session1: { attendance: 1, question1: 2, question2: 2, quiz: 20 },
+                        session2: { attendance: 1, question1: 2, question2: 2, quiz: 20 },
+                        session3: { attendance: 1, question1: 2, question2: 2, quiz: 20 },
+                        session4: { attendance: 1, question1: 2, question2: 2, quiz: 20 },
+                        total_attendance: 4,
+                        total_questions: 16,
+                        total_quiz: 80,
+                        total_score: 100
+                    },
+                    november: {
+                        session1: { attendance: 1, question1: 2, question2: 2, quiz: 20 },
+                        session2: { attendance: 1, question1: 2, question2: 2, quiz: 20 },
+                        session3: { attendance: 1, question1: 2, question2: 2, quiz: 20 },
+                        session4: { attendance: 1, question1: 2, question2: 2, quiz: 20 },
+                        total_attendance: 4,
+                        total_questions: 16,
+                        total_quiz: 80,
+                        total_score: 100
+                    },
+                    december: {
+                        session1: { attendance: 1, question1: 2, question2: 2, quiz: 20 },
+                        session2: { attendance: 1, question1: 2, question2: 2, quiz: 20 },
+                        session3: { attendance: 1, question1: 2, question2: 2, quiz: 20 },
+                        session4: { attendance: 1, question1: 2, question2: 2, quiz: 20 },
+                        total_attendance: 4,
+                        total_questions: 16,
+                        total_quiz: 80,
+                        total_score: 100
+                    }
+                }
             }
         };
 
@@ -436,68 +578,140 @@
             document.getElementById('totalQuizzes').textContent = data.total_quizzes;
             document.getElementById('bestPerformance').textContent = data.best_performance + '%';
 
-            // Populate monthly table
-            populateMonthlyTable(data.monthly_data);
-
-            // Populate quiz cards
-            populateQuizCards(data.monthly_data);
+            // Populate detailed session results
+            populateDetailedSessionResults(data.detailed_sessions);
         }
 
-        function populateMonthlyTable(monthlyData) {
-            const tableBody = document.getElementById('monthlyTableBody');
-            tableBody.innerHTML = '';
+        function populateDetailedSessionResults(detailedSessions) {
+            const container = document.getElementById('detailedSessionResults');
+            container.innerHTML = '';
 
-            monthlyData.forEach(monthData => {
-                const row = document.createElement('tr');
-                row.innerHTML = `
-                    <td>${monthData.month}</td>
-                    <td class="grade-cell" data-grade="${monthData.quizzes[0].grade}">${monthData.quizzes[0].score}%</td>
-                    <td class="grade-cell" data-grade="${monthData.quizzes[1].grade}">${monthData.quizzes[1].score}%</td>
-                    <td class="grade-cell" data-grade="${monthData.quizzes[2].grade}">${monthData.quizzes[2].score}%</td>
-                    <td class="grade-cell" data-grade="${monthData.quizzes[3].grade}">${monthData.quizzes[3].score}%</td>
-                    <td>${monthData.monthly_average.toFixed(1)}%</td>
-                    <td class="grade-cell" data-grade="${monthData.monthly_grade}">${monthData.monthly_grade}</td>
+            const months = [
+                { name: 'September', key: 'september', arabic: 'سبتمبر' },
+                { name: 'October', key: 'october', arabic: 'أكتوبر' },
+                { name: 'November', key: 'november', arabic: 'نوفمبر' },
+                { name: 'December', key: 'december', arabic: 'ديسمبر' }
+            ];
+
+            months.forEach(month => {
+                const monthData = detailedSessions[month.key];
+                if (!monthData) return;
+
+                const monthSection = document.createElement('div');
+                monthSection.className = 'month-section';
+                monthSection.style.cssText = `
+                    margin-bottom: 30px;
+                    border: 2px solid #4CAF50;
+                    border-radius: 15px;
+                    overflow: hidden;
+                    background: white;
                 `;
-                tableBody.appendChild(row);
 
-                // Animate grades
-                const gradeCells = row.querySelectorAll('.grade-cell');
-                gradeCells.forEach((cell, index) => {
-                    const grade = cell.getAttribute('data-grade');
-                    setTimeout(() => {
-                        cell.classList.add(getGradeClass(grade));
-                    }, index * 200);
-                });
+                // Month header
+                const monthHeader = document.createElement('div');
+                monthHeader.style.cssText = `
+                    background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
+                    color: white;
+                    padding: 20px;
+                    text-align: center;
+                    font-size: 1.5rem;
+                    font-weight: bold;
+                `;
+                monthHeader.innerHTML = `
+                    <div>${month.name} - ${month.arabic}</div>
+                    <div style="font-size: 1rem; margin-top: 5px;">
+                        Total Score: ${monthData.total_score} | Grade: ${getGradeFromScore(monthData.total_score)}
+                    </div>
+                `;
+                monthSection.appendChild(monthHeader);
+
+                // Sessions container
+                const sessionsContainer = document.createElement('div');
+                sessionsContainer.style.cssText = `
+                    padding: 20px;
+                    display: grid;
+                    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+                    gap: 20px;
+                `;
+
+                // Create session cards
+                for (let sessionNum = 1; sessionNum <= 4; sessionNum++) {
+                    const sessionData = monthData[`session${sessionNum}`];
+                    if (!sessionData) continue;
+
+                    const sessionCard = createSessionCard(sessionNum, sessionData);
+                    sessionsContainer.appendChild(sessionCard);
+                }
+
+                monthSection.appendChild(sessionsContainer);
+                container.appendChild(monthSection);
             });
         }
 
-        function populateQuizCards(monthlyData) {
-            const quizGrid = document.getElementById('quizGrid');
-            quizGrid.innerHTML = '';
+        function createSessionCard(sessionNum, sessionData) {
+            const card = document.createElement('div');
+            card.style.cssText = `
+                background: #f8f9fa;
+                border-radius: 12px;
+                padding: 20px;
+                border: 1px solid #e9ecef;
+                box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            `;
 
-            monthlyData.forEach(monthData => {
-                monthData.quizzes.forEach(quiz => {
-                    const quizCard = document.createElement('div');
-                    quizCard.className = 'quiz-card';
-                    quizCard.innerHTML = `
-                        <div class="quiz-header">
-                            <div class="quiz-name">${quiz.name}</div>
-                            <div class="quiz-grade ${getGradeClass(quiz.grade)}">${quiz.grade}</div>
+            const sessionTotal = sessionData.attendance + sessionData.question1 + sessionData.question2 + (sessionData.quiz / 10);
+
+            card.innerHTML = `
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                    <h3 style="color: #4CAF50; margin: 0;">Session ${sessionNum}</h3>
+                    <span style="background: ${getScoreColor(sessionTotal)}; color: white; padding: 5px 10px; border-radius: 8px; font-weight: bold;">
+                        Total: ${sessionTotal}/7
+                    </span>
+                </div>
+                
+                <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px;">
+                    <div style="text-align: center; padding: 10px; background: white; border-radius: 8px;">
+                        <div style="font-size: 0.8rem; color: #666;">Attendance</div>
+                        <div style="font-size: 1.2rem; font-weight: bold; color: ${getScoreColor(sessionData.attendance)};">
+                            ${sessionData.attendance}/1
                         </div>
-                        <div class="quiz-details">
-                            <div class="detail-item">
-                                <div class="detail-label">Score</div>
-                                <div class="detail-value">${quiz.score}%</div>
-                            </div>
-                            <div class="detail-item">
-                                <div class="detail-label">Date</div>
-                                <div class="detail-value">${formatDate(quiz.date)}</div>
-                            </div>
+                    </div>
+                    <div style="text-align: center; padding: 10px; background: white; border-radius: 8px;">
+                        <div style="font-size: 0.8rem; color: #666;">Question 1</div>
+                        <div style="font-size: 1.2rem; font-weight: bold; color: ${getScoreColor(sessionData.question1)};">
+                            ${sessionData.question1}/2
                         </div>
-                    `;
-                    quizGrid.appendChild(quizCard);
-                });
-            });
+                    </div>
+                    <div style="text-align: center; padding: 10px; background: white; border-radius: 8px;">
+                        <div style="font-size: 0.8rem; color: #666;">Question 2</div>
+                        <div style="font-size: 1.2rem; font-weight: bold; color: ${getScoreColor(sessionData.question2)};">
+                            ${sessionData.question2}/2
+                        </div>
+                    </div>
+                    <div style="text-align: center; padding: 10px; background: white; border-radius: 8px;">
+                        <div style="font-size: 0.8rem; color: #666;">Quiz</div>
+                        <div style="font-size: 1.2rem; font-weight: bold; color: ${getScoreColor(sessionData.quiz / 10)};">
+                            ${sessionData.quiz}/20
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            return card;
+        }
+
+        function getScoreColor(score) {
+            if (score >= 2) return '#4CAF50'; // Green
+            if (score >= 1) return '#FF9800'; // Orange
+            return '#F44336'; // Red
+        }
+
+        function getGradeFromScore(score) {
+            if (score >= 100) return 'A';
+            if (score >= 80) return 'B+';
+            if (score >= 60) return 'B';
+            if (score >= 40) return 'C+';
+            if (score >= 20) return 'C';
+            return 'D';
         }
 
         function formatDate(dateString) {
