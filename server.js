@@ -245,45 +245,103 @@ function convertToArrayFormat(data) {
   return result;
 }
 
-// Mock data for testing - matches Google Sheets structure
+// Mock data for testing - matches new detailed session structure
 function getMockData(code, sheetPrefix) {
-  const rowData = [];
-  
-  // Basic info
-  rowData[0] = '1';
-  rowData[1] = 'Test Student';
-  rowData[2] = true; // is_confirmed
-  rowData[3] = code;
-  
-  // September (index 7-15)
-  rowData[7] = 'A'; rowData[8] = '90';
-  rowData[9] = 'A'; rowData[10] = '85';
-  rowData[11] = 'B+'; rowData[12] = '88';
-  rowData[13] = 'A'; rowData[14] = '92';
-  rowData[15] = 'A';
-  
-  // October (index 18-26)
-  rowData[18] = 'A'; rowData[19] = '95';
-  rowData[20] = 'A'; rowData[21] = '87';
-  rowData[22] = 'A'; rowData[23] = '91';
-  rowData[24] = 'B+'; rowData[25] = '89';
-  rowData[26] = 'A';
-  
-  // November (index 29-37)
-  rowData[29] = 'A'; rowData[30] = '93';
-  rowData[31] = 'A'; rowData[32] = '88';
-  rowData[33] = 'A'; rowData[34] = '90';
-  rowData[35] = 'A'; rowData[36] = '94';
-  rowData[37] = 'A';
-  
-  // December (index 40-48)
-  rowData[40] = 'A'; rowData[41] = '96';
-  rowData[42] = 'A'; rowData[43] = '89';
-  rowData[44] = 'A'; rowData[45] = '92';
-  rowData[46] = 'A'; rowData[47] = '95';
-  rowData[48] = 'A';
-  
-  return rowData;
+  // Return data in the new format with detailed session breakdown
+  return {
+    id: '1',
+    name: 'Ahmed Hassan',
+    student_code: code,
+    is_confirmed: true,
+    
+    // First Semester - September
+    'september_session1_attendance': 1,
+    'september_session1_question1': 2,
+    'september_session1_question2': 1,
+    'september_session1_quiz': 2,
+    'september_session2_attendance': 0,
+    'september_session2_question1': 1,
+    'september_session2_question2': 0,
+    'september_session2_quiz': 1,
+    'september_session3_attendance': 1,
+    'september_session3_question1': 2,
+    'september_session3_question2': 2,
+    'september_session3_quiz': 2,
+    'september_session4_attendance': 1,
+    'september_session4_question1': 1,
+    'september_session4_question2': 2,
+    'september_session4_quiz': 1,
+    'september_total_attendance': 3,
+    'september_total_questions': 11,
+    'september_total_quiz': 6,
+    'september_total_score': 20,
+    
+    // First Semester - October
+    'october_session1_attendance': 1,
+    'october_session1_question1': 2,
+    'october_session1_question2': 2,
+    'october_session1_quiz': 2,
+    'october_session2_attendance': 1,
+    'october_session2_question1': 1,
+    'october_session2_question2': 2,
+    'october_session2_quiz': 1,
+    'october_session3_attendance': 0,
+    'october_session3_question1': 0,
+    'october_session3_question2': 0,
+    'october_session3_quiz': 0,
+    'october_session4_attendance': 1,
+    'october_session4_question1': 2,
+    'october_session4_question2': 1,
+    'october_session4_quiz': 2,
+    'october_total_attendance': 3,
+    'october_total_questions': 8,
+    'october_total_quiz': 5,
+    'october_total_score': 16,
+    
+    // First Semester - November
+    'november_session1_attendance': 1,
+    'november_session1_question1': 2,
+    'november_session1_question2': 2,
+    'november_session1_quiz': 2,
+    'november_session2_attendance': 1,
+    'november_session2_question1': 2,
+    'november_session2_question2': 2,
+    'november_session2_quiz': 2,
+    'november_session3_attendance': 1,
+    'november_session3_question1': 2,
+    'november_session3_question2': 2,
+    'november_session3_quiz': 2,
+    'november_session4_attendance': 1,
+    'november_session4_question1': 2,
+    'november_session4_question2': 2,
+    'november_session4_quiz': 2,
+    'november_total_attendance': 4,
+    'november_total_questions': 16,
+    'november_total_quiz': 8,
+    'november_total_score': 28,
+    
+    // First Semester - December
+    'december_session1_attendance': 1,
+    'december_session1_question1': 2,
+    'december_session1_question2': 2,
+    'december_session1_quiz': 2,
+    'december_session2_attendance': 1,
+    'december_session2_question1': 2,
+    'december_session2_question2': 2,
+    'december_session2_quiz': 2,
+    'december_session3_attendance': 1,
+    'december_session3_question1': 2,
+    'december_session3_question2': 2,
+    'december_session3_quiz': 2,
+    'december_session4_attendance': 1,
+    'december_session4_question1': 2,
+    'december_session4_question2': 2,
+    'december_session4_quiz': 2,
+    'december_total_attendance': 4,
+    'december_total_questions': 16,
+    'december_total_quiz': 8,
+    'december_total_score': 28,
+  };
 }
 
 // Generate performance table - exactly like Google Apps Script
