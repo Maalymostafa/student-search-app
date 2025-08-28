@@ -212,8 +212,266 @@ class _PerformanceTableState extends State<PerformanceTable> {
         // Overall summary
         const SizedBox(height: 16),
         _buildOverallSummary(),
+        
+        // Detailed Session Results Section
+        const SizedBox(height: 24),
+        _buildDetailedSessionResults(),
       ],
     );
+  }
+
+  Widget _buildDetailedSessionResults() {
+    return Container(
+      width: double.infinity,
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(AppSizes.borderRadius),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.05),
+            blurRadius: 8,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Section Header
+          Container(
+            width: double.infinity,
+            padding: const EdgeInsets.all(16),
+            decoration: const BoxDecoration(
+              color: AppColors.primary,
+              borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(AppSizes.borderRadius),
+                topRight: Radius.circular(AppSizes.borderRadius),
+              ),
+            ),
+            child: const Text(
+              'Detailed Session Results',
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+              ),
+              textAlign: TextAlign.center,
+            ),
+          ),
+          
+          // Detailed Results Content
+          Padding(
+            padding: const EdgeInsets.all(16),
+            child: Column(
+              children: widget.student.getSemesterMonths(selectedSemester).map((month) => 
+                _buildDetailedMonthSection(month, selectedSemester)
+              ).toList(),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildDetailedMonthSection(String month, String semester) {
+    final monthName = _getMonthDisplayName(month);
+    final monthScore = widget.student.getMonthTotalScore(semester, month);
+    final monthGrade = widget.student.getMonthGrade(semester, month);
+    
+    return Container(
+      margin: const EdgeInsets.only(bottom: 20),
+      decoration: BoxDecoration(
+        border: Border.all(color: AppColors.inputBorderColor),
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Month Header
+          Container(
+            width: double.infinity,
+            padding: const EdgeInsets.all(12),
+            decoration: BoxDecoration(
+              color: AppColors.accent.withOpacity(0.1),
+              borderRadius: const BorderRadius.only(
+                topLeft: Radius.circular(8),
+                topRight: Radius.circular(8),
+              ),
+            ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  monthName,
+                  style: const TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 16,
+                    color: AppColors.primary,
+                  ),
+                ),
+                Row(
+                  children: [
+                    Text(
+                      'Score: $monthScore',
+                      style: const TextStyle(
+                        fontWeight: FontWeight.w600,
+                        fontSize: 14,
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                      decoration: BoxDecoration(
+                        color: _getGradeColor(monthGrade),
+                        borderRadius: BorderRadius.circular(4),
+                      ),
+                      child: Text(
+                        'Grade: $monthGrade',
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 12,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+          
+          // Sessions Details
+          Padding(
+            padding: const EdgeInsets.all(16),
+            child: Column(
+              children: List.generate(4, (sessionIndex) {
+                final session = sessionIndex + 1;
+                final attendance = widget.student.getSessionAttendance(semester, month, session);
+                final question1 = widget.student.getSessionQuestion(semester, month, session, 1);
+                final question2 = widget.student.getSessionQuestion(semester, month, session, 2);
+                final quiz = widget.student.getSessionQuiz(semester, month, session);
+                final sessionTotal = attendance + question1 + question2 + quiz;
+                
+                return Container(
+                  margin: const EdgeInsets.only(bottom: 12),
+                  padding: const EdgeInsets.all(12),
+                  decoration: BoxDecoration(
+                    color: Colors.grey[50],
+                    borderRadius: BorderRadius.circular(8),
+                    border: Border.all(color: Colors.grey[300]!),
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      // Session Header
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            'Session $session',
+                            style: const TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 14,
+                              color: AppColors.secondary,
+                            ),
+                          ),
+                          Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                            decoration: BoxDecoration(
+                              color: _getScoreColor(sessionTotal),
+                              borderRadius: BorderRadius.circular(4),
+                            ),
+                            child: Text(
+                              'Total: $sessionTotal/7',
+                              style: const TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 12,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 8),
+                      
+                      // Session Details Grid
+                      Row(
+                        children: [
+                          Expanded(
+                            child: _buildDetailItem('Attendance', attendance, 1),
+                          ),
+                          Expanded(
+                            child: _buildDetailItem('Question 1', question1, 2),
+                          ),
+                          Expanded(
+                            child: _buildDetailItem('Question 2', question2, 2),
+                          ),
+                          Expanded(
+                            child: _buildDetailItem('Quiz', quiz, 2),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                );
+              }),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildDetailItem(String label, int score, int maxScore) {
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 4),
+      padding: const EdgeInsets.all(8),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(6),
+        border: Border.all(color: Colors.grey[300]!),
+      ),
+      child: Column(
+        children: [
+          Text(
+            label,
+            style: const TextStyle(
+              fontSize: 11,
+              fontWeight: FontWeight.w500,
+              color: Colors.grey,
+            ),
+            textAlign: TextAlign.center,
+          ),
+          const SizedBox(height: 4),
+          Text(
+            '$score/$maxScore',
+            style: TextStyle(
+              fontSize: 14,
+              fontWeight: FontWeight.bold,
+              color: _getScoreColor(score),
+            ),
+            textAlign: TextAlign.center,
+          ),
+        ],
+      ),
+    );
+  }
+
+  Color _getScoreColor(int score) {
+    if (score >= 2) return Colors.green;
+    if (score >= 1) return Colors.orange;
+    return Colors.red;
+  }
+
+  Color _getGradeColor(String grade) {
+    switch (grade) {
+      case 'A': return Colors.green;
+      case 'B+': return Colors.lightGreen;
+      case 'B': return Colors.blue;
+      case 'C+': return Colors.orange;
+      case 'C': return Colors.deepOrange;
+      default: return Colors.red;
+    }
   }
 
   Widget _buildSemesterButton(String semester, String label) {

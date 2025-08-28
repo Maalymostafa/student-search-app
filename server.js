@@ -751,7 +751,103 @@ function createNewPerformanceTable(studentData) {
   html += '</table>';
   html += '</div>';
   
+  // Add Detailed Session Results Section
+  html += createDetailedSessionResults(studentData);
+  
   return html;
+}
+
+function createDetailedSessionResults(studentData) {
+  let html = '<div style="margin: 30px 0; padding: 20px; background-color: white; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">';
+  
+  // Section Header
+  html += '<div style="background-color: #00838F; color: white; padding: 16px; border-radius: 12px 12px 0 0; margin: -20px -20px 20px -20px;">';
+  html += '<h2 style="margin: 0; text-align: center; font-size: 18px; font-weight: bold;">Detailed Session Results</h2>';
+  html += '</div>';
+  
+  const months = [
+    { name: 'September', key: 'september' },
+    { name: 'October', key: 'october' },
+    { name: 'November', key: 'november' },
+    { name: 'December', key: 'december' }
+  ];
+  
+  months.forEach(month => {
+    const monthScore = studentData[`${month.key}_total_score`] || 0;
+    const monthGrade = getGradeFromScore(monthScore);
+    
+    html += '<div style="margin-bottom: 20px; border: 1px solid #ddd; border-radius: 8px; overflow: hidden;">';
+    
+    // Month Header
+    html += '<div style="background-color: #E3F2FD; padding: 12px; display: flex; justify-content: space-between; align-items: center;">';
+    html += `<h3 style="margin: 0; font-size: 16px; font-weight: bold; color: #00838F;">${month.name}</h3>`;
+    html += '<div style="display: flex; align-items: center; gap: 8px;">';
+    html += `<span style="font-weight: 600; font-size: 14px;">Score: ${monthScore}</span>`;
+    html += `<span style="background-color: ${getGradeColor(monthGrade)}; color: white; padding: 4px 8px; border-radius: 4px; font-weight: bold; font-size: 12px;">Grade: ${monthGrade}</span>`;
+    html += '</div>';
+    html += '</div>';
+    
+    // Sessions Details
+    html += '<div style="padding: 16px;">';
+    
+    for (let session = 1; session <= 4; session++) {
+      const attendance = studentData[`${month.key}_session${session}_attendance`] || 0;
+      const q1 = studentData[`${month.key}_session${session}_question1`] || 0;
+      const q2 = studentData[`${month.key}_session${session}_question2`] || 0;
+      const quiz = studentData[`${month.key}_session${session}_quiz`] || 0;
+      const sessionTotal = attendance + q1 + q2 + quiz;
+      
+      html += '<div style="margin-bottom: 12px; padding: 12px; background-color: #f8f9fa; border-radius: 8px; border: 1px solid #e9ecef;">';
+      
+      // Session Header
+      html += '<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">';
+      html += `<h4 style="margin: 0; font-size: 14px; font-weight: bold; color: #0277BD;">Session ${session}</h4>`;
+      html += `<span style="background-color: ${getScoreColor(sessionTotal)}; color: white; padding: 2px 6px; border-radius: 4px; font-weight: bold; font-size: 12px;">Total: ${sessionTotal}/7</span>`;
+      html += '</div>';
+      
+      // Session Details Grid
+      html += '<div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px;">';
+      
+      html += createDetailItem('Attendance', attendance, 1);
+      html += createDetailItem('Question 1', q1, 2);
+      html += createDetailItem('Question 2', q2, 2);
+      html += createDetailItem('Quiz', quiz, 2);
+      
+      html += '</div>';
+      html += '</div>';
+    }
+    
+    html += '</div>';
+    html += '</div>';
+  });
+  
+  html += '</div>';
+  return html;
+}
+
+function createDetailItem(label, score, maxScore) {
+  const color = score >= 2 ? 'green' : score >= 1 ? 'orange' : 'red';
+  return `<div style="text-align: center; padding: 8px; background-color: white; border-radius: 6px; border: 1px solid #dee2e6;">
+    <div style="font-size: 11px; font-weight: 500; color: #6c757d; margin-bottom: 4px;">${label}</div>
+    <div style="font-size: 14px; font-weight: bold; color: ${color};">${score}/${maxScore}</div>
+  </div>`;
+}
+
+function getScoreColor(score) {
+  if (score >= 6) return 'green';
+  if (score >= 4) return 'orange';
+  return 'red';
+}
+
+function getGradeColor(grade) {
+  switch (grade) {
+    case 'A': return 'green';
+    case 'B+': return 'lightgreen';
+    case 'B': return 'blue';
+    case 'C+': return 'orange';
+    case 'C': return 'deeporange';
+    default: return 'red';
+  }
 }
 
 function createNewAdditionalInfo(studentData) {
