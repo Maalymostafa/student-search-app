@@ -851,18 +851,30 @@ function getGradeColor(grade) {
 }
 
 function createNewAdditionalInfo(studentData) {
-  let html = '<div style="margin: 20px 0; padding: 20px; border: 2px solid; border-radius: 12px; text-align: center; font-size: 50px; font-weight: bold;';
+  let html = '<div style="margin: 20px 0; padding: 20px; background-color: #f8f9fa; border-radius: 8px;">';
+  html += '<h3 style="margin: 0 0 15px 0; color: #333;">Student Information</h3>';
   
-  if (studentData.is_confirmed) {
-    html += 'background-color: rgba(76, 175, 80, 0.1); border-color: #4CAF50; color: #4CAF50;">';
-    html += 'تم تأكيد الحجز';
-  } else {
-    html += 'background-color: rgba(244, 67, 54, 0.1); border-color: #F44336; color: #F44336;">';
-    html += 'لم يتم تأكيد الحجز بعد';
-  }
-  
+  // Basic info
+  html += '<div style="margin-bottom: 15px;">';
+  html += '<strong>Student Code:</strong> ' + (studentData.student_code || 'N/A') + '<br>';
+  html += '<strong>Name:</strong> ' + (studentData.name || 'N/A') + '<br>';
+  html += '<strong>Status:</strong> ' + (studentData.is_confirmed ? 'Confirmed' : 'Pending') + '<br>';
   html += '</div>';
   
+  // Performance summary
+  const totalScore = (studentData.september_total_score || 0) + 
+                    (studentData.october_total_score || 0) + 
+                    (studentData.november_total_score || 0) + 
+                    (studentData.december_total_score || 0);
+  
+  html += '<div style="margin-top: 15px; padding: 15px; background-color: white; border-radius: 6px; border-left: 4px solid #007bff;">';
+  html += '<h4 style="margin: 0 0 10px 0; color: #007bff;">Performance Summary</h4>';
+  html += '<strong>Total Score:</strong> ' + totalScore + '<br>';
+  html += '<strong>Overall Grade:</strong> ' + getGradeFromScore(totalScore) + '<br>';
+  html += '<strong>Average Monthly Score:</strong> ' + Math.round(totalScore / 4) + '<br>';
+  html += '</div>';
+  
+  html += '</div>';
   return html;
 }
 
