@@ -350,7 +350,7 @@ class _PerformanceTableState extends State<PerformanceTable> {
                 final question1 = widget.student.getSessionQuestion(semester, month, session, 1);
                 final question2 = widget.student.getSessionQuestion(semester, month, session, 2);
                 final quiz = widget.student.getSessionQuiz(semester, month, session);
-                final sessionTotal = attendance + question1 + question2 + quiz;
+                final sessionTotal = attendance + question1 + question2 + (quiz / 10); // Convert quiz score to 0-2 scale for display
                 
                 return Container(
                   margin: const EdgeInsets.only(bottom: 12),
@@ -406,9 +406,9 @@ class _PerformanceTableState extends State<PerformanceTable> {
                           Expanded(
                             child: _buildDetailItem('Question 2', question2, 2),
                           ),
-                          Expanded(
-                            child: _buildDetailItem('Quiz', quiz, 2),
-                          ),
+                                                     Expanded(
+                             child: _buildDetailItem('Quiz', quiz, 20),
+                           ),
                         ],
                       ),
                     ],
