@@ -145,32 +145,32 @@
         'september_session1_attendance': 1,
         'september_session1_question1': 2,
         'september_session1_question2': 1,
-        'september_session1_quiz': 2,
+        'september_session1_quiz': 18,
         'september_session2_attendance': 0,
         'september_session2_question1': 1,
         'september_session2_question2': 0,
-        'september_session2_quiz': 1,
+        'september_session2_quiz': 12,
         'september_session3_attendance': 1,
         'september_session3_question1': 2,
         'september_session3_question2': 2,
-        'september_session3_quiz': 2,
+        'september_session3_quiz': 20,
         'september_session4_attendance': 1,
         'september_session4_question1': 1,
         'september_session4_question2': 2,
-        'september_session4_quiz': 1,
+        'september_session4_quiz': 16,
         'september_total_attendance': 3,
         'september_total_questions': 11,
-        'september_total_quiz': 6,
-        'september_total_score': 20,
+        'september_total_quiz': 66,
+        'september_total_score': 80,
         // October
         'october_session1_attendance': 1,
         'october_session1_question1': 2,
         'october_session1_question2': 2,
-        'october_session1_quiz': 2,
+        'october_session1_quiz': 20,
         'october_session2_attendance': 1,
         'october_session2_question1': 1,
         'october_session2_question2': 2,
-        'october_session2_quiz': 1,
+        'october_session2_quiz': 15,
         'october_session3_attendance': 0,
         'october_session3_question1': 0,
         'october_session3_question2': 0,
@@ -178,53 +178,53 @@
         'october_session4_attendance': 1,
         'october_session4_question1': 2,
         'october_session4_question2': 1,
-        'october_session4_quiz': 2,
+        'october_session4_quiz': 18,
         'october_total_attendance': 3,
         'october_total_questions': 8,
-        'october_total_quiz': 5,
-        'october_total_score': 16,
+        'october_total_quiz': 53,
+        'october_total_score': 64,
         // November
         'november_session1_attendance': 1,
         'november_session1_question1': 2,
         'november_session1_question2': 2,
-        'november_session1_quiz': 2,
+        'november_session1_quiz': 20,
         'november_session2_attendance': 1,
         'november_session2_question1': 2,
         'november_session2_question2': 2,
-        'november_session2_quiz': 2,
+        'november_session2_quiz': 20,
         'november_session3_attendance': 1,
         'november_session3_question1': 2,
         'november_session3_question2': 2,
-        'november_session3_quiz': 2,
+        'november_session3_quiz': 20,
         'november_session4_attendance': 1,
         'november_session4_question1': 2,
         'november_session4_question2': 2,
-        'november_session4_quiz': 2,
+        'november_session4_quiz': 20,
         'november_total_attendance': 4,
         'november_total_questions': 16,
-        'november_total_quiz': 8,
-        'november_total_score': 28,
+        'november_total_quiz': 80,
+        'november_total_score': 100,
         // December
         'december_session1_attendance': 1,
         'december_session1_question1': 2,
         'december_session1_question2': 2,
-        'december_session1_quiz': 2,
+        'december_session1_quiz': 20,
         'december_session2_attendance': 1,
         'december_session2_question1': 2,
         'december_session2_question2': 2,
-        'december_session2_quiz': 2,
+        'december_session2_quiz': 20,
         'december_session3_attendance': 1,
         'december_session3_question1': 2,
         'december_session3_question2': 2,
-        'december_session3_quiz': 2,
+        'december_session3_quiz': 20,
         'december_session4_attendance': 1,
         'december_session4_question1': 2,
         'december_session4_question2': 2,
-        'december_session4_quiz': 2,
+        'december_session4_quiz': 20,
         'december_total_attendance': 4,
         'december_total_questions': 16,
-        'december_total_quiz': 8,
-        'december_total_score': 28
+        'december_total_quiz': 80,
+        'december_total_score': 100
       }
     };
 
@@ -401,7 +401,7 @@
           const q1 = data[`${month.key}_session${session}_question1`] || 0;
           const q2 = data[`${month.key}_session${session}_question2`] || 0;
           const quiz = data[`${month.key}_session${session}_quiz`] || 0;
-          const sessionTotal = attendance + q1 + q2 + quiz;
+          const sessionTotal = attendance + q1 + q2 + (quiz / 10); // Convert quiz score to 0-2 scale for display
           
           html += '<div style="margin-bottom: 12px; padding: 12px; background-color: #f8f9fa; border-radius: 8px; border: 1px solid #e9ecef;">';
           
@@ -417,7 +417,7 @@
           html += createDetailItem('Attendance', attendance, 1);
           html += createDetailItem('Question 1', q1, 2);
           html += createDetailItem('Question 2', q2, 2);
-          html += createDetailItem('Quiz', quiz, 2);
+          html += createDetailItem('Quiz', quiz, 20);
           
           html += '</div>';
           html += '</div>';

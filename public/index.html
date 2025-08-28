@@ -1,7 +1,9 @@
 <!DOCTYPE html>
 <html lang="ar">
 <head>
-  <base target="_top">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Student Search App - Mrs. Hoda Ismail (Standalone)</title>
   <style>
     body {
       font-family: 'Poppins', sans-serif;
@@ -66,22 +68,6 @@
       background-color: #004D40;
     }
 
-    .register-btn {
-      display: inline-block;
-      padding: 12px 24px;
-      background-color: #FF6B35;
-      color: white;
-      text-decoration: none;
-      border-radius: 8px;
-      font-size: 16px;
-      transition: background-color 0.3s;
-      margin-top: 20px;
-    }
-
-    .register-btn:hover {
-      background-color: #E55A2B;
-    }
-
     table {
       width: 100%;
       border-collapse: collapse;
@@ -119,21 +105,28 @@
       0% { transform: rotate(0deg); }
       100% { transform: rotate(360deg); }
     }
+
+    .demo-notice {
+      background: rgba(255, 193, 7, 0.9);
+      color: #856404;
+      padding: 10px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      font-weight: bold;
+    }
   </style>
 </head>
 <body>
   <div class="form-container">
+    <div class="demo-notice">
+      🚀 Demo Mode - This is a standalone version for testing
+    </div>
+    
     <h1>Mrs. Hoda Ismail wishes you the best of luck!</h1>
     <h2>Fun Search for Student Code Or Arabic Names!</h2>
     <h3>البحث بالكود</h3>
     <input type="text" id="codeInput" placeholder="ادخل كود الطالب">
     <button onclick="searchCode()">بحث</button>
-    
-    <div style="margin-top: 20px;">
-      <a href="/register" class="register-btn">
-        تسجيل طالب جديد - Register New Student
-      </a>
-    </div>
 
     <!-- مكان النتيجة -->
     <div id="result"></div>
@@ -142,42 +135,364 @@
   </div>
 
   <script>
+    // Demo data - matches new detailed session structure
+    const demoData = {
+      'G4001': {
+        name: 'Ahmed Hassan',
+        student_code: 'G4001',
+        is_confirmed: true,
+        // September
+        'september_session1_attendance': 1,
+        'september_session1_question1': 2,
+        'september_session1_question2': 1,
+        'september_session1_quiz': 18,
+        'september_session2_attendance': 0,
+        'september_session2_question1': 1,
+        'september_session2_question2': 0,
+        'september_session2_quiz': 12,
+        'september_session3_attendance': 1,
+        'september_session3_question1': 2,
+        'september_session3_question2': 2,
+        'september_session3_quiz': 20,
+        'september_session4_attendance': 1,
+        'september_session4_question1': 1,
+        'september_session4_question2': 2,
+        'september_session4_quiz': 16,
+        'september_total_attendance': 3,
+        'september_total_questions': 11,
+        'september_total_quiz': 66,
+        'september_total_score': 80,
+        // October
+        'october_session1_attendance': 1,
+        'october_session1_question1': 2,
+        'october_session1_question2': 2,
+        'october_session1_quiz': 20,
+        'october_session2_attendance': 1,
+        'october_session2_question1': 1,
+        'october_session2_question2': 2,
+        'october_session2_quiz': 15,
+        'october_session3_attendance': 0,
+        'october_session3_question1': 0,
+        'october_session3_question2': 0,
+        'october_session3_quiz': 0,
+        'october_session4_attendance': 1,
+        'october_session4_question1': 2,
+        'october_session4_question2': 1,
+        'october_session4_quiz': 18,
+        'october_total_attendance': 3,
+        'october_total_questions': 8,
+        'october_total_quiz': 53,
+        'october_total_score': 64,
+        // November
+        'november_session1_attendance': 1,
+        'november_session1_question1': 2,
+        'november_session1_question2': 2,
+        'november_session1_quiz': 20,
+        'november_session2_attendance': 1,
+        'november_session2_question1': 2,
+        'november_session2_question2': 2,
+        'november_session2_quiz': 20,
+        'november_session3_attendance': 1,
+        'november_session3_question1': 2,
+        'november_session3_question2': 2,
+        'november_session3_quiz': 20,
+        'november_session4_attendance': 1,
+        'november_session4_question1': 2,
+        'november_session4_question2': 2,
+        'november_session4_quiz': 20,
+        'november_total_attendance': 4,
+        'november_total_questions': 16,
+        'november_total_quiz': 80,
+        'november_total_score': 100,
+        // December
+        'december_session1_attendance': 1,
+        'december_session1_question1': 2,
+        'december_session1_question2': 2,
+        'december_session1_quiz': 20,
+        'december_session2_attendance': 1,
+        'december_session2_question1': 2,
+        'december_session2_question2': 2,
+        'december_session2_quiz': 20,
+        'december_session3_attendance': 1,
+        'december_session3_question1': 2,
+        'december_session3_question2': 2,
+        'december_session3_quiz': 20,
+        'december_session4_attendance': 1,
+        'december_session4_question1': 2,
+        'december_session4_question2': 2,
+        'december_session4_quiz': 20,
+        'december_total_attendance': 4,
+        'december_total_questions': 16,
+        'december_total_quiz': 80,
+        'december_total_score': 100
+      }
+    };
+
     function searchCode() {
       var code = document.getElementById('codeInput').value;
 
-      // Show spinner instead of text
+      // Show spinner
       document.getElementById('result').innerHTML = '<div class="spinner"></div><p>...جاري التحميل</p>';
 
-      // Make API call to our Node.js backend
-      fetch('/api/search', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ code: code })
-      })
-      .then(response => response.json())
-      .then(data => {
-        console.log('API Response:', data);
-        console.log('HTML Content:', data.html);
+      // Simulate API delay
+      setTimeout(() => {
+        const result = searchByCode(code);
+        document.getElementById('result').innerHTML = result;
+      }, 1000);
+    }
+
+    function searchByCode(code) {
+      if (!code || code.length < 2) {
+        return '<p style="color: red; font-weight: bold;">برجاء كتابة الكود</p>';
+      }
+
+      const sheetPrefix = code.substring(0, 2).toUpperCase();
+      const allowedSheets = ['G4', 'G5', 'G6', 'P1'];
+
+      if (!allowedSheets.includes(sheetPrefix)) {
+        return '<p style="color: red; font-weight: bold;">الكود غير صالح أو لا ينتمي لأي مستوى معروف</p>';
+      }
+
+      const normalizedInputCode = code.toLowerCase().replace(/[^a-zA-Z0-9]/g, '');
+      let found = false;
+      let result = '';
+
+      // Search in demo data
+      for (const [demoCode, data] of Object.entries(demoData)) {
+        const demoCodeNormalized = demoCode.toLowerCase().replace(/[^a-zA-Z0-9]/g, '');
         
-        if (data.success) {
-          document.getElementById('result').innerHTML = data.html;
-          console.log('Result div content:', document.getElementById('result').innerHTML);
-        } else {
-          document.getElementById('result').innerHTML = data.html;
+        if (demoCodeNormalized === normalizedInputCode) {
+          found = true;
+          result += '<table><thead><tr><th>Name</th><th>Student Code</th></tr></thead><tbody>';
+          result += '<tr>' +
+                  '<td style="font-size: 30px; font-weight: bold;">' + data.name + '</td>' +
+                  '<td style="font-size: 30px; font-weight: bold;">' + data.student_code + '</td>' +
+                '</tr>';
+          result += '</tbody></table>';
+
+          result += createPerformanceTable(data);
+          result += additionalInfo(data);
+          break;
         }
-      })
-      .catch(error => {
-        console.error('Error:', error);
-        document.getElementById('result').innerHTML = '<p style="color: red; font-weight: bold;">حدث خطأ في الاتصال بالخادم</p>';
+      }
+
+      if (!found) {
+        result = '<p style="color: red; font-weight: bold;">الكود غير صحيح تاكد من الكود</p>';
+      }
+
+      return result;
+    }
+
+    function createPerformanceTable(data) {
+      return `
+        <div style="margin: 20px 0; overflow-x: auto;">
+          <table style="width: 100%; border-collapse: collapse; border: 1px solid #ddd;">
+            <tr style="background-color: #0288D1; color: white;">
+              <th style="padding: 12px; border: 1px solid #ddd; text-align: center;">Month</th>
+              <th style="padding: 8px; border: 1px solid #ddd; text-align: center;">Session 1</th>
+              <th style="padding: 8px; border: 1px solid #ddd; text-align: center;">Session 2</th>
+              <th style="padding: 8px; border: 1px solid #ddd; text-align: center;">Session 3</th>
+              <th style="padding: 8px; border: 1px solid #ddd; text-align: center;">Session 4</th>
+              <th style="padding: 12px; border: 1px solid #ddd; text-align: center;">Monthly Total</th>
+            </tr>
+            <tr style="background-color: #0288D1; color: white;">
+              <th style="padding: 12px; border: 1px solid #ddd; text-align: center;"></th>
+              <th style="padding: 4px; border: 1px solid #ddd; text-align: center; font-size: 12px;">Att.<br>Q1<br>Q2<br>Quiz</th>
+              <th style="padding: 4px; border: 1px solid #ddd; text-align: center; font-size: 12px;">Att.<br>Q1<br>Q2<br>Quiz</th>
+              <th style="padding: 4px; border: 1px solid #ddd; text-align: center; font-size: 12px;">Att.<br>Q1<br>Q2<br>Quiz</th>
+              <th style="padding: 4px; border: 1px solid #ddd; text-align: center; font-size: 12px;">Att.<br>Q1<br>Q2<br>Quiz</th>
+              <th style="padding: 4px; border: 1px solid #ddd; text-align: center; font-size: 12px;">Att.<br>Ques.<br>Quiz<br>Total</th>
+            </tr>
+            ${renderMonthRow("September", data)}
+            ${renderMonthRow("October", data)}
+            ${renderMonthRow("November", data)}
+            ${renderMonthRow("December", data)}
+            <tr style="background-color: #E3F2FD;">
+              <td style="padding: 12px; border: 1px solid #ddd; text-align: center; font-weight: bold; font-size: 16px; color: #00838F;">OVERALL</td>
+              <td colspan="4" style="border: 1px solid #ddd;"></td>
+              <td style="padding: 8px; border: 1px solid #ddd; text-align: center; font-weight: bold; color: #00838F;">
+                <div>Total Score: ${getTotalScore(data)}</div>
+                <div style="font-size: 16px; color: #0288D1;">Grade: ${getGradeFromScore(getTotalScore(data))}</div>
+              </td>
+            </tr>
+          </table>
+        </div>
+        
+        ${createDetailedSessionResults(data)}
+      `;
+    }
+
+    function renderMonthRow(month, data) {
+      const monthKey = month.toLowerCase();
+      const totalScore = data[`${monthKey}_total_score`] || 0;
+      
+      return `
+        <tr>
+          <td style="padding: 12px; border: 1px solid #ddd; text-align: center; font-weight: 600; font-size: 16px;">${month}</td>
+          <td style="padding: 4px; border: 1px solid #ddd; text-align: center; font-size: 12px;">
+            <div style="color: ${getScoreColor(data[`${monthKey}_session1_attendance`])};">${data[`${monthKey}_session1_attendance`] || 0}</div>
+            <div style="color: ${getScoreColor(data[`${monthKey}_session1_question1`])};">${data[`${monthKey}_session1_question1`] || 0}</div>
+            <div style="color: ${getScoreColor(data[`${monthKey}_session1_question2`])};">${data[`${monthKey}_session1_question2`] || 0}</div>
+            <div style="color: ${getScoreColor(data[`${monthKey}_session1_quiz`])};">${data[`${monthKey}_session1_quiz`] || 0}</div>
+          </td>
+          <td style="padding: 4px; border: 1px solid #ddd; text-align: center; font-size: 12px;">
+            <div style="color: ${getScoreColor(data[`${monthKey}_session2_attendance`])};">${data[`${monthKey}_session2_attendance`] || 0}</div>
+            <div style="color: ${getScoreColor(data[`${monthKey}_session2_question1`])};">${data[`${monthKey}_session2_question1`] || 0}</div>
+            <div style="color: ${getScoreColor(data[`${monthKey}_session2_question2`])};">${data[`${monthKey}_session2_question2`] || 0}</div>
+            <div style="color: ${getScoreColor(data[`${monthKey}_session2_quiz`])};">${data[`${monthKey}_session2_quiz`] || 0}</div>
+          </td>
+          <td style="padding: 4px; border: 1px solid #ddd; text-align: center; font-size: 12px;">
+            <div style="color: ${getScoreColor(data[`${monthKey}_session3_attendance`])};">${data[`${monthKey}_session3_attendance`] || 0}</div>
+            <div style="color: ${getScoreColor(data[`${monthKey}_session3_question1`])};">${data[`${monthKey}_session3_question1`] || 0}</div>
+            <div style="color: ${getScoreColor(data[`${monthKey}_session3_question2`])};">${data[`${monthKey}_session3_question2`] || 0}</div>
+            <div style="color: ${getScoreColor(data[`${monthKey}_session3_quiz`])};">${data[`${monthKey}_session3_quiz`] || 0}</div>
+          </td>
+          <td style="padding: 4px; border: 1px solid #ddd; text-align: center; font-size: 12px;">
+            <div style="color: ${getScoreColor(data[`${monthKey}_session4_attendance`])};">${data[`${monthKey}_session4_attendance`] || 0}</div>
+            <div style="color: ${getScoreColor(data[`${monthKey}_session4_question1`])};">${data[`${monthKey}_session4_question1`] || 0}</div>
+            <div style="color: ${getScoreColor(data[`${monthKey}_session4_question2`])};">${data[`${monthKey}_session4_question2`] || 0}</div>
+            <div style="color: ${getScoreColor(data[`${monthKey}_session4_quiz`])};">${data[`${monthKey}_session4_quiz`] || 0}</div>
+          </td>
+          <td style="padding: 4px; border: 1px solid #ddd; text-align: center; font-size: 12px; font-weight: bold; color: #00838F;">
+            <div>${data[`${monthKey}_total_attendance`] || 0}</div>
+            <div>${data[`${monthKey}_total_questions`] || 0}</div>
+            <div>${data[`${monthKey}_total_quiz`] || 0}</div>
+            <div>${totalScore}</div>
+          </td>
+        </tr>
+      `;
+    }
+
+    function createDetailedSessionResults(data) {
+      let html = '<div style="margin: 30px 0; padding: 20px; background-color: white; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">';
+      
+      // Section Header
+      html += '<div style="background-color: #00838F; color: white; padding: 16px; border-radius: 12px 12px 0 0; margin: -20px -20px 20px -20px;">';
+      html += '<h2 style="margin: 0; text-align: center; font-size: 18px; font-weight: bold;">Detailed Session Results</h2>';
+      html += '</div>';
+      
+      const months = [
+        { name: 'September', key: 'september' },
+        { name: 'October', key: 'october' },
+        { name: 'November', key: 'november' },
+        { name: 'December', key: 'december' }
+      ];
+      
+      months.forEach(month => {
+        const monthScore = data[`${month.key}_total_score`] || 0;
+        const monthGrade = getGradeFromScore(monthScore);
+        
+        html += '<div style="margin-bottom: 20px; border: 1px solid #ddd; border-radius: 8px; overflow: hidden;">';
+        
+        // Month Header
+        html += '<div style="background-color: #E3F2FD; padding: 12px; display: flex; justify-content: space-between; align-items: center;">';
+        html += `<h3 style="margin: 0; font-size: 16px; font-weight: bold; color: #00838F;">${month.name}</h3>`;
+        html += '<div style="display: flex; align-items: center; gap: 8px;">';
+        html += `<span style="font-weight: 600; font-size: 14px;">Score: ${monthScore}</span>`;
+        html += `<span style="background-color: ${getGradeColor(monthGrade)}; color: white; padding: 4px 8px; border-radius: 4px; font-weight: bold; font-size: 12px;">Grade: ${monthGrade}</span>`;
+        html += '</div>';
+        html += '</div>';
+        
+        // Sessions Details
+        html += '<div style="padding: 16px;">';
+        
+        for (let session = 1; session <= 4; session++) {
+          const attendance = data[`${month.key}_session${session}_attendance`] || 0;
+          const q1 = data[`${month.key}_session${session}_question1`] || 0;
+          const q2 = data[`${month.key}_session${session}_question2`] || 0;
+          const quiz = data[`${month.key}_session${session}_quiz`] || 0;
+          const sessionTotal = attendance + q1 + q2 + (quiz / 10); // Convert quiz score to 0-2 scale for display
+          
+          html += '<div style="margin-bottom: 12px; padding: 12px; background-color: #f8f9fa; border-radius: 8px; border: 1px solid #e9ecef;">';
+          
+          // Session Header
+          html += '<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">';
+          html += `<h4 style="margin: 0; font-size: 14px; font-weight: bold; color: #0277BD;">Session ${session}</h4>`;
+          html += `<span style="background-color: ${getScoreColor(sessionTotal)}; color: white; padding: 2px 6px; border-radius: 4px; font-weight: bold; font-size: 12px;">Total: ${sessionTotal}/7</span>`;
+          html += '</div>';
+          
+          // Session Details Grid
+          html += '<div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px;">';
+          
+          html += createDetailItem('Attendance', attendance, 1);
+          html += createDetailItem('Question 1', q1, 2);
+          html += createDetailItem('Question 2', q2, 2);
+          html += createDetailItem('Quiz', quiz, 20);
+          
+          html += '</div>';
+          html += '</div>';
+        }
+        
+        html += '</div>';
+        html += '</div>';
       });
+      
+      html += '</div>';
+      return html;
+    }
+
+    function createDetailItem(label, score, maxScore) {
+      const color = score >= 2 ? 'green' : score >= 1 ? 'orange' : 'red';
+      return `<div style="text-align: center; padding: 8px; background-color: white; border-radius: 6px; border: 1px solid #dee2e6;">
+        <div style="font-size: 11px; font-weight: 500; color: #6c757d; margin-bottom: 4px;">${label}</div>
+        <div style="font-size: 14px; font-weight: bold; color: ${color};">${score}/${maxScore}</div>
+      </div>`;
+    }
+
+    function getScoreColor(score) {
+      if (score >= 2) return 'green';
+      if (score >= 1) return 'orange';
+      return 'red';
+    }
+
+    function getGradeColor(grade) {
+      switch (grade) {
+        case 'A': return 'green';
+        case 'B+': return 'lightgreen';
+        case 'B': return 'blue';
+        case 'C+': return 'orange';
+        case 'C': return 'deeporange';
+        default: return 'red';
+      }
+    }
+
+    function getTotalScore(data) {
+      return (data.september_total_score || 0) + 
+             (data.october_total_score || 0) + 
+             (data.november_total_score || 0) + 
+             (data.december_total_score || 0);
+    }
+
+    function getGradeFromScore(score) {
+      if (score >= 100) return 'A';
+      if (score >= 80) return 'B+';
+      if (score >= 60) return 'B';
+      if (score >= 40) return 'C+';
+      if (score >= 20) return 'C';
+      return 'D';
+    }
+
+    function additionalInfo(data) {
+      const isConfirmed = data.is_confirmed === true || data.is_confirmed === "TRUE";
+      
+      return `
+    <p style="color: ${isConfirmed ? 'green' : 'red'}; font-weight: bold; font-size: 50px;">
+      ${isConfirmed ? 'تم تأكيد الحجز' : 'لم يتم تأكيد الحجز بعد'}
+    </p>
+      `;
     }
 
     function checkDateForReservation() {
       var currentDate = new Date();
       var targetDate = new Date('2024-11-07');
     }
+
+    // Add Enter key support
+    document.getElementById('codeInput').addEventListener('keypress', function(e) {
+      if (e.key === 'Enter') {
+        searchCode();
+      }
+    });
 
     window.onload = checkDateForReservation;
   </script>
