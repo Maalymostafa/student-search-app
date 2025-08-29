@@ -517,9 +517,9 @@ app.get('/register', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'registration.html'));
 });
 
-// Serve main page with detailed session results
+// Serve main page with login options
 app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'index.html'));
+  res.sendFile(path.join(__dirname, 'public', 'startup.html'));
 });
 
 // Serve standalone demo page
