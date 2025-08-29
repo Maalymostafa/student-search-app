@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Administrator Login - تسجيل دخول المدير</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .login-container {
+            background: white;
+            border-radius: 25px;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+            overflow: hidden;
+            width: 100%;
+            max-width: 450px;
+            animation: slideIn 0.8s ease-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .header {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: white;
+            padding: 40px 30px;
+            text-align: center;
+        }
+
+        .admin-icon {
+            font-size: 4rem;
+            margin-bottom: 15px;
+        }
+
+        .title {
+            font-size: 2rem;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            font-size: 1rem;
+            opacity: 0.9;
+        }
+
+        .form-container {
+            padding: 40px 30px;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #333;
+            font-size: 1rem;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e1e5e9;
+            border-radius: 12px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            background: #f8f9fa;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: #1e3c72;
+            background: white;
+            box-shadow: 0 0 0 3px rgba(30, 60, 114, 0.1);
+        }
+
+        .login-btn {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-bottom: 20px;
+        }
+
+        .login-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(30, 60, 114, 0.3);
+        }
+
+        .back-btn {
+            width: 100%;
+            padding: 12px;
+            background: #6c757d;
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .back-btn:hover {
+            background: #5a6268;
+        }
+
+        .error-message {
+            background: #f8d7da;
+            color: #721c24;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: none;
+            text-align: center;
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .spinner {
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #1e3c72;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 10px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <div class="header">
+            <div class="admin-icon">👨‍💼</div>
+            <div class="title">Administrator Login</div>
+            <div class="subtitle">تسجيل دخول المدير</div>
+        </div>
+        
+        <div class="form-container">
+            <div class="error-message" id="errorMessage"></div>
+            <div class="loading" id="loading">
+                <div class="spinner"></div>
+                <div>جاري التحقق...</div>
+            </div>
+            
+            <form id="adminLoginForm">
+                <div class="form-group">
+                    <label class="form-label" for="username">Username - اسم المستخدم</label>
+                    <input type="text" id="username" class="form-input" placeholder="Enter username" required>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label" for="password">Password - كلمة المرور</label>
+                    <input type="password" id="password" class="form-input" placeholder="Enter password" required>
+                </div>
+                
+                <button type="submit" class="login-btn">
+                    Login - تسجيل الدخول
+                </button>
+            </form>
+            
+            <button class="back-btn" onclick="goBack()">
+                ← Back to Main - العودة للصفحة الرئيسية
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // Sample admin credentials (in real app, this would be in database)
+        const adminCredentials = {
+            'admin': 'admin123',
+            'superadmin': 'super123'
+        };
+
+        document.getElementById('adminLoginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            const errorMessage = document.getElementById('errorMessage');
+            const loading = document.getElementById('loading');
+            
+            // Hide previous error
+            errorMessage.style.display = 'none';
+            loading.style.display = 'block';
+            
+            // Simulate API call delay
+            setTimeout(() => {
+                loading.style.display = 'none';
+                
+                // Check credentials
+                if (adminCredentials[username] && adminCredentials[username] === password) {
+                    // Store admin session
+                    localStorage.setItem('adminLoggedIn', 'true');
+                    localStorage.setItem('adminUsername', username);
+                    
+                    // Redirect to admin dashboard
+                    window.location.href = '/admin-dashboard';
+                } else {
+                    errorMessage.textContent = 'Invalid username or password - اسم المستخدم أو كلمة المرور غير صحيحة';
+                    errorMessage.style.display = 'block';
+                }
+            }, 1500);
+        });
+
+        function goBack() {
+            window.location.href = '/';
+        }
+
+        // Check if already logged in
+        document.addEventListener('DOMContentLoaded', function() {
+            if (localStorage.getItem('adminLoggedIn') === 'true') {
+                window.location.href = '/admin-dashboard';
+            }
+        });
+    </script>
+</body>
+</html>

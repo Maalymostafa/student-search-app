@@ -1,0 +1,999 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Administrator Dashboard - لوحة تحكم المدير</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f5f7fa;
+            min-height: 100vh;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: white;
+            padding: 20px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .admin-icon {
+            font-size: 2.5rem;
+        }
+
+        .header-title {
+            font-size: 1.8rem;
+            font-weight: bold;
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .admin-info {
+            text-align: right;
+        }
+
+        .admin-name {
+            font-weight: bold;
+            font-size: 1.1rem;
+        }
+
+        .admin-role {
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+
+        .logout-btn {
+            background: rgba(255,255,255,0.2);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .logout-btn:hover {
+            background: rgba(255,255,255,0.3);
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 30px;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            text-align: center;
+            transition: transform 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .stat-icon {
+            font-size: 3rem;
+            margin-bottom: 15px;
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #1e3c72;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            color: #666;
+            font-size: 1rem;
+        }
+
+        .management-section {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+            overflow: hidden;
+        }
+
+        .section-header {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: white;
+            padding: 20px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+
+        .add-btn {
+            background: rgba(255,255,255,0.2);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: bold;
+        }
+
+        .add-btn:hover {
+            background: rgba(255,255,255,0.3);
+        }
+
+        .section-content {
+            padding: 30px;
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        .data-table th {
+            background: #f8f9fa;
+            padding: 15px;
+            text-align: right;
+            font-weight: bold;
+            color: #333;
+            border-bottom: 2px solid #e9ecef;
+        }
+
+        .data-table td {
+            padding: 15px;
+            border-bottom: 1px solid #e9ecef;
+            vertical-align: middle;
+        }
+
+        .data-table tr:hover {
+            background: #f8f9fa;
+        }
+
+        .action-btn {
+            padding: 8px 15px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            margin: 0 5px;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+        }
+
+        .edit-btn {
+            background: #ffc107;
+            color: #212529;
+        }
+
+        .edit-btn:hover {
+            background: #e0a800;
+        }
+
+        .delete-btn {
+            background: #dc3545;
+            color: white;
+        }
+
+        .delete-btn:hover {
+            background: #c82333;
+        }
+
+        .status-active {
+            background: #28a745;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 0.8rem;
+        }
+
+        .status-inactive {
+            background: #6c757d;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 0.8rem;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+        }
+
+        .modal-content {
+            background-color: white;
+            margin: 5% auto;
+            padding: 0;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 500px;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+            animation: slideIn 0.3s ease-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .modal-header {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: white;
+            padding: 20px 30px;
+            border-radius: 15px 15px 0 0;
+        }
+
+        .modal-title {
+            font-size: 1.3rem;
+            font-weight: bold;
+        }
+
+        .modal-body {
+            padding: 30px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e1e5e9;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: #1e3c72;
+            box-shadow: 0 0 0 3px rgba(30, 60, 114, 0.1);
+        }
+
+        .form-select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e1e5e9;
+            border-radius: 8px;
+            font-size: 1rem;
+            background: white;
+        }
+
+        .modal-footer {
+            padding: 20px 30px;
+            border-top: 1px solid #e9ecef;
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background: #1e3c72;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #2a5298;
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #5a6268;
+        }
+
+        .close {
+            color: white;
+            float: left;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .close:hover {
+            opacity: 0.7;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="header-left">
+            <div class="admin-icon">👨‍💼</div>
+            <div class="header-title">Administrator Dashboard</div>
+        </div>
+        <div class="header-right">
+            <div class="admin-info">
+                <div class="admin-name" id="adminName">Administrator</div>
+                <div class="admin-role">System Administrator</div>
+            </div>
+            <button class="logout-btn" onclick="logout()">Logout</button>
+        </div>
+    </div>
+
+    <div class="container">
+        <!-- Statistics -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-icon">👨‍🏫</div>
+                <div class="stat-number" id="teacherCount">12</div>
+                <div class="stat-label">Teachers</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">👨‍💼</div>
+                <div class="stat-number" id="assistantCount">8</div>
+                <div class="stat-label">Assistants</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">👨‍🎓</div>
+                <div class="stat-number" id="studentCount">156</div>
+                <div class="stat-label">Students</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">📚</div>
+                <div class="stat-number" id="subjectCount">4</div>
+                <div class="stat-label">Subjects</div>
+            </div>
+        </div>
+
+        <!-- Teachers Management -->
+        <div class="management-section">
+            <div class="section-header">
+                <div class="section-title">Teachers Management - إدارة المعلمين</div>
+                <button class="add-btn" onclick="openModal('teacher')">+ Add Teacher</button>
+            </div>
+            <div class="section-content">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Phone</th>
+                            <th>Subject</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="teachersTable">
+                        <!-- Teachers data will be populated here -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Assistants Management -->
+        <div class="management-section">
+            <div class="section-header">
+                <div class="section-title">Assistants Management - إدارة المساعدين</div>
+                <button class="add-btn" onclick="openModal('assistant')">+ Add Assistant</button>
+            </div>
+            <div class="section-content">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Phone</th>
+                            <th>Department</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="assistantsTable">
+                        <!-- Assistants data will be populated here -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Students Management -->
+        <div class="management-section">
+            <div class="section-header">
+                <div class="section-title">Students Management - إدارة الطلاب</div>
+                <button class="add-btn" onclick="openModal('student')">+ Add Student</button>
+            </div>
+            <div class="section-content">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Code</th>
+                            <th>Name</th>
+                            <th>Phone</th>
+                            <th>Grade</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="studentsTable">
+                        <!-- Students data will be populated here -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Subjects Management -->
+        <div class="management-section">
+            <div class="section-header">
+                <div class="section-title">Subjects Management - إدارة المواد</div>
+                <button class="add-btn" onclick="openModal('subject')">+ Add Subject</button>
+            </div>
+            <div class="section-content">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Name</th>
+                            <th>Arabic Name</th>
+                            <th>Icon</th>
+                            <th>Color</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="subjectsTable">
+                        <!-- Subjects data will be populated here -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal for Add/Edit -->
+    <div id="modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <span class="close" onclick="closeModal()">&times;</span>
+                <div class="modal-title" id="modalTitle">Add New Item</div>
+            </div>
+            <div class="modal-body">
+                <form id="modalForm">
+                    <div id="modalFields">
+                        <!-- Form fields will be dynamically generated -->
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeModal()">Cancel</button>
+                <button class="btn btn-primary" onclick="saveItem()">Save</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Sample data (in real app, this would come from database)
+        let teachers = [
+            { id: 1, name: 'Ahmed Hassan', email: 'ahmed@school.com', phone: '+201234567890', subject: 'Mathematics', status: 'Active' },
+            { id: 2, name: 'Fatima Ali', email: 'fatima@school.com', phone: '+201234567891', subject: 'Arabic', status: 'Active' },
+            { id: 3, name: 'Mohammed Omar', email: 'mohammed@school.com', phone: '+201234567892', subject: 'Science', status: 'Active' }
+        ];
+
+        let assistants = [
+            { id: 1, name: 'Sara Ahmed', email: 'sara@school.com', phone: '+201234567893', department: 'Administration', status: 'Active' },
+            { id: 2, name: 'Omar Khalil', email: 'omar@school.com', phone: '+201234567894', department: 'IT Support', status: 'Active' }
+        ];
+
+        let students = [
+            { code: 'G4001', name: 'Ahmed Hassan', phone: '+201234567895', grade: 'Grade 4', status: 'Active' },
+            { code: 'G4002', name: 'Fatima Ali', phone: '+201234567896', grade: 'Grade 4', status: 'Active' },
+            { code: 'G4003', name: 'Mohammed Omar', phone: '+201234567897', grade: 'Grade 4', status: 'Active' }
+        ];
+
+        let subjects = [
+            { id: 1, name: 'Mathematics', arabicName: 'الرياضيات', icon: '🔢', color: '#2196F3' },
+            { id: 2, name: 'Arabic', arabicName: 'اللغة العربية', icon: '📖', color: '#4CAF50' },
+            { id: 3, name: 'Science', arabicName: 'العلوم', icon: '🔬', color: '#FF9800' },
+            { id: 4, name: 'English', arabicName: 'اللغة الإنجليزية', icon: '🌍', color: '#9C27B0' }
+        ];
+
+        let currentModalType = '';
+        let editingItem = null;
+
+        // Initialize dashboard
+        document.addEventListener('DOMContentLoaded', function() {
+            if (localStorage.getItem('adminLoggedIn') !== 'true') {
+                window.location.href = '/admin-login';
+                return;
+            }
+
+            const adminUsername = localStorage.getItem('adminUsername') || 'Administrator';
+            document.getElementById('adminName').textContent = adminUsername;
+
+            updateStats();
+            populateTables();
+        });
+
+        function updateStats() {
+            document.getElementById('teacherCount').textContent = teachers.length;
+            document.getElementById('assistantCount').textContent = assistants.length;
+            document.getElementById('studentCount').textContent = students.length;
+            document.getElementById('subjectCount').textContent = subjects.length;
+        }
+
+        function populateTables() {
+            populateTeachersTable();
+            populateAssistantsTable();
+            populateStudentsTable();
+            populateSubjectsTable();
+        }
+
+        function populateTeachersTable() {
+            const tbody = document.getElementById('teachersTable');
+            tbody.innerHTML = '';
+
+            teachers.forEach(teacher => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${teacher.id}</td>
+                    <td>${teacher.name}</td>
+                    <td>${teacher.email}</td>
+                    <td>${teacher.phone}</td>
+                    <td>${teacher.subject}</td>
+                    <td><span class="status-${teacher.status.toLowerCase()}">${teacher.status}</span></td>
+                    <td>
+                        <button class="action-btn edit-btn" onclick="editItem('teacher', ${teacher.id})">Edit</button>
+                        <button class="action-btn delete-btn" onclick="deleteItem('teacher', ${teacher.id})">Delete</button>
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
+        function populateAssistantsTable() {
+            const tbody = document.getElementById('assistantsTable');
+            tbody.innerHTML = '';
+
+            assistants.forEach(assistant => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${assistant.id}</td>
+                    <td>${assistant.name}</td>
+                    <td>${assistant.email}</td>
+                    <td>${assistant.phone}</td>
+                    <td>${assistant.department}</td>
+                    <td><span class="status-${assistant.status.toLowerCase()}">${assistant.status}</span></td>
+                    <td>
+                        <button class="action-btn edit-btn" onclick="editItem('assistant', ${assistant.id})">Edit</button>
+                        <button class="action-btn delete-btn" onclick="deleteItem('assistant', ${assistant.id})">Delete</button>
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
+        function populateStudentsTable() {
+            const tbody = document.getElementById('studentsTable');
+            tbody.innerHTML = '';
+
+            students.forEach(student => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${student.code}</td>
+                    <td>${student.name}</td>
+                    <td>${student.phone}</td>
+                    <td>${student.grade}</td>
+                    <td><span class="status-${student.status.toLowerCase()}">${student.status}</span></td>
+                    <td>
+                        <button class="action-btn edit-btn" onclick="editItem('student', '${student.code}')">Edit</button>
+                        <button class="action-btn delete-btn" onclick="deleteItem('student', '${student.code}')">Delete</button>
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
+        function populateSubjectsTable() {
+            const tbody = document.getElementById('subjectsTable');
+            tbody.innerHTML = '';
+
+            subjects.forEach(subject => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${subject.id}</td>
+                    <td>${subject.name}</td>
+                    <td>${subject.arabicName}</td>
+                    <td>${subject.icon}</td>
+                    <td><div style="width: 20px; height: 20px; background: ${subject.color}; border-radius: 50%;"></div></td>
+                    <td>
+                        <button class="action-btn edit-btn" onclick="editItem('subject', ${subject.id})">Edit</button>
+                        <button class="action-btn delete-btn" onclick="deleteItem('subject', ${subject.id})">Delete</button>
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
+        function openModal(type) {
+            currentModalType = type;
+            editingItem = null;
+            
+            const modal = document.getElementById('modal');
+            const modalTitle = document.getElementById('modalTitle');
+            const modalFields = document.getElementById('modalFields');
+            
+            modalTitle.textContent = `Add New ${type.charAt(0).toUpperCase() + type.slice(1)}`;
+            
+            // Generate form fields based on type
+            let fields = '';
+            
+            switch(type) {
+                case 'teacher':
+                    fields = `
+                        <div class="form-group">
+                            <label class="form-label">Name</label>
+                            <input type="text" class="form-input" id="name" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Email</label>
+                            <input type="email" class="form-input" id="email" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Phone</label>
+                            <input type="tel" class="form-input" id="phone" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Subject</label>
+                            <select class="form-select" id="subject" required>
+                                <option value="">Select Subject</option>
+                                <option value="Mathematics">Mathematics</option>
+                                <option value="Arabic">Arabic</option>
+                                <option value="Science">Science</option>
+                                <option value="English">English</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Username</label>
+                            <input type="text" class="form-input" id="username" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Password</label>
+                            <input type="password" class="form-input" id="password" required>
+                        </div>
+                    `;
+                    break;
+                    
+                case 'assistant':
+                    fields = `
+                        <div class="form-group">
+                            <label class="form-label">Name</label>
+                            <input type="text" class="form-input" id="name" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Email</label>
+                            <input type="email" class="form-input" id="email" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Phone</label>
+                            <input type="tel" class="form-input" id="phone" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Department</label>
+                            <select class="form-select" id="department" required>
+                                <option value="">Select Department</option>
+                                <option value="Administration">Administration</option>
+                                <option value="IT Support">IT Support</option>
+                                <option value="Student Affairs">Student Affairs</option>
+                                <option value="Academic Support">Academic Support</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Username</label>
+                            <input type="text" class="form-input" id="username" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Password</label>
+                            <input type="password" class="form-input" id="password" required>
+                        </div>
+                    `;
+                    break;
+                    
+                case 'student':
+                    fields = `
+                        <div class="form-group">
+                            <label class="form-label">Student Code</label>
+                            <input type="text" class="form-input" id="code" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Name</label>
+                            <input type="text" class="form-input" id="name" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Phone</label>
+                            <input type="tel" class="form-input" id="phone" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Grade</label>
+                            <select class="form-select" id="grade" required>
+                                <option value="">Select Grade</option>
+                                <option value="Grade 1">Grade 1</option>
+                                <option value="Grade 2">Grade 2</option>
+                                <option value="Grade 3">Grade 3</option>
+                                <option value="Grade 4">Grade 4</option>
+                                <option value="Grade 5">Grade 5</option>
+                                <option value="Grade 6">Grade 6</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Parent Phone</label>
+                            <input type="tel" class="form-input" id="parentPhone" required>
+                        </div>
+                    `;
+                    break;
+                    
+                case 'subject':
+                    fields = `
+                        <div class="form-group">
+                            <label class="form-label">Name (English)</label>
+                            <input type="text" class="form-input" id="name" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Name (Arabic)</label>
+                            <input type="text" class="form-input" id="arabicName" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Icon</label>
+                            <input type="text" class="form-input" id="icon" placeholder="🔢" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Color</label>
+                            <input type="color" class="form-input" id="color" value="#2196F3" required>
+                        </div>
+                    `;
+                    break;
+            }
+            
+            modalFields.innerHTML = fields;
+            modal.style.display = 'block';
+        }
+
+        function closeModal() {
+            document.getElementById('modal').style.display = 'none';
+        }
+
+        function saveItem() {
+            const formData = {};
+            const inputs = document.querySelectorAll('#modalFields input, #modalFields select');
+            
+            inputs.forEach(input => {
+                formData[input.id] = input.value;
+            });
+            
+            // Validate required fields
+            for (let key in formData) {
+                if (!formData[key]) {
+                    alert('Please fill all required fields');
+                    return;
+                }
+            }
+            
+            // Save based on type
+            switch(currentModalType) {
+                case 'teacher':
+                    if (editingItem) {
+                        // Update existing teacher
+                        const index = teachers.findIndex(t => t.id === editingItem);
+                        teachers[index] = { ...teachers[index], ...formData };
+                    } else {
+                        // Add new teacher
+                        const newTeacher = {
+                            id: teachers.length + 1,
+                            name: formData.name,
+                            email: formData.email,
+                            phone: formData.phone,
+                            subject: formData.subject,
+                            status: 'Active',
+                            username: formData.username,
+                            password: formData.password
+                        };
+                        teachers.push(newTeacher);
+                    }
+                    break;
+                    
+                case 'assistant':
+                    if (editingItem) {
+                        // Update existing assistant
+                        const index = assistants.findIndex(a => a.id === editingItem);
+                        assistants[index] = { ...assistants[index], ...formData };
+                    } else {
+                        // Add new assistant
+                        const newAssistant = {
+                            id: assistants.length + 1,
+                            name: formData.name,
+                            email: formData.email,
+                            phone: formData.phone,
+                            department: formData.department,
+                            status: 'Active',
+                            username: formData.username,
+                            password: formData.password
+                        };
+                        assistants.push(newAssistant);
+                    }
+                    break;
+                    
+                case 'student':
+                    if (editingItem) {
+                        // Update existing student
+                        const index = students.findIndex(s => s.code === editingItem);
+                        students[index] = { ...students[index], ...formData };
+                    } else {
+                        // Add new student
+                        const newStudent = {
+                            code: formData.code,
+                            name: formData.name,
+                            phone: formData.phone,
+                            grade: formData.grade,
+                            parentPhone: formData.parentPhone,
+                            status: 'Active'
+                        };
+                        students.push(newStudent);
+                    }
+                    break;
+                    
+                case 'subject':
+                    if (editingItem) {
+                        // Update existing subject
+                        const index = subjects.findIndex(s => s.id === editingItem);
+                        subjects[index] = { ...subjects[index], ...formData };
+                    } else {
+                        // Add new subject
+                        const newSubject = {
+                            id: subjects.length + 1,
+                            name: formData.name,
+                            arabicName: formData.arabicName,
+                            icon: formData.icon,
+                            color: formData.color
+                        };
+                        subjects.push(newSubject);
+                    }
+                    break;
+            }
+            
+            updateStats();
+            populateTables();
+            closeModal();
+        }
+
+        function editItem(type, id) {
+            currentModalType = type;
+            editingItem = id;
+            
+            const modal = document.getElementById('modal');
+            const modalTitle = document.getElementById('modalTitle');
+            
+            modalTitle.textContent = `Edit ${type.charAt(0).toUpperCase() + type.slice(1)}`;
+            
+            // Open modal first
+            openModal(type);
+            
+            // Fill form with existing data
+            setTimeout(() => {
+                let item;
+                switch(type) {
+                    case 'teacher':
+                        item = teachers.find(t => t.id === id);
+                        break;
+                    case 'assistant':
+                        item = assistants.find(a => a.id === id);
+                        break;
+                    case 'student':
+                        item = students.find(s => s.code === id);
+                        break;
+                    case 'subject':
+                        item = subjects.find(s => s.id === id);
+                        break;
+                }
+                
+                if (item) {
+                    for (let key in item) {
+                        const input = document.getElementById(key);
+                        if (input) {
+                            input.value = item[key];
+                        }
+                    }
+                }
+            }, 100);
+        }
+
+        function deleteItem(type, id) {
+            if (confirm('Are you sure you want to delete this item?')) {
+                switch(type) {
+                    case 'teacher':
+                        teachers = teachers.filter(t => t.id !== id);
+                        break;
+                    case 'assistant':
+                        assistants = assistants.filter(a => a.id !== id);
+                        break;
+                    case 'student':
+                        students = students.filter(s => s.code !== id);
+                        break;
+                    case 'subject':
+                        subjects = subjects.filter(s => s.id !== id);
+                        break;
+                }
+                
+                updateStats();
+                populateTables();
+            }
+        }
+
+        function logout() {
+            localStorage.removeItem('adminLoggedIn');
+            localStorage.removeItem('adminUsername');
+            window.location.href = '/';
+        }
+
+        // Close modal when clicking outside
+        window.onclick = function(event) {
+            const modal = document.getElementById('modal');
+            if (event.target === modal) {
+                closeModal();
+            }
+        }
+    </script>
+</body>
+</html>

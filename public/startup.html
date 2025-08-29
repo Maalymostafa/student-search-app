@@ -145,6 +145,7 @@
         .parent-icon { background: linear-gradient(135deg, #2196F3, #1976D2); }
         .teacher-icon { background: linear-gradient(135deg, #FF9800, #F57C00); }
         .assistant-icon { background: linear-gradient(135deg, #9C27B0, #7B1FA2); }
+        .admin-icon { background: linear-gradient(135deg, #1e3c72, #2a5298); }
 
         .login-title {
             font-size: 1.5rem;
@@ -277,6 +278,13 @@
                 <p class="login-description">تسجيل دخول المساعد<br>Enter performance data and manage records</p>
                 <button class="login-btn">دخول المساعد</button>
             </div>
+
+            <div class="login-card" onclick="goToLogin('admin')">
+                <div class="login-icon admin-icon">👨‍💼</div>
+                <h3 class="login-title">Administrator Login</h3>
+                <p class="login-description">تسجيل دخول المدير<br>Manage teachers, assistants, students and subjects</p>
+                <button class="login-btn">دخول المدير</button>
+            </div>
         </div>
 
         <div class="footer">
@@ -319,6 +327,9 @@
                         break;
                     case 'assistant':
                         window.location.href = '/assistant-login';
+                        break;
+                    case 'admin':
+                        window.location.href = '/admin-login';
                         break;
                 }
             }, 200);

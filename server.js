@@ -562,6 +562,16 @@ app.get('/test-subject-selection', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'test-subject-selection.html'));
 });
 
+// Serve admin login
+app.get('/admin-login', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'admin-login.html'));
+});
+
+// Serve admin dashboard
+app.get('/admin-dashboard', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'admin-dashboard.html'));
+});
+
 // Student login API
 app.post('/api/student-login', async (req, res) => {
   try {

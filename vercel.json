@@ -48,6 +48,14 @@
       "dest": "/server.js"
     },
     {
+      "src": "/admin-login",
+      "dest": "/server.js"
+    },
+    {
+      "src": "/admin-dashboard",
+      "dest": "/server.js"
+    },
+    {
       "src": "/register",
       "dest": "/server.js"
     },
