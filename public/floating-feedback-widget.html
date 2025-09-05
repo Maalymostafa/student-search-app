@@ -1,0 +1,413 @@
+<!-- FLOATING FEEDBACK WIDGET -->
+<!-- Add this to any page where you want the feedback widget -->
+<style>
+.feedback-widget {
+    position: fixed;
+    bottom: 20px;
+    left: 20px;
+    z-index: 1000;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.feedback-trigger {
+    background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+    color: white;
+    border: none;
+    border-radius: 50px;
+    padding: 15px 20px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: bold;
+    box-shadow: 0 4px 15px rgba(231, 76, 60, 0.3);
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.feedback-trigger:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(231, 76, 60, 0.4);
+}
+
+.feedback-popup {
+    display: none;
+    position: absolute;
+    bottom: 70px;
+    left: 0;
+    background: white;
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    padding: 25px;
+    width: 350px;
+    max-width: 90vw;
+    animation: slideUp 0.3s ease;
+}
+
+.feedback-popup.show {
+    display: block;
+}
+
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.popup-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid #e9ecef;
+}
+
+.popup-title {
+    color: #2c3e50;
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.close-btn {
+    background: none;
+    border: none;
+    font-size: 20px;
+    cursor: pointer;
+    color: #6c757d;
+    padding: 5px;
+}
+
+.close-btn:hover {
+    color: #dc3545;
+}
+
+.quick-actions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.quick-action-btn {
+    background: #f8f9fa;
+    border: 2px solid #e9ecef;
+    border-radius: 8px;
+    padding: 15px 10px;
+    cursor: pointer;
+    text-align: center;
+    transition: all 0.3s ease;
+    font-size: 14px;
+}
+
+.quick-action-btn:hover {
+    border-color: #e74c3c;
+    background: #fff5f5;
+}
+
+.quick-action-icon {
+    font-size: 24px;
+    margin-bottom: 5px;
+    display: block;
+}
+
+.widget-form {
+    margin-bottom: 15px;
+}
+
+.widget-form input,
+.widget-form textarea {
+    width: 100%;
+    padding: 10px;
+    border: 2px solid #e9ecef;
+    border-radius: 5px;
+    margin-bottom: 10px;
+    font-size: 14px;
+    font-family: inherit;
+}
+
+.widget-form textarea {
+    resize: vertical;
+    min-height: 80px;
+}
+
+.widget-form input:focus,
+.widget-form textarea:focus {
+    outline: none;
+    border-color: #e74c3c;
+}
+
+.widget-submit {
+    background: #e74c3c;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 12px 20px;
+    cursor: pointer;
+    font-weight: bold;
+    width: 100%;
+    transition: all 0.3s ease;
+}
+
+.widget-submit:hover {
+    background: #c0392b;
+}
+
+.widget-links {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+}
+
+.widget-link {
+    color: #3498db;
+    text-decoration: none;
+    font-size: 12px;
+    padding: 5px 10px;
+    border-radius: 15px;
+    background: #e8f4fd;
+    transition: all 0.3s ease;
+}
+
+.widget-link:hover {
+    background: #3498db;
+    color: white;
+}
+
+.notification-badge {
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    background: #dc3545;
+    color: white;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 10px;
+    font-weight: bold;
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+    100% { transform: scale(1); }
+}
+
+@media (max-width: 768px) {
+    .feedback-widget {
+        bottom: 15px;
+        left: 15px;
+    }
+    
+    .feedback-popup {
+        width: calc(100vw - 40px);
+        max-width: none;
+        left: -10px;
+    }
+    
+    .feedback-trigger {
+        padding: 12px 16px;
+        font-size: 14px;
+    }
+    
+    .quick-actions {
+        grid-template-columns: 1fr;
+    }
+}
+</style>
+
+<div class="feedback-widget" id="feedbackWidget">
+    <button class="feedback-trigger" onclick="toggleFeedbackPopup()">
+        <span>💬</span>
+        <span>تعليق أو اقتراح</span>
+        <span class="notification-badge" id="notificationBadge" style="display: none;">!</span>
+    </button>
+    
+    <div class="feedback-popup" id="feedbackPopup">
+        <div class="popup-header">
+            <h3 class="popup-title">💬 شاركنا رأيك</h3>
+            <button class="close-btn" onclick="closeFeedbackPopup()">✕</button>
+        </div>
+        
+        <!-- Quick Actions -->
+        <div class="quick-actions">
+            <div class="quick-action-btn" onclick="quickAction('message')">
+                <span class="quick-action-icon">📝</span>
+                <span>رسالة سريعة</span>
+            </div>
+            <div class="quick-action-btn" onclick="quickAction('rating')">
+                <span class="quick-action-icon">⭐</span>
+                <span>تقييم النظام</span>
+            </div>
+            <div class="quick-action-btn" onclick="quickAction('suggestion')">
+                <span class="quick-action-icon">💡</span>
+                <span>اقتراح تحسين</span>
+            </div>
+            <div class="quick-action-btn" onclick="quickAction('problem')">
+                <span class="quick-action-icon">🐛</span>
+                <span>تبليغ مشكلة</span>
+            </div>
+        </div>
+        
+        <!-- Quick Form -->
+        <form class="widget-form" id="widgetForm" style="display: none;">
+            <input type="hidden" id="widgetType" value="">
+            <input type="text" id="widgetName" placeholder="اسمك (اختياري)">
+            <input type="text" id="widgetContact" placeholder="رقم الهاتف أو الإيميل">
+            <textarea id="widgetMessage" placeholder="رسالتك..." required></textarea>
+            <button type="submit" class="widget-submit">📤 إرسال</button>
+        </form>
+        
+        <!-- Links -->
+        <div class="widget-links">
+            <a href="/feedback-center" class="widget-link">📋 مركز التواصل</a>
+            <a href="https://wa.me/[YOUR_WHATSAPP]" class="widget-link" target="_blank">💬 واتساب</a>
+        </div>
+    </div>
+</div>
+
+<script>
+let feedbackPopupOpen = false;
+
+function toggleFeedbackPopup() {
+    const popup = document.getElementById('feedbackPopup');
+    feedbackPopupOpen = !feedbackPopupOpen;
+    
+    if (feedbackPopupOpen) {
+        popup.classList.add('show');
+        // Hide notification badge when opened
+        document.getElementById('notificationBadge').style.display = 'none';
+    } else {
+        popup.classList.remove('show');
+        document.getElementById('widgetForm').style.display = 'none';
+    }
+}
+
+function closeFeedbackPopup() {
+    feedbackPopupOpen = false;
+    document.getElementById('feedbackPopup').classList.remove('show');
+    document.getElementById('widgetForm').style.display = 'none';
+}
+
+function quickAction(action) {
+    const form = document.getElementById('widgetForm');
+    const typeInput = document.getElementById('widgetType');
+    const messageInput = document.getElementById('widgetMessage');
+    
+    // Set form type and placeholder based on action
+    const actionConfig = {
+        message: {
+            type: 'general',
+            placeholder: 'اكتب رسالتك أو استفسارك هنا...'
+        },
+        rating: {
+            type: 'review',
+            placeholder: 'كيف كانت تجربتك مع النظام؟ ما رأيك؟'
+        },
+        suggestion: {
+            type: 'suggestion', 
+            placeholder: 'ما الميزة أو التحسين الذي تقترحه؟'
+        },
+        problem: {
+            type: 'bug',
+            placeholder: 'وصف المشكلة التي واجهتها بالتفصيل...'
+        }
+    };
+    
+    const config = actionConfig[action];
+    typeInput.value = config.type;
+    messageInput.placeholder = config.placeholder;
+    messageInput.focus();
+    
+    form.style.display = 'block';
+}
+
+// Handle form submission
+document.getElementById('widgetForm').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    
+    const formData = {
+        type: document.getElementById('widgetType').value,
+        name: document.getElementById('widgetName').value,
+        contact: document.getElementById('widgetContact').value,
+        message: document.getElementById('widgetMessage').value,
+        source: 'floating_widget',
+        page: window.location.pathname,
+        timestamp: new Date().toISOString()
+    };
+    
+    if (!formData.message.trim()) {
+        alert('برجاء كتابة الرسالة');
+        return;
+    }
+    
+    try {
+        // Show loading
+        const submitBtn = this.querySelector('.widget-submit');
+        const originalText = submitBtn.textContent;
+        submitBtn.textContent = 'جاري الإرسال...';
+        submitBtn.disabled = true;
+        
+        // Simulate API call (replace with real endpoint)
+        await new Promise(resolve => setTimeout(resolve, 1000));
+        
+        // Success
+        alert('✅ تم إرسال رسالتك بنجاح! شكراً لك.');
+        this.reset();
+        closeFeedbackPopup();
+        
+        // Store locally for demo
+        const existingFeedback = JSON.parse(localStorage.getItem('widget_feedback') || '[]');
+        existingFeedback.unshift(formData);
+        localStorage.setItem('widget_feedback', JSON.stringify(existingFeedback.slice(0, 50)));
+        
+        // Reset button
+        submitBtn.textContent = originalText;
+        submitBtn.disabled = false;
+        
+    } catch (error) {
+        alert('❌ حدث خطأ في الإرسال، برجاء المحاولة مرة أخرى');
+        console.error('Widget feedback error:', error);
+        
+        // Reset button
+        submitBtn.textContent = originalText;
+        submitBtn.disabled = false;
+    }
+});
+
+// Close popup when clicking outside
+document.addEventListener('click', function(e) {
+    const widget = document.getElementById('feedbackWidget');
+    if (feedbackPopupOpen && !widget.contains(e.target)) {
+        closeFeedbackPopup();
+    }
+});
+
+// Show notification badge occasionally (for engagement)
+function showNotificationReminder() {
+    const badge = document.getElementById('notificationBadge');
+    if (!feedbackPopupOpen && Math.random() < 0.3) { // 30% chance
+        badge.style.display = 'flex';
+        setTimeout(() => {
+            if (!feedbackPopupOpen) {
+                badge.style.display = 'none';
+            }
+        }, 10000); // Hide after 10 seconds
+    }
+}
+
+// Show reminder every 5 minutes
+setInterval(showNotificationReminder, 5 * 60 * 1000);
+
+// Show initial reminder after 30 seconds
+setTimeout(showNotificationReminder, 30000);
+</script>

@@ -183,7 +183,7 @@ app.post('/api/search', async (req, res) => {
 
     // Generate HTML response (same format as before)
     const html = generateStudentHTML(studentData, sheetPrefix);
-
+    
     res.json({
       success: true,
       message: 'تم العثور على الطالب',
@@ -265,7 +265,8 @@ const routes = [
   'test-subject-selection', 'registration', 'working-student-login',
   'secure-student-login', 'quiz-interface', 'student-quiz-selection',
   'student-quiz', 'test-quiz', 'enhanced-registration', 'test',
-  'startup', 'test-all-routes', 'site-map-generator'
+  'startup', 'test-all-routes', 'site-map-generator', 'feedback-center',
+  'admin-feedback-dashboard', 'student-code-generator'
 ];
 
 routes.forEach(route => {
@@ -288,10 +289,10 @@ routes.forEach(route => {
               </html>
             `);
           }
-        });
-      }
     });
-  });
+  }
+});
+});
 });
 
 // Demo route
@@ -457,11 +458,173 @@ function generateStudentHTML(data, sheetPrefix) {
   return html;
 }
 
+// FEEDBACK SYSTEM API ENDPOINTS
+const fs = require('fs');
+
+// Create feedback storage directory
+const feedbackDir = path.join(__dirname, 'feedback-data');
+if (!fs.existsSync(feedbackDir)) {
+  fs.mkdirSync(feedbackDir);
+}
+
+// Helper function to save feedback
+function saveFeedbackToFile(type, data) {
+  const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
+  const filename = `${type}-${timestamp}.json`;
+  const filepath = path.join(feedbackDir, filename);
+  
+  const feedbackData = {
+    id: Date.now().toString(),
+    type: type,
+    timestamp: new Date().toISOString(),
+    data: data,
+    status: 'new'
+  };
+  
+  fs.writeFileSync(filepath, JSON.stringify(feedbackData, null, 2));
+  return feedbackData.id;
+}
+
+// Feedback API endpoints
+app.post('/api/feedback', async (req, res) => {
+  try {
+    const { type, userType, userName, userContact, subject, message, urgency } = req.body;
+    
+    if (!subject || !message) {
+      return res.status(400).json({ 
+        success: false, 
+        message: 'برجاء ملء الحقول المطلوبة'
+      });
+    }
+    
+    const feedbackData = {
+      type: type || 'general',
+      userType: userType || 'unknown',
+      userName: userName || '',
+      userContact: userContact || '',
+      subject: subject,
+      message: message,
+      urgency: urgency || 'medium',
+      ip: req.ip || req.connection.remoteAddress
+    };
+    
+    const feedbackId = saveFeedbackToFile('feedback', feedbackData);
+    
+    console.log(`📬 New feedback received: ${subject} (${urgency})`);
+    
+    res.json({ 
+      success: true, 
+      message: 'تم إرسال رسالتك بنجاح! سنتواصل معك قريباً.',
+      feedbackId: feedbackId
+    });
+    
+  } catch (error) {
+    console.error('Feedback submission error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'حدث خطأ في إرسال الرسالة'
+    });
+  }
+});
+
+app.post('/api/review', async (req, res) => {
+  try {
+    const { overallRating, reviewText } = req.body;
+    
+    if (!overallRating) {
+      return res.status(400).json({
+        success: false,
+        message: 'برجاء إعطاء تقييم'
+      });
+    }
+    
+    const reviewData = {
+      overallRating: parseInt(overallRating),
+      reviewText: reviewText || '',
+      ip: req.ip || req.connection.remoteAddress
+    };
+    
+    const reviewId = saveFeedbackToFile('review', reviewData);
+    
+    console.log(`⭐ New review: ${overallRating}/5 stars`);
+
+        res.json({
+          success: true,
+      message: 'شكراً لك! تم إرسال تقييمك بنجاح.',
+      reviewId: reviewId
+    });
+    
+  } catch (error) {
+    console.error('Review submission error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'حدث خطأ في إرسال التقييم'
+    });
+  }
+});
+
+app.post('/api/suggestion', async (req, res) => {
+  try {
+    const { category, title, description, priority } = req.body;
+
+    if (!title || !description) {
+      return res.status(400).json({
+        success: false,
+        message: 'برجاء ملء العنوان والوصف'
+      });
+    }
+    
+    const suggestionData = {
+      category: category || 'other',
+      title: title,
+      description: description,
+      priority: priority || 'medium',
+      ip: req.ip || req.connection.remoteAddress
+    };
+    
+    const suggestionId = saveFeedbackToFile('suggestion', suggestionData);
+    
+    console.log(`💡 New suggestion: ${title} (${priority})`);
+
+        res.json({
+          success: true,
+      message: 'تم إرسال اقتراحك بنجاح! سنقوم بدراسته.',
+      suggestionId: suggestionId
+    });
+    
+  } catch (error) {
+    console.error('Suggestion submission error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'حدث خطأ في إرسال الاقتراح'
+    });
+  }
+});
+
+// Get feedback stats
+app.get('/api/feedback-stats', (req, res) => {
+  try {
+    const stats = { totalFeedback: 0, totalReviews: 0, totalSuggestions: 0, averageRating: 4.2 };
+    
+    if (fs.existsSync(feedbackDir)) {
+      const files = fs.readdirSync(feedbackDir);
+      stats.totalFeedback = files.filter(f => f.startsWith('feedback-')).length;
+      stats.totalReviews = files.filter(f => f.startsWith('review-')).length;
+      stats.totalSuggestions = files.filter(f => f.startsWith('suggestion-')).length;
+    }
+    
+    res.json({ success: true, stats });
+  } catch (error) {
+    res.status(500).json({ success: false, message: 'خطأ في الإحصائيات' });
+  }
+});
+
 // Start server
 app.listen(PORT, () => {
   console.log(`🚀 Server running on port ${PORT}`);
   console.log(`📊 Database: ${dbType}`);
   console.log(`🔗 Health check: http://localhost:${PORT}/api/health`);
-  console.log(`🎯 Version: 2.0-unified-fixed`);
+  console.log(`🎯 Version: 2.0-unified-feedback`);
   console.log(`🌐 All routes fixed and optimized`);
+  console.log(`💬 Feedback system activated`);
 });
