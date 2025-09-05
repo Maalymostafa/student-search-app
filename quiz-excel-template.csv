@@ -1,0 +1,12 @@
+Question_Number,Question_Type,Question_Text,Option_A,Option_B,Option_C,Option_D,Correct_Answer,Notes
+1,Multiple Choice,What is 2 + 2?,3,4,5,6,4,Basic arithmetic
+2,True/False,The Earth is round,True,False,,,True,Geography fact
+3,Fill in Blank,The capital of Egypt is _____,,,,,Cairo,Geography
+4,Multiple Choice,Which color is primary?,Red,Green,Brown,Orange,Red,Color theory
+5,Short Answer,Name one planet in our solar system,,,,,,Science
+6,Matching,Match the animal with its habitat,Elephant - Forest,Lion - Desert,Shark - Ocean,Fish - River,Elephant - Forest,Animal habitats
+7,Multiple Choice,How many days are in a week?,5,6,7,8,7,Time concepts
+8,True/False,Plants need sunlight to grow,True,False,,,True,Biology basics
+9,Fill in Blank,Water boils at _____ degrees Celsius,,,,,,100,Chemistry
+10,Multiple Choice,Which is the largest planet?,Earth,Mars,Jupiter,Saturn,Jupiter,Solar system
+

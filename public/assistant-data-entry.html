@@ -1,0 +1,967 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Assistant Data Entry - إدخال بيانات الجلسات</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f5f7fa;
+            min-height: 100vh;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+            color: white;
+            padding: 20px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .assistant-icon {
+            font-size: 2.5rem;
+        }
+
+        .header-title {
+            font-size: 1.8rem;
+            font-weight: bold;
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .assistant-info {
+            text-align: right;
+        }
+
+        .assistant-name {
+            font-weight: bold;
+            font-size: 1.1rem;
+        }
+
+        .assistant-role {
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+
+        .logout-btn {
+            background: rgba(255,255,255,0.2);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .logout-btn:hover {
+            background: rgba(255,255,255,0.3);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 30px;
+        }
+
+        .session-selector {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+        }
+
+        .selector-title {
+            font-size: 1.3rem;
+            font-weight: bold;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .selector-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .form-select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e1e5e9;
+            border-radius: 8px;
+            font-size: 1rem;
+            background: white;
+        }
+
+        .form-select:focus {
+            outline: none;
+            border-color: #28a745;
+            box-shadow: 0 0 0 3px rgba(40, 167, 69, 0.1);
+        }
+
+        .options-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-top: 30px;
+        }
+
+        .option-card {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .option-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .option-title {
+            font-size: 1.4rem;
+            font-weight: bold;
+            margin-bottom: 15px;
+            color: #333;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .option-icon {
+            font-size: 2rem;
+        }
+
+        .option-description {
+            color: #666;
+            margin-bottom: 25px;
+            line-height: 1.6;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+            text-align: center;
+        }
+
+        .btn-primary {
+            background: #28a745;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #218838;
+        }
+
+        .btn-secondary {
+            background: #17a2b8;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #138496;
+        }
+
+        .btn-success {
+            background: #28a745;
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: #218838;
+        }
+
+        .btn-warning {
+            background: #ffc107;
+            color: #212529;
+        }
+
+        .btn-warning:hover {
+            background: #e0a800;
+        }
+
+        .file-input {
+            display: none;
+        }
+
+        .file-label {
+            display: inline-block;
+            padding: 12px 24px;
+            background: #17a2b8;
+            color: white;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .file-label:hover {
+            background: #138496;
+        }
+
+        .search-container {
+            margin-top: 20px;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e1e5e9;
+            border-radius: 8px;
+            font-size: 1rem;
+            margin-bottom: 15px;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: #28a745;
+            box-shadow: 0 0 0 3px rgba(40, 167, 69, 0.1);
+        }
+
+        .search-results {
+            max-height: 300px;
+            overflow-y: auto;
+            border: 1px solid #e1e5e9;
+            border-radius: 8px;
+            background: white;
+        }
+
+        .student-item {
+            padding: 12px;
+            border-bottom: 1px solid #e1e5e9;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        .student-item:hover {
+            background: #f8f9fa;
+        }
+
+        .student-item:last-child {
+            border-bottom: none;
+        }
+
+        .student-name {
+            font-weight: bold;
+            color: #333;
+            font-size: 1.1rem;
+        }
+
+        .student-code {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .data-entry-form {
+            margin-top: 20px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            display: none;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .checkbox-group input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+        }
+
+        .checkbox-group label {
+            font-weight: 500;
+            color: #333;
+        }
+
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .input-group input[type="number"] {
+            width: 80px;
+            padding: 8px;
+            border: 2px solid #e1e5e9;
+            border-radius: 6px;
+            text-align: center;
+            font-size: 1rem;
+        }
+
+        .input-group input[type="number"]:focus {
+            outline: none;
+            border-color: #28a745;
+            box-shadow: 0 0 0 3px rgba(40, 167, 69, 0.1);
+        }
+
+        .input-group input[type="number"].invalid {
+            border-color: #dc3545;
+            background-color: #fff5f5;
+        }
+
+        .input-group label {
+            font-weight: 500;
+            color: #333;
+            font-size: 0.9rem;
+        }
+
+        .alert {
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        .alert-success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .alert-error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .alert-info {
+            background: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+
+        .data-status {
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+
+        .data-status.new {
+            background: #fff3cd;
+            color: #856404;
+            border: 1px solid #ffeaa7;
+        }
+
+        .data-status.existing {
+            background: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+
+        @media (max-width: 768px) {
+            .options-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="header-left">
+            <div class="assistant-icon">👨‍💼</div>
+            <div class="header-title">Assistant Data Entry</div>
+        </div>
+        <div class="header-right">
+            <div class="assistant-info">
+                <div class="assistant-name" id="assistantName">Assistant Name</div>
+                <div class="assistant-role">Data Entry Assistant</div>
+            </div>
+            <button class="logout-btn" onclick="logout()">Logout</button>
+        </div>
+    </div>
+
+    <div class="container">
+        <!-- Session Selector -->
+        <div class="session-selector">
+            <div class="selector-title">📅 Select Session Details</div>
+            <div class="selector-grid">
+                <div class="form-group">
+                    <label class="form-label">Subject</label>
+                    <select class="form-select" id="subjectSelect">
+                        <option value="">Select Subject</option>
+                        <option value="arabic">اللغة العربية</option>
+                        <option value="math">الرياضيات</option>
+                        <option value="science">العلوم</option>
+                        <option value="english">اللغة الإنجليزية</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Teacher</label>
+                    <select class="form-select" id="teacherSelect">
+                        <option value="">Select Teacher</option>
+                        <option value="ahmed_hassan">أحمد حسن - اللغة العربية</option>
+                        <option value="fatima_ali">فاطمة علي - الرياضيات</option>
+                        <option value="mohammed_omar">محمد عمر - العلوم</option>
+                        <option value="sara_ahmed">سارة أحمد - اللغة الإنجليزية</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Semester</label>
+                    <select class="form-select" id="semesterSelect">
+                        <option value="">Select Semester</option>
+                        <option value="first_sem">First Semester</option>
+                        <option value="second_sem">Second Semester</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Month</label>
+                    <select class="form-select" id="monthSelect">
+                        <option value="">Select Month</option>
+                        <option value="september">September</option>
+                        <option value="october">October</option>
+                        <option value="november">November</option>
+                        <option value="december">December</option>
+                        <option value="january">January</option>
+                        <option value="february">February</option>
+                        <option value="march">March</option>
+                        <option value="april">April</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Session</label>
+                    <select class="form-select" id="sessionSelect">
+                        <option value="">Select Session</option>
+                        <option value="session1">Session 1</option>
+                        <option value="session2">Session 2</option>
+                        <option value="session3">Session 3</option>
+                        <option value="session4">Session 4</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <!-- Data Entry Options -->
+        <div class="options-container">
+            <!-- Option 1: Excel Import/Export -->
+            <div class="option-card">
+                <div class="option-title">
+                    <span class="option-icon">📊</span>
+                    Excel Import/Export
+                </div>
+                <div class="option-description">
+                    Download an Excel template, fill in the student data, and upload it back to the system. Perfect for bulk data entry.
+                </div>
+                
+                <div id="excelAlerts"></div>
+                
+                <div style="margin-bottom: 20px;">
+                    <button class="btn btn-primary" onclick="downloadExcelTemplate()">
+                        📥 Download Excel Template
+                    </button>
+                </div>
+                
+                <div>
+                    <input type="file" id="excelFile" class="file-input" accept=".xlsx,.xls,.csv" onchange="handleExcelUpload(event)">
+                    <label for="excelFile" class="file-label">
+                        📤 Upload Filled Excel File
+                    </label>
+                </div>
+                
+                <div style="margin-top: 15px;">
+                    <button class="btn btn-success" onclick="processExcelData()" id="processBtn" style="display: none;">
+                        ✅ Process Data
+                    </button>
+                </div>
+            </div>
+
+            <!-- Option 2: Interactive Search -->
+            <div class="option-card">
+                <div class="option-title">
+                    <span class="option-icon">🔍</span>
+                    Interactive Search
+                </div>
+                <div class="option-description">
+                    Search for students and enter their session data directly. Results appear after typing 6 or more characters.
+                </div>
+                
+                <div class="search-container">
+                    <input type="text" class="search-input" id="studentSearch" 
+                           placeholder="Type student name (minimum 6 characters)" 
+                           oninput="searchStudents(this.value)">
+                    
+                    <div class="search-results" id="searchResults"></div>
+                    
+                    <div class="data-entry-form" id="dataEntryForm">
+                        <h4>📝 Enter Session Data for: <span id="selectedStudentName"></span></h4>
+                        <div id="dataStatus" class="data-status"></div>
+                        <div class="form-row">
+                            <div class="checkbox-group">
+                                <input type="checkbox" id="attendanceCheck">
+                                <label for="attendanceCheck">الحضور</label>
+                            </div>
+                            <div class="input-group">
+                                <label for="q1Input">السؤال الأول</label>
+                                <input type="number" id="q1Input" placeholder="0,1,2" min="0" max="2" oninput="validateQInput(this)">
+                            </div>
+                            <div class="input-group">
+                                <label for="q2Input">السؤال الثاني</label>
+                                <input type="number" id="q2Input" placeholder="0,1,2" min="0" max="2" oninput="validateQInput(this)">
+                            </div>
+                            <div class="input-group">
+                                <label for="quizScore">الاختبار</label>
+                                <input type="number" id="quizScore" placeholder="0-20" min="0" max="20">
+                            </div>
+                        </div>
+                        <button class="btn btn-success" onclick="saveSessionData()">💾 Save Data</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Sample student data with Arabic names (in real app, this would come from database)
+        const students = [
+            { id: 'G4001', name: 'أحمد علي حسن', code: 'G4001' },
+            { id: 'G4002', name: 'فاطمة محمد صالح', code: 'G4002' },
+            { id: 'G4003', name: 'عمر خليل إبراهيم', code: 'G4003' },
+            { id: 'G4004', name: 'عائشة عبد الله رحمن', code: 'G4004' },
+            { id: 'G4005', name: 'يوسف حسن علي', code: 'G4005' },
+            { id: 'G4006', name: 'ليلى أحمد خليل', code: 'G4006' },
+            { id: 'G4007', name: 'محمد عمر صالح', code: 'G4007' },
+            { id: 'G4008', name: 'نور إبراهيم حسن', code: 'G4008' },
+            { id: 'G4009', name: 'زينب خليل علي', code: 'G4009' },
+            { id: 'G4010', name: 'خالد عبد الله عمر', code: 'G4010' }
+        ];
+
+        // Sample existing data (in real app, this would come from database)
+        const existingData = {
+            'G4001': {
+                'arabic_ahmed_hassan_first_sem_september_session1': { 
+                    subject: 'arabic', 
+                    teacher: 'ahmed_hassan', 
+                    attendance: 1, 
+                    q1: 2, 
+                    q2: 1, 
+                    quiz: 15 
+                },
+                'math_fatima_ali_first_sem_september_session1': { 
+                    subject: 'math', 
+                    teacher: 'fatima_ali', 
+                    attendance: 1, 
+                    q1: 1, 
+                    q2: 2, 
+                    quiz: 18 
+                }
+            },
+            'G4002': {
+                'arabic_ahmed_hassan_first_sem_september_session1': { 
+                    subject: 'arabic', 
+                    teacher: 'ahmed_hassan', 
+                    attendance: 1, 
+                    q1: 2, 
+                    q2: 2, 
+                    quiz: 20 
+                }
+            }
+        };
+
+        let selectedStudent = null;
+        let uploadedExcelData = null;
+        let currentSessionKey = '';
+
+        // Initialize page
+        document.addEventListener('DOMContentLoaded', function() {
+            // Check if assistant is logged in
+            if (localStorage.getItem('assistantLoggedIn') !== 'true') {
+                console.log('Assistant not logged in, redirecting to login...');
+                window.location.href = '/assistant-login';
+                return;
+            }
+            
+            // Set assistant name from URL parameter or localStorage
+            const assistantName = new URLSearchParams(window.location.search).get('name') || localStorage.getItem('assistantName') || 'Assistant';
+            document.getElementById('assistantName').textContent = assistantName;
+            
+            console.log('Assistant logged in:', assistantName);
+        });
+
+        // Validate Q1 and Q2 inputs (only 0, 1, 2 allowed)
+        function validateQInput(input) {
+            const value = parseInt(input.value);
+            if (value < 0 || value > 2 || isNaN(value)) {
+                input.classList.add('invalid');
+                input.value = '';
+            } else {
+                input.classList.remove('invalid');
+            }
+        }
+
+        // Excel Template Download
+        function downloadExcelTemplate() {
+            const subject = document.getElementById('subjectSelect').value;
+            const teacher = document.getElementById('teacherSelect').value;
+            const semester = document.getElementById('semesterSelect').value;
+            const month = document.getElementById('monthSelect').value;
+            const session = document.getElementById('sessionSelect').value;
+
+            if (!subject || !teacher || !semester || !month || !session) {
+                showAlert('excelAlerts', 'Please select subject, teacher, semester, month, and session first.', 'error');
+                return;
+            }
+
+            // Create Excel template data
+            const templateData = students.map(student => ({
+                'Student Name': student.name,
+                'Student Code': student.code,
+                'Attendance': '',
+                'Q1': '',
+                'Q2': '',
+                'Quiz Score': ''
+            }));
+
+            // Convert to CSV and download
+            const csvContent = convertToCSV(templateData);
+            downloadCSV(csvContent, `session_data_${subject}_${semester}_${month}_${session}.csv`);
+            
+            showAlert('excelAlerts', 'Excel template downloaded successfully!', 'success');
+        }
+
+        // Handle Excel file upload
+        function handleExcelUpload(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    // Parse CSV data (simplified - in real app, use proper Excel parsing library)
+                    const csvData = e.target.result;
+                    uploadedExcelData = parseCSV(csvData);
+                    
+                    document.getElementById('processBtn').style.display = 'inline-block';
+                    showAlert('excelAlerts', `File uploaded successfully! Found ${uploadedExcelData.length} students.`, 'success');
+                } catch (error) {
+                    showAlert('excelAlerts', 'Error reading file. Please check the format.', 'error');
+                }
+            };
+            reader.readAsText(file);
+        }
+
+        // Process uploaded Excel data
+        function processExcelData() {
+            if (!uploadedExcelData) {
+                showAlert('excelAlerts', 'No data to process. Please upload a file first.', 'error');
+                return;
+            }
+
+            const subject = document.getElementById('subjectSelect').value;
+            const teacher = document.getElementById('teacherSelect').value;
+            const semester = document.getElementById('semesterSelect').value;
+            const month = document.getElementById('monthSelect').value;
+            const session = document.getElementById('sessionSelect').value;
+
+            if (!subject || !teacher || !semester || !month || !session) {
+                showAlert('excelAlerts', 'Please select subject, teacher, semester, month, and session first.', 'error');
+                return;
+            }
+
+            // Process each student's data
+            uploadedExcelData.forEach(studentData => {
+                // In real app, this would save to database
+                const processedData = {
+                    ...studentData,
+                    subject: subject,
+                    teacher: teacher,
+                    semester: semester,
+                    month: month,
+                    session: session
+                };
+                console.log('Processing:', processedData);
+            });
+
+            showAlert('excelAlerts', `Successfully processed data for ${uploadedExcelData.length} students!`, 'success');
+            document.getElementById('processBtn').style.display = 'none';
+            uploadedExcelData = null;
+        }
+
+        // Student Search
+        function searchStudents(query) {
+            const searchResults = document.getElementById('searchResults');
+            searchResults.innerHTML = '';
+
+            if (query.length < 6) {
+                searchResults.style.display = 'none';
+                return;
+            }
+
+            const filteredStudents = students.filter(student => 
+                student.name.toLowerCase().includes(query.toLowerCase()) ||
+                student.code.toLowerCase().includes(query.toLowerCase())
+            );
+
+            if (filteredStudents.length === 0) {
+                searchResults.innerHTML = '<div class="student-item">No students found</div>';
+            } else {
+                filteredStudents.forEach(student => {
+                    const studentDiv = document.createElement('div');
+                    studentDiv.className = 'student-item';
+                    studentDiv.innerHTML = `
+                        <div class="student-name">${student.name}</div>
+                        <div class="student-code">Code: ${student.code}</div>
+                    `;
+                    studentDiv.onclick = () => selectStudent(student);
+                    searchResults.appendChild(studentDiv);
+                });
+            }
+
+            searchResults.style.display = 'block';
+        }
+
+        // Select student for data entry
+        function selectStudent(student) {
+            selectedStudent = student;
+            document.getElementById('selectedStudentName').textContent = student.name;
+            document.getElementById('dataEntryForm').style.display = 'block';
+            document.getElementById('searchResults').style.display = 'none';
+            document.getElementById('studentSearch').value = student.name;
+            
+            // Load existing data if available
+            loadExistingData(student);
+        }
+
+        // Load existing data for the selected student
+        function loadExistingData(student) {
+            const subject = document.getElementById('subjectSelect').value;
+            const teacher = document.getElementById('teacherSelect').value;
+            const semester = document.getElementById('semesterSelect').value;
+            const month = document.getElementById('monthSelect').value;
+            const session = document.getElementById('sessionSelect').value;
+
+            if (!subject || !teacher || !semester || !month || !session) {
+                showDataStatus('Please select subject, teacher, semester, month, and session first.', 'new');
+                return;
+            }
+
+            currentSessionKey = `${subject}_${teacher}_${semester}_${month}_${session}`;
+            const existingSessionData = existingData[student.id]?.[currentSessionKey];
+
+            if (existingSessionData) {
+                // Load existing data
+                document.getElementById('attendanceCheck').checked = existingSessionData.attendance === 1;
+                document.getElementById('q1Input').value = existingSessionData.q1;
+                document.getElementById('q2Input').value = existingSessionData.q2;
+                document.getElementById('quizScore').value = existingSessionData.quiz;
+                
+                showDataStatus('Existing data loaded. You can modify and save changes.', 'existing');
+            } else {
+                // Clear form for new data
+                document.getElementById('attendanceCheck').checked = false;
+                document.getElementById('q1Input').value = '';
+                document.getElementById('q2Input').value = '';
+                document.getElementById('quizScore').value = '';
+                
+                showDataStatus('New record. Enter data for this session.', 'new');
+            }
+        }
+
+        // Show data status
+        function showDataStatus(message, type) {
+            const statusDiv = document.getElementById('dataStatus');
+            statusDiv.textContent = message;
+            statusDiv.className = `data-status ${type}`;
+        }
+
+        // Save session data
+        function saveSessionData() {
+            if (!selectedStudent) {
+                alert('Please select a student first.');
+                return;
+            }
+
+            const subject = document.getElementById('subjectSelect').value;
+            const teacher = document.getElementById('teacherSelect').value;
+            const semester = document.getElementById('semesterSelect').value;
+            const month = document.getElementById('monthSelect').value;
+            const session = document.getElementById('sessionSelect').value;
+
+            if (!subject || !teacher || !semester || !month || !session) {
+                alert('Please select subject, teacher, semester, month, and session first.');
+                return;
+            }
+
+            // Validate Q1 and Q2 inputs
+            const q1 = parseInt(document.getElementById('q1Input').value);
+            const q2 = parseInt(document.getElementById('q2Input').value);
+            
+            if (isNaN(q1) || q1 < 0 || q1 > 2) {
+                alert('Q1 must be 0, 1, or 2');
+                return;
+            }
+            
+            if (isNaN(q2) || q2 < 0 || q2 > 2) {
+                alert('Q2 must be 0, 1, or 2');
+                return;
+            }
+
+            const attendance = document.getElementById('attendanceCheck').checked ? 1 : 0;
+            const quiz = parseInt(document.getElementById('quizScore').value) || 0;
+
+            // In real app, this would save to database
+            const sessionData = {
+                studentId: selectedStudent.id,
+                studentName: selectedStudent.name,
+                subject: subject,
+                teacher: teacher,
+                semester: semester,
+                month: month,
+                session: session,
+                attendance: attendance,
+                q1: q1,
+                q2: q2,
+                quiz: quiz
+            };
+
+            console.log('Saving session data:', sessionData);
+            
+            // Update local data (in real app, this would be a database update)
+            if (!existingData[selectedStudent.id]) {
+                existingData[selectedStudent.id] = {};
+            }
+            existingData[selectedStudent.id][currentSessionKey] = {
+                subject: subject,
+                teacher: teacher,
+                attendance: attendance,
+                q1: q1,
+                q2: q2,
+                quiz: quiz
+            };
+            
+            alert(`Data saved successfully for ${selectedStudent.name}!`);
+            showDataStatus('Data saved successfully!', 'existing');
+        }
+
+        // Utility functions
+        function convertToCSV(data) {
+            const headers = Object.keys(data[0]);
+            const csvRows = [headers.join(',')];
+            
+            data.forEach(row => {
+                const values = headers.map(header => `"${row[header]}"`);
+                csvRows.push(values.join(','));
+            });
+            
+            return csvRows.join('\n');
+        }
+
+        function downloadCSV(content, filename) {
+            const blob = new Blob([content], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = filename;
+            link.click();
+        }
+
+        function parseCSV(csvText) {
+            const lines = csvText.split('\n');
+            const headers = lines[0].split(',').map(h => h.replace(/"/g, ''));
+            const data = [];
+            
+            for (let i = 1; i < lines.length; i++) {
+                if (lines[i].trim()) {
+                    const values = lines[i].split(',').map(v => v.replace(/"/g, ''));
+                    const row = {};
+                    headers.forEach((header, index) => {
+                        row[header] = values[index] || '';
+                    });
+                    data.push(row);
+                }
+            }
+            
+            return data;
+        }
+
+        function showAlert(containerId, message, type) {
+            const container = document.getElementById(containerId);
+            const alertDiv = document.createElement('div');
+            alertDiv.className = `alert alert-${type}`;
+            alertDiv.textContent = message;
+            
+            container.innerHTML = '';
+            container.appendChild(alertDiv);
+            
+            setTimeout(() => {
+                alertDiv.remove();
+            }, 5000);
+        }
+
+        function logout() {
+            localStorage.removeItem('assistantLoggedIn');
+            localStorage.removeItem('assistantId');
+            localStorage.removeItem('assistantName');
+            window.location.href = '/assistant-login';
+        }
+
+        // Reload data when selection changes
+        document.getElementById('subjectSelect').addEventListener('change', function() {
+            if (selectedStudent) loadExistingData(selectedStudent);
+        });
+        
+        document.getElementById('teacherSelect').addEventListener('change', function() {
+            if (selectedStudent) loadExistingData(selectedStudent);
+        });
+        
+        document.getElementById('semesterSelect').addEventListener('change', function() {
+            if (selectedStudent) loadExistingData(selectedStudent);
+        });
+        
+        document.getElementById('monthSelect').addEventListener('change', function() {
+            if (selectedStudent) loadExistingData(selectedStudent);
+        });
+        
+        document.getElementById('sessionSelect').addEventListener('change', function() {
+            if (selectedStudent) loadExistingData(selectedStudent);
+        });
+    </script>
+</body>
+</html>

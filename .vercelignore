@@ -1,0 +1,51 @@
+# Flutter app (not needed for web deployment)
+flutter_app/
+
+# Node modules (will be installed by Vercel)
+node_modules/
+
+# Build artifacts
+build/
+dist/
+.next/
+
+# Logs
+logs/
+*.log
+
+# Environment files
+.env
+.env.local
+.env.production
+
+# IDE files
+.vscode/
+.idea/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Git
+.git/
+.gitignore
+
+# Documentation files (not needed for deployment)
+*.md
+!README.md
+
+# Scripts (not needed for deployment)
+scripts/
+*.sh
+
+# Database files (not needed for deployment)
+*.sql
+*.db
+
+# Import scripts (not needed for deployment)
+import-*.js
+create-*.js
+update-*.js
+verify-*.js
+clean-*.js
+database-*.js

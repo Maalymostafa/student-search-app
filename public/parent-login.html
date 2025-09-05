@@ -126,27 +126,190 @@
     </div>
 
     <script>
-        document.getElementById('parentLoginForm').addEventListener('submit', async function(e) {
-            e.preventDefault();
-            const parentPhone = document.getElementById('parentPhone').value;
-            
-            try {
-                const response = await fetch('/api/parent-login', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ parent_phone: parentPhone })
-                });
+        // Enhanced Parent Login with Security
+        let loginAttempts = 0;
+        const maxLoginAttempts = 5;
+        const lockoutDuration = 15 * 60 * 1000; // 15 minutes
 
-                const result = await response.json();
-                if (result.success) {
-                    window.location.href = `/parent-dashboard?phone=${parentPhone}`;
+        function handleParentLogin(event) {
+            event.preventDefault();
+            
+            const parentEmail = document.getElementById('parentEmail').value.trim();
+            const password = document.getElementById('parentPassword').value;
+            const studentCode = document.getElementById('studentCode').value.trim();
+            const rememberMe = document.getElementById('rememberMe').checked;
+            
+            // Check if account is locked
+            if (isAccountLocked(parentEmail)) {
+                showError('Account temporarily locked due to multiple failed attempts. Please try again in 15 minutes.');
+                return;
+            }
+            
+            // Validate inputs
+            if (!parentEmail || !password || !studentCode) {
+                showError('Please fill in all required fields.');
+                return;
+            }
+            
+            // Validate email format
+            if (!isValidEmail(parentEmail)) {
+                showError('Please enter a valid email address.');
+                return;
+            }
+            
+            // Show loading state
+            showLoading(true);
+            
+            // Simulate secure login (in real app, this would be an API call)
+            setTimeout(() => {
+                if (authenticateParent(parentEmail, password, studentCode)) {
+                    // Successful login
+                    loginAttempts = 0;
+                    clearLockout(parentEmail);
+                    
+                    // Store session data
+                    const sessionData = {
+                        parentEmail: parentEmail,
+                        studentCode: studentCode,
+                        loginTime: new Date().toISOString(),
+                        rememberMe: rememberMe
+                    };
+                    
+                    if (rememberMe) {
+                        localStorage.setItem('parentSession', JSON.stringify(sessionData));
+                    } else {
+                        sessionStorage.setItem('parentSession', JSON.stringify(sessionData));
+                    }
+                    
+                    // Redirect to parent dashboard
+                    window.location.href = `/parent-dashboard?email=${encodeURIComponent(parentEmail)}&code=${studentCode}`;
                 } else {
-                    document.getElementById('errorMessage').textContent = result.message || 'Invalid phone number';
-                    document.getElementById('errorMessage').style.display = 'block';
+                    // Failed login
+                    loginAttempts++;
+                    if (loginAttempts >= maxLoginAttempts) {
+                        lockAccount(parentEmail);
+                        showError('Too many failed attempts. Account locked for 15 minutes.');
+                    } else {
+                        showError(`Invalid credentials. ${maxLoginAttempts - loginAttempts} attempts remaining.`);
+                    }
+                    showLoading(false);
                 }
-            } catch (error) {
-                document.getElementById('errorMessage').textContent = 'Connection error. Please try again.';
-                document.getElementById('errorMessage').style.display = 'block';
+            }, 1500);
+        }
+
+        function authenticateParent(email, password, studentCode) {
+            // Simulate authentication (replace with real API call)
+            const validParents = {
+                'parent1@school.com': { 
+                    password: 'parent123', 
+                    children: ['G4001', 'G4002'],
+                    name: 'أحمد علي'
+                },
+                'parent2@school.com': { 
+                    password: 'parent456', 
+                    children: ['G4003'],
+                    name: 'فاطمة محمد'
+                }
+            };
+            
+            const parent = validParents[email];
+            if (!parent || parent.password !== password) {
+                return false;
+            }
+            
+            // Check if student code belongs to this parent
+            return parent.children.includes(studentCode);
+        }
+
+        function isValidEmail(email) {
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return emailRegex.test(email);
+        }
+
+        function isAccountLocked(email) {
+            const lockoutData = localStorage.getItem(`lockout_${email}`);
+            if (!lockoutData) return false;
+            
+            const { lockoutTime } = JSON.parse(lockoutData);
+            const now = Date.now();
+            
+            if (now - lockoutTime > lockoutDuration) {
+                // Lockout expired
+                clearLockout(email);
+                return false;
+            }
+            
+            return true;
+        }
+
+        function lockAccount(email) {
+            const lockoutData = {
+                lockoutTime: Date.now(),
+                attempts: loginAttempts
+            };
+            localStorage.setItem(`lockout_${email}`, JSON.stringify(lockoutData));
+        }
+
+        function clearLockout(email) {
+            localStorage.removeItem(`lockout_${email}`);
+        }
+
+        function showLoading(show) {
+            const loginBtn = document.querySelector('.login-btn');
+            if (show) {
+                loginBtn.innerHTML = '🔒 Verifying...';
+                loginBtn.disabled = true;
+            } else {
+                loginBtn.innerHTML = '🔓 Access Parent Portal';
+                loginBtn.disabled = false;
+            }
+        }
+
+        function showError(message) {
+            // Create or update error display
+            let errorDiv = document.querySelector('.error-message');
+            if (!errorDiv) {
+                errorDiv = document.createElement('div');
+                errorDiv.className = 'error-message';
+                document.querySelector('.login-form').insertBefore(errorDiv, document.querySelector('.login-btn'));
+            }
+            
+            errorDiv.innerHTML = `❌ ${message}`;
+            errorDiv.style.display = 'block';
+            
+            // Auto-hide after 5 seconds
+            setTimeout(() => {
+                errorDiv.style.display = 'none';
+            }, 5000);
+        }
+
+        function showForgotPassword() {
+            alert('Password Reset:\n\nContact your school administrator to reset your password.\n\nFor security reasons, passwords cannot be reset through this interface.');
+        }
+
+        function showHelp() {
+            alert('Need Help?\n\n1. Make sure you\'re using the correct email address\n2. Check that your password is correct\n3. Verify your child\'s student code\n4. Contact your school if you continue having issues\n\nSupport: support@school.com');
+        }
+
+        // Check for existing session on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            const sessionData = localStorage.getItem('parentSession') || sessionStorage.getItem('parentSession');
+            if (sessionData) {
+                const session = JSON.parse(sessionData);
+                const now = new Date();
+                const loginTime = new Date(session.loginTime);
+                
+                // Check if session is still valid (24 hours for remember me, 8 hours for regular)
+                const maxSessionTime = session.rememberMe ? 24 * 60 * 60 * 1000 : 8 * 60 * 60 * 1000;
+                
+                if (now - loginTime < maxSessionTime) {
+                    // Auto-login
+                    window.location.href = `/parent-dashboard?email=${encodeURIComponent(session.parentEmail)}&code=${session.studentCode}`;
+                } else {
+                    // Clear expired session
+                    localStorage.removeItem('parentSession');
+                    sessionStorage.removeItem('parentSession');
+                }
             }
         });
     </script>

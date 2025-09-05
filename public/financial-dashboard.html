@@ -1,0 +1,922 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Financial Dashboard - لوحة التحكم المالية</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f5f7fa;
+            min-height: 100vh;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+            color: white;
+            padding: 20px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .finance-icon {
+            font-size: 2.5rem;
+        }
+
+        .header-title {
+            font-size: 1.8rem;
+            font-weight: bold;
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .admin-info {
+            text-align: right;
+        }
+
+        .admin-name {
+            font-weight: bold;
+            font-size: 1.1rem;
+        }
+
+        .admin-role {
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+
+        .logout-btn {
+            background: rgba(255,255,255,0.2);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .logout-btn:hover {
+            background: rgba(255,255,255,0.3);
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 30px;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            text-align: center;
+            transition: transform 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .stat-icon {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #2c3e50;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            color: #666;
+            font-weight: 500;
+        }
+
+        .management-section {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+            overflow: hidden;
+        }
+
+        .section-header {
+            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+            color: white;
+            padding: 20px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .section-title {
+            font-size: 1.3rem;
+            font-weight: bold;
+        }
+
+        .add-btn {
+            background: #27ae60;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+
+        .add-btn:hover {
+            background: #229954;
+        }
+
+        .section-content {
+            padding: 30px;
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        .data-table th,
+        .data-table td {
+            padding: 12px;
+            text-align: right;
+            border-bottom: 1px solid #e1e5e9;
+        }
+
+        .data-table th {
+            background: #f8f9fa;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .data-table tr:hover {
+            background: #f8f9fa;
+        }
+
+        .action-btn {
+            padding: 6px 12px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            margin: 0 2px;
+            transition: all 0.3s ease;
+        }
+
+        .edit-btn {
+            background: #f39c12;
+            color: white;
+        }
+
+        .edit-btn:hover {
+            background: #e67e22;
+        }
+
+        .delete-btn {
+            background: #e74c3c;
+            color: white;
+        }
+
+        .delete-btn:hover {
+            background: #c0392b;
+        }
+
+        .refund-btn {
+            background: #3498db;
+            color: white;
+        }
+
+        .refund-btn:hover {
+            background: #2980b9;
+        }
+
+        .payment-status {
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+
+        .status-paid {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .status-pending {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .status-refunded {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+        }
+
+        .modal-content {
+            background-color: white;
+            margin: 5% auto;
+            padding: 0;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 600px;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+            animation: slideIn 0.3s ease-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .modal-header {
+            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+            color: white;
+            padding: 20px 30px;
+            border-radius: 15px 15px 0 0;
+        }
+
+        .modal-title {
+            font-size: 1.3rem;
+            font-weight: bold;
+        }
+
+        .modal-body {
+            padding: 30px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e1e5e9;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: #2c3e50;
+            box-shadow: 0 0 0 3px rgba(44, 62, 80, 0.1);
+        }
+
+        .form-select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e1e5e9;
+            border-radius: 8px;
+            font-size: 1rem;
+            background: white;
+        }
+
+        .modal-footer {
+            padding: 20px 30px;
+            border-top: 1px solid #e9ecef;
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background: #2c3e50;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #34495e;
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #5a6268;
+        }
+
+        .btn-success {
+            background: #27ae60;
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: #229954;
+        }
+
+        .close {
+            color: white;
+            float: left;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .close:hover {
+            opacity: 0.7;
+        }
+
+        .payment-upload {
+            border: 2px dashed #e1e5e9;
+            border-radius: 8px;
+            padding: 30px;
+            text-align: center;
+            margin-bottom: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .payment-upload:hover {
+            border-color: #2c3e50;
+            background: #f8f9fa;
+        }
+
+        .payment-upload input[type="file"] {
+            display: none;
+        }
+
+        .upload-label {
+            cursor: pointer;
+            color: #2c3e50;
+            font-weight: bold;
+        }
+
+        .upload-icon {
+            font-size: 3rem;
+            margin-bottom: 15px;
+        }
+
+        .refund-calculator {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 20px;
+        }
+
+        .refund-result {
+            background: #e8f5e8;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 15px;
+            font-weight: bold;
+            color: #155724;
+        }
+
+        .ai-recognition {
+            background: #e3f2fd;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 15px;
+        }
+
+        .ai-result {
+            background: #fff3cd;
+            padding: 10px;
+            border-radius: 6px;
+            margin-top: 10px;
+            font-family: monospace;
+        }
+
+        @media (max-width: 768px) {
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .data-table {
+                font-size: 0.9rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="header-left">
+            <div class="finance-icon">💰</div>
+            <div class="header-title">Financial Dashboard</div>
+        </div>
+        <div class="header-right">
+            <div class="admin-info">
+                <div class="admin-name" id="adminName">Administrator</div>
+                <div class="admin-role">Financial Manager</div>
+            </div>
+            <button class="logout-btn" onclick="logout()">Logout</button>
+        </div>
+    </div>
+
+    <div class="container">
+        <!-- Financial Statistics -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-icon">💵</div>
+                <div class="stat-number" id="totalRevenue">$12,450</div>
+                <div class="stat-label">Total Revenue</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">🏢</div>
+                <div class="stat-number" id="companyShare">$1,245</div>
+                <div class="stat-label">Company Share (10%)</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">👨‍🏫</div>
+                <div class="stat-number" id="teacherShare">$11,205</div>
+                <div class="stat-label">Teacher Share (90%)</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">🔄</div>
+                <div class="stat-number" id="pendingRefunds">$320</div>
+                <div class="stat-label">Pending Refunds</div>
+            </div>
+        </div>
+
+        <!-- Payment Recognition -->
+        <div class="management-section">
+            <div class="section-header">
+                <div class="section-title">AI Payment Recognition - التعرف على المدفوعات</div>
+                <button class="add-btn" onclick="openModal('payment')">+ Add Payment</button>
+            </div>
+            <div class="section-content">
+                <div class="payment-upload">
+                    <input type="file" id="paymentImage" accept="image/*" onchange="processPaymentImage(event)">
+                    <label for="paymentImage" class="upload-label">
+                        <div class="upload-icon">📸</div>
+                        <div>Click to upload payment screenshot</div>
+                        <div style="font-size: 0.9rem; color: #666; margin-top: 10px;">
+                            AI will automatically extract amount and transfer number
+                        </div>
+                    </label>
+                </div>
+                
+                <div id="aiRecognition" class="ai-recognition" style="display: none;">
+                    <h4>🤖 AI Recognition Results:</h4>
+                    <div id="aiResult" class="ai-result">
+                        Processing image...
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Student Payments -->
+        <div class="management-section">
+            <div class="section-header">
+                <div class="section-title">Student Payments - مدفوعات الطلاب</div>
+                <button class="add-btn" onclick="openModal('student')">+ Add Student Payment</button>
+            </div>
+            <div class="section-content">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Student</th>
+                            <th>Amount</th>
+                            <th>Teacher</th>
+                            <th>Teacher Share</th>
+                            <th>Company Share</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="paymentsTable">
+                        <!-- Payments data will be populated here -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Refund Management -->
+        <div class="management-section">
+            <div class="section-header">
+                <div class="section-title">Refund Management - إدارة الاسترداد</div>
+            </div>
+            <div class="section-content">
+                <div class="refund-calculator">
+                    <h4>💰 Refund Calculator</h4>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 15px;">
+                        <div class="form-group">
+                            <label class="form-label">Original Payment Amount</label>
+                            <input type="number" class="form-input" id="originalAmount" placeholder="Enter amount" oninput="calculateRefund()">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Sessions Completed</label>
+                            <select class="form-select" id="sessionsCompleted" onchange="calculateRefund()">
+                                <option value="0">0 sessions</option>
+                                <option value="1">1 session</option>
+                                <option value="2">2 sessions</option>
+                                <option value="3">3 sessions</option>
+                                <option value="4">4 sessions (no refund)</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div id="refundResult" class="refund-result" style="display: none;">
+                        <!-- Refund calculation result will appear here -->
+                    </div>
+                </div>
+                
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Student</th>
+                            <th>Original Amount</th>
+                            <th>Sessions Completed</th>
+                            <th>Refund Amount</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="refundsTable">
+                        <!-- Refunds data will be populated here -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal for Add/Edit -->
+    <div id="modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <span class="close" onclick="closeModal()">&times;</span>
+                <div class="modal-title" id="modalTitle">Add Payment</div>
+            </div>
+            <div class="modal-body">
+                <form id="modalForm">
+                    <div id="modalFields">
+                        <!-- Form fields will be dynamically generated -->
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeModal()">Cancel</button>
+                <button class="btn btn-primary" onclick="saveItem()">Save</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Sample data (in real app, this would come from database)
+        let payments = [
+            { 
+                id: 1, 
+                student: 'أحمد علي حسن', 
+                amount: 120, 
+                teacher: 'محمد عمر', 
+                teacherShare: 108, 
+                companyShare: 12, 
+                status: 'Paid',
+                transferNumber: 'TRX123456'
+            },
+            { 
+                id: 2, 
+                student: 'فاطمة محمد', 
+                amount: 100, 
+                teacher: 'علي أحمد', 
+                teacherShare: 90, 
+                companyShare: 10, 
+                status: 'Pending',
+                transferNumber: 'TRX789012'
+            }
+        ];
+
+        let refunds = [
+            {
+                id: 1,
+                student: 'يوسف حسن',
+                originalAmount: 120,
+                sessionsCompleted: 1,
+                refundAmount: 90,
+                status: 'Pending'
+            }
+        ];
+
+        let currentModalType = '';
+        let editingItem = null;
+
+        // Initialize dashboard
+        document.addEventListener('DOMContentLoaded', function() {
+            if (localStorage.getItem('adminLoggedIn') !== 'true') {
+                window.location.href = '/admin-login';
+                return;
+            }
+
+            const adminUsername = localStorage.getItem('adminUsername') || 'Administrator';
+            document.getElementById('adminName').textContent = adminUsername;
+
+            updateStats();
+            populateTables();
+        });
+
+        function updateStats() {
+            const totalRevenue = payments.reduce((sum, payment) => sum + payment.amount, 0);
+            const companyShare = totalRevenue * 0.1;
+            const teacherShare = totalRevenue * 0.9;
+            const pendingRefunds = refunds.reduce((sum, refund) => sum + refund.refundAmount, 0);
+
+            document.getElementById('totalRevenue').textContent = `$${totalRevenue.toLocaleString()}`;
+            document.getElementById('companyShare').textContent = `$${companyShare.toLocaleString()}`;
+            document.getElementById('teacherShare').textContent = `$${teacherShare.toLocaleString()}`;
+            document.getElementById('pendingRefunds').textContent = `$${pendingRefunds.toLocaleString()}`;
+        }
+
+        function populateTables() {
+            populatePaymentsTable();
+            populateRefundsTable();
+        }
+
+        function populatePaymentsTable() {
+            const tbody = document.getElementById('paymentsTable');
+            tbody.innerHTML = '';
+
+            payments.forEach(payment => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${payment.student}</td>
+                    <td>$${payment.amount}</td>
+                    <td>${payment.teacher}</td>
+                    <td>$${payment.teacherShare}</td>
+                    <td>$${payment.companyShare}</td>
+                    <td><span class="payment-status status-${payment.status.toLowerCase()}">${payment.status}</span></td>
+                    <td>
+                        <button class="action-btn edit-btn" onclick="editItem('payment', ${payment.id})">Edit</button>
+                        <button class="action-btn refund-btn" onclick="initiateRefund(${payment.id})">Refund</button>
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
+        function populateRefundsTable() {
+            const tbody = document.getElementById('refundsTable');
+            tbody.innerHTML = '';
+
+            refunds.forEach(refund => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${refund.student}</td>
+                    <td>$${refund.originalAmount}</td>
+                    <td>${refund.sessionsCompleted} sessions</td>
+                    <td>$${refund.refundAmount}</td>
+                    <td><span class="payment-status status-${refund.status.toLowerCase()}">${refund.status}</span></td>
+                    <td>
+                        <button class="action-btn edit-btn" onclick="processRefund(${refund.id})">Process</button>
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
+        // AI Payment Recognition
+        function processPaymentImage(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const aiRecognition = document.getElementById('aiRecognition');
+            const aiResult = document.getElementById('aiResult');
+            
+            aiRecognition.style.display = 'block';
+            aiResult.textContent = 'Processing image with AI...';
+
+            // Simulate AI processing (in real app, this would use OCR/AI service)
+            setTimeout(() => {
+                const mockResults = {
+                    amount: Math.floor(Math.random() * 200) + 50,
+                    transferNumber: 'TRX' + Math.random().toString(36).substr(2, 8).toUpperCase(),
+                    confidence: (Math.random() * 20 + 80).toFixed(1)
+                };
+
+                aiResult.innerHTML = `
+                    <strong>Amount Detected:</strong> $${mockResults.amount}<br>
+                    <strong>Transfer Number:</strong> ${mockResults.transferNumber}<br>
+                    <strong>Confidence:</strong> ${mockResults.confidence}%<br>
+                    <button class="btn btn-success" onclick="useAIData(${mockResults.amount}, '${mockResults.transferNumber}')" style="margin-top: 10px;">
+                        Use This Data
+                    </button>
+                `;
+            }, 2000);
+        }
+
+        function useAIData(amount, transferNumber) {
+            // Auto-fill payment form with AI data
+            openModal('payment');
+            setTimeout(() => {
+                const amountField = document.getElementById('paymentAmount');
+                const transferField = document.getElementById('transferNumber');
+                if (amountField) amountField.value = amount;
+                if (transferField) transferField.value = transferNumber;
+            }, 100);
+        }
+
+        // Refund Calculator
+        function calculateRefund() {
+            const originalAmount = parseFloat(document.getElementById('originalAmount').value) || 0;
+            const sessionsCompleted = parseInt(document.getElementById('sessionsCompleted').value) || 0;
+            
+            if (originalAmount === 0) {
+                document.getElementById('refundResult').style.display = 'none';
+                return;
+            }
+
+            let refundPercentage = 0;
+            if (sessionsCompleted === 0) refundPercentage = 100;
+            else if (sessionsCompleted === 1) refundPercentage = 75;
+            else if (sessionsCompleted === 2) refundPercentage = 50;
+            else if (sessionsCompleted === 3) refundPercentage = 25;
+            else refundPercentage = 0;
+
+            const refundAmount = (originalAmount * refundPercentage) / 100;
+            const sessionsRemaining = 4 - sessionsCompleted;
+
+            document.getElementById('refundResult').innerHTML = `
+                <strong>Refund Calculation:</strong><br>
+                Original Amount: $${originalAmount}<br>
+                Sessions Completed: ${sessionsCompleted}/4<br>
+                Sessions Remaining: ${sessionsRemaining}<br>
+                Refund Percentage: ${refundPercentage}%<br>
+                <strong>Refund Amount: $${refundAmount.toFixed(2)}</strong>
+            `;
+            document.getElementById('refundResult').style.display = 'block';
+        }
+
+        // Modal functions
+        function openModal(type) {
+            currentModalType = type;
+            const modal = document.getElementById('modal');
+            const modalTitle = document.getElementById('modalTitle');
+            const modalFields = document.getElementById('modalFields');
+
+            if (type === 'payment') {
+                modalTitle.textContent = 'Add Payment';
+                modalFields.innerHTML = `
+                    <div class="form-group">
+                        <label class="form-label">Student Name</label>
+                        <input type="text" class="form-input" id="studentName" placeholder="Enter student name">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Payment Amount</label>
+                        <input type="number" class="form-input" id="paymentAmount" placeholder="Enter amount">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Teacher</label>
+                        <select class="form-select" id="teacherSelect">
+                            <option value="">Select Teacher</option>
+                            <option value="محمد عمر">محمد عمر</option>
+                            <option value="علي أحمد">علي أحمد</option>
+                            <option value="فاطمة علي">فاطمة علي</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Transfer Number</label>
+                        <input type="text" class="form-input" id="transferNumber" placeholder="Enter transfer number">
+                    </div>
+                `;
+            }
+
+            modal.style.display = 'block';
+        }
+
+        function closeModal() {
+            document.getElementById('modal').style.display = 'none';
+            currentModalType = '';
+            editingItem = null;
+        }
+
+        function saveItem() {
+            if (currentModalType === 'payment') {
+                const studentName = document.getElementById('studentName').value;
+                const amount = parseFloat(document.getElementById('paymentAmount').value);
+                const teacher = document.getElementById('teacherSelect').value;
+                const transferNumber = document.getElementById('transferNumber').value;
+
+                if (!studentName || !amount || !teacher || !transferNumber) {
+                    alert('Please fill all fields');
+                    return;
+                }
+
+                const newPayment = {
+                    id: payments.length + 1,
+                    student: studentName,
+                    amount: amount,
+                    teacher: teacher,
+                    teacherShare: amount * 0.9,
+                    companyShare: amount * 0.1,
+                    status: 'Paid',
+                    transferNumber: transferNumber
+                };
+
+                payments.push(newPayment);
+                populatePaymentsTable();
+                updateStats();
+                closeModal();
+            }
+        }
+
+        function initiateRefund(paymentId) {
+            const payment = payments.find(p => p.id === paymentId);
+            if (!payment) return;
+
+            const refundAmount = prompt(`Enter refund amount for ${payment.student} (original: $${payment.amount}):`);
+            if (refundAmount && !isNaN(refundAmount)) {
+                const newRefund = {
+                    id: refunds.length + 1,
+                    student: payment.student,
+                    originalAmount: payment.amount,
+                    sessionsCompleted: 0,
+                    refundAmount: parseFloat(refundAmount),
+                    status: 'Pending'
+                };
+
+                refunds.push(newRefund);
+                populateRefundsTable();
+                updateStats();
+            }
+        }
+
+        function processRefund(refundId) {
+            const refund = refunds.find(r => r.id === refundId);
+            if (!refund) return;
+
+            if (confirm(`Process refund of $${refund.refundAmount} for ${refund.student}?`)) {
+                refund.status = 'Processed';
+                populateRefundsTable();
+                updateStats();
+            }
+        }
+
+        function logout() {
+            localStorage.removeItem('adminLoggedIn');
+            localStorage.removeItem('adminUsername');
+            window.location.href = '/admin-login';
+        }
+
+        // Close modal when clicking outside
+        window.onclick = function(event) {
+            const modal = document.getElementById('modal');
+            if (event.target === modal) {
+                closeModal();
+            }
+        }
+    </script>
+</body>
+</html>

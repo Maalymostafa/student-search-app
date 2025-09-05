@@ -1,0 +1,107 @@
+{
+  "version": 2,
+  "builds": [
+    {
+      "src": "server.js",
+      "use": "@vercel/node"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/api/(.*)",
+      "dest": "/server.js"
+    },
+    {
+      "src": "/",
+      "dest": "/server.js"
+    },
+    {
+      "src": "/working-student-login",
+      "dest": "/server.js"
+    },
+    {
+      "src": "/student-login",
+      "dest": "/server.js"
+    },
+    {
+      "src": "/student-results",
+      "dest": "/server.js"
+    },
+    {
+      "src": "/parent-login",
+      "dest": "/server.js"
+    },
+    {
+      "src": "/parent-dashboard",
+      "dest": "/server.js"
+    },
+    {
+      "src": "/subject-selection",
+      "dest": "/server.js"
+    },
+    {
+      "src": "/subject-results",
+      "dest": "/server.js"
+    },
+    {
+      "src": "/test-subject-selection",
+      "dest": "/server.js"
+    },
+    {
+      "src": "/demo",
+      "dest": "/server.js"
+    },
+    {
+      "src": "/admin-login",
+      "dest": "/server.js"
+    },
+    {
+      "src": "/admin-dashboard",
+      "dest": "/server.js"
+    },
+    {
+      "src": "/assistant-data-entry",
+      "dest": "/server.js"
+    },
+    {
+      "src": "/assistant-login",
+      "dest": "/server.js"
+    },
+    {
+      "src": "/teacher-login",
+      "dest": "/server.js"
+    },
+    {
+      "src": "/teacher-dashboard",
+      "dest": "/server.js"
+    },
+    {
+      "src": "/financial-dashboard",
+      "dest": "/server.js"
+    },
+    {
+      "src": "/quiz-interface",
+      "dest": "/server.js"
+    },
+    {
+      "src": "/student-quiz-selection",
+      "dest": "/server.js"
+    },
+    {
+      "src": "/student-quiz",
+      "dest": "/server.js"
+    },
+    {
+      "src": "/test-quiz",
+      "dest": "/server.js"
+    },
+    {
+      "src": "/register",
+      "dest": "/server.js"
+    },
+    {
+      "src": "/site-map",
+      "dest": "/server.js"
+    }
+  ]
+}

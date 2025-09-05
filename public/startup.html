@@ -236,6 +236,65 @@
                 opacity: 0;
             }
         }
+
+        /* Hero Section */
+        .hero-section {
+            text-align: center;
+            padding: 50px 40px;
+            background: #f8f9fa;
+            border-radius: 30px;
+            margin: 30px 40px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+
+        .hero-section h1 {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 15px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .hero-section p {
+            font-size: 1.2rem;
+            color: #666;
+            margin-bottom: 30px;
+            line-height: 1.8;
+        }
+
+        .site-map-link {
+            display: inline-block;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px 30px;
+            border-radius: 25px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .site-map-link:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .site-map-desc {
+            font-size: 0.9rem;
+            color: #888;
+            margin-top: 10px;
+        }
+
+        @media (max-width: 768px) {
+            .hero-section {
+                padding: 30px 20px;
+                margin: 20px 20px;
+            }
+            .hero-section h1 {
+                font-size: 2rem;
+            }
+        }
     </style>
 </head>
 <body>
@@ -248,6 +307,19 @@
                        <h1 class="logo-text">Student Management System</h1>
                        <p class="logo-subtitle">نظام إدارة الطلاب المتقدم</p>
                    </div>
+        </div>
+
+        <div class="hero-section">
+            <h1>🎓 Student Search & Management System</h1>
+            <p>Comprehensive educational platform for students, parents, teachers, and administrators</p>
+            
+            <!-- Site Map Link -->
+            <div class="site-map-link">
+                <a href="/site-map" target="_blank" class="site-map-btn">
+                    🗺️ View Complete Site Map
+                </a>
+                <p class="site-map-desc">See all features, routes, and capabilities</p>
+            </div>
         </div>
 
         <div class="login-options">

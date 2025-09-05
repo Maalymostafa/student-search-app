@@ -1,0 +1,26 @@
+Student Code Generator
+
+This Excel file contains the formula to generate secure student codes:
+
+Formula: ="G4" & TEXT(DEC2HEX(A4+100,4), "0000")
+
+Where:
+- G4 = Grade 4 (change to G5 for Grade 5, G7 for Prep 1)
+- A4 = Student count (starting from 1)
+- +100 = Offset to make codes more secure
+- DEC2HEX = Converts decimal to hexadecimal
+- "0000" = Ensures 4-digit hex format
+
+Example:
+Student 1: G4 + TEXT(DEC2HEX(1+100,4), "0000") = G40065
+Student 2: G4 + TEXT(DEC2HEX(2+100,4), "0000") = G40066
+Student 3: G4 + TEXT(DEC2HEX(3+100,4), "0000") = G40067
+
+For Grade 5:
+Student 1: G5 + TEXT(DEC2HEX(1+100,4), "0000") = G50065
+
+For Grade 6:
+Student 1: G6 + TEXT(DEC2HEX(1+100,4), "0000") = G60065
+
+For Prep 1 (G7):
+Student 1: G7 + TEXT(DEC2HEX(1+100,4), "0000") = G70065

@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Search App - Complete Site Map</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 20px;
+            background: #f5f7fa;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 30px;
+            border-bottom: 3px solid #3498db;
+            padding-bottom: 15px;
+        }
+        .site-map {
+            font-family: 'Courier New', monospace;
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            border: 1px solid #e9ecef;
+            white-space: pre-wrap;
+            line-height: 1.6;
+            font-size: 14px;
+            overflow-x: auto;
+        }
+        .export-buttons {
+            text-align: center;
+            margin: 30px 0;
+        }
+        .btn {
+            padding: 12px 24px;
+            margin: 0 10px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+        .btn-pdf {
+            background: #e74c3c;
+            color: white;
+        }
+        .btn-pdf:hover {
+            background: #c0392b;
+        }
+        .btn-excel {
+            background: #27ae60;
+            color: white;
+        }
+        .btn-excel:hover {
+            background: #229954;
+        }
+        .summary {
+            background: #e8f4f8;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border-left: 4px solid #3498db;
+        }
+        .summary h3 {
+            color: #2c3e50;
+            margin-top: 0;
+        }
+        .summary ul {
+            margin: 10px 0;
+            padding-left: 20px;
+        }
+        .summary li {
+            margin: 5px 0;
+        }
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+        }
+        .feature-card {
+            background: white;
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .feature-card h4 {
+            color: #2c3e50;
+            margin-top: 0;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 10px;
+        }
+        .status-complete { color: #27ae60; font-weight: bold; }
+        .status-partial { color: #f39c12; font-weight: bold; }
+        .status-missing { color: #e74c3c; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🌐 Student Search App - Complete Site Map & Feature Analysis</h1>
+        
+        <div class="summary">
+            <h3>📊 Application Overview</h3>
+            <ul>
+                <li><strong>Total Pages:</strong> 20+ HTML pages</li>
+                <li><strong>User Roles:</strong> 5 (Admin, Teacher, Assistant, Student, Parent)</li>
+                <li><strong>Main Features:</strong> Student Search, Quiz Management, Financial Management, Reports</li>
+                <li><strong>Database:</strong> Supabase/Firebase with fallback to mock data</li>
+                <li><strong>Deployment:</strong> Vercel with Node.js backend</li>
+            </ul>
+        </div>
+
+        <div class="export-buttons">
+            <button class="btn btn-pdf" onclick="exportToPDF()">📄 Export to PDF</button>
+            <button class="btn btn-excel" onclick="exportToExcel()">📊 Export to Excel</button>
+        </div>
+
+        <div class="feature-grid">
+            <div class="feature-card">
+                <h4>🔐 Authentication System</h4>
+                <p><span class="status-complete">✅ Complete</span></p>
+                <ul>
+                    <li>Admin Login</li>
+                    <li>Teacher Login</li>
+                    <li>Assistant Login</li>
+                    <li>Student Login</li>
+                    <li>Parent Login</li>
+                    <li>Registration System</li>
+                </ul>
+            </div>
+
+            <div class="feature-card">
+                <h4>👨‍💼 Admin Dashboard</h4>
+                <p><span class="status-complete">✅ Complete</span></p>
+                <ul>
+                    <li>Student Management</li>
+                    <li>Quiz Management</li>
+                    <li>Payment & Refunds</li>
+                    <li>Monthly Notifications</li>
+                    <li>Password Management</li>
+                </ul>
+            </div>
+
+            <div class="feature-card">
+                <h4>👩‍🏫 Teacher Dashboard</h4>
+                <p><span class="status-complete">✅ Complete</span></p>
+                <ul>
+                    <li>Quiz Creation & Management</li>
+                    <li>Assignment Creation</li>
+                    <li>Comprehensive Reports</li>
+                    <li>Student Grade Management</li>
+                    <li>Excel Template System</li>
+                </ul>
+            </div>
+
+            <div class="feature-card">
+                <h4>🎯 Quiz System</h4>
+                <p><span class="status-complete">✅ Complete</span></p>
+                <ul>
+                    <li>Quiz Interface (Kid-friendly)</li>
+                    <li>Student Quiz Selection</li>
+                    <li>Excel Template Download</li>
+                    <li>CSV Upload & Processing</li>
+                    <li>Quiz Management Table</li>
+                </ul>
+            </div>
+
+            <div class="feature-card">
+                <h4>💰 Financial Management</h4>
+                <p><span class="status-partial">⚠️ Partial</span></p>
+                <ul>
+                    <li>Payment Tracking</li>
+                    <li>Refund Calculator</li>
+                    <li>Monthly Notifications</li>
+                    <li>Assistant Payment System</li>
+                </ul>
+            </div>
+
+            <div class="feature-card">
+                <h4>📊 Reporting System</h4>
+                <p><span class="status-complete">✅ Complete</span></p>
+                <ul>
+                    <li>Performance Reports</li>
+                    <li>Attendance Reports</li>
+                    <li>Grade Summaries</li>
+                    <li>Excel/PDF Export</li>
+                    <li>Custom Date Ranges</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="site-map">
+            <h2>🌳 Complete Application Site Map</h2>
+            
+            <div class="tree-structure">
+                <div class="branch">
+                    <h3>🏠 Home & Landing</h3>
+                    <div class="leaf">📱 Main Landing Page - Multi-language support (Arabic/English), role-based navigation, responsive design</div>
+                    <div class="leaf">🔐 Login Portal - Centralized authentication hub with role selection and security features</div>
+                    <div class="leaf">📋 About & Contact - School information, contact details, and support resources</div>
+                </div>
+
+                <div class="branch">
+                    <h3>🔐 Authentication & Security</h3>
+                    <div class="leaf">👨‍🎓 Student Login - Enhanced security with password protection, account lockout, session management</div>
+                    <div class="leaf">👨‍👩‍👧‍👦 Parent Login - Multi-factor authentication (email + password + student code verification)</div>
+                    <div class="leaf">👨‍🏫 Teacher Login - Secure access with role-based permissions and session timeout</div>
+                    <div class="leaf">👨‍💼 Admin Login - Administrative access with enhanced security and audit logging</div>
+                    <div class="leaf">🔒 Security Features - Rate limiting, account lockout, session management, encrypted storage</div>
+                </div>
+
+                <div class="branch">
+                    <h3>👨‍🎓 Student Portal</h3>
+                    <div class="leaf">📊 Academic Dashboard - Grades, attendance, schedule, and performance analytics</div>
+                    <div class="leaf">🎯 Quiz System - Interactive quizzes with real-time feedback and progress tracking</div>
+                    <div class="leaf">📚 Subject Selection - Course materials, assignments, and learning resources</div>
+                    <div class="leaf">📈 Progress Reports - Detailed performance analysis and improvement suggestions</div>
+                    <div class="leaf">📱 Mobile Interface - Kid-friendly design with animations and intuitive navigation</div>
+                </div>
+
+                <div class="branch">
+                    <h3>👨‍👩‍👧‍👦 Parent Portal</h3>
+                    <div class="leaf">👶 Child Monitoring - Academic progress, attendance, behavior reports, and communication</div>
+                    <div class="leaf">📊 Performance Analytics - Detailed grade analysis, subject performance, and trends</div>
+                    <div class="leaf">📞 Teacher Communication - Direct messaging, appointment scheduling, and feedback system</div>
+                    <div class="leaf">📅 Academic Calendar - Important dates, events, and deadline notifications</div>
+                </div>
+
+                <div class="branch">
+                    <h3>👨‍🏫 Teacher Dashboard</h3>
+                    <div class="leaf">📝 Quiz Management - Create, edit, and manage quizzes with Excel template support</div>
+                    <div class="leaf">📋 Assignment System - Create assignments, track submissions, and grade student work</div>
+                    <div class="leaf">📊 Reporting Tools - Comprehensive analytics, performance reports, and data export</div>
+                    <div class="leaf">👥 Student Management - Class rosters, attendance tracking, and individual student monitoring</div>
+                    <div class="leaf">📚 Content Library - Resource management, digital materials, and curriculum tools</div>
+                </div>
+
+                <div class="branch">
+                    <h3>👨‍💼 Admin Dashboard</h3>
+                    <div class="leaf">🏫 School Management - User management, system configuration, and administrative tools</div>
+                    <div class="leaf">📊 System Analytics - Performance metrics, usage statistics, and system health monitoring</div>
+                    <div class="leaf">🔧 Advanced Integrations - SMS gateway, payment processing, Google services, and third-party APIs</div>
+                    <div class="leaf">📱 Flutter Mobile App - Cross-platform mobile application with offline capabilities and push notifications</div>
+                    <div class="leaf">🌐 Site Map Integration - Comprehensive application overview with detailed feature descriptions</div>
+                </div>
+
+                <div class="branch">
+                    <h3>🔐 Student Code System</h3>
+                    <div class="leaf">📊 Formula-Based Generation - Excel formula: =\"G4\" & TEXT(DEC2HEX(A4+100,4), \"0000\") for secure student codes</div>
+                    <div class="leaf">🏫 Grade-Based Prefixes - G4 (Grade 4), G5 (Grade 5), G7 (Prep 1) with hexadecimal numbering</div>
+                    <div class="leaf">🔒 Security Features - 100+ offset, hexadecimal conversion, and password protection for enhanced security</div>
+                    <div class="leaf">📱 Cross-Platform Support - Consistent student codes across web interface, Flutter app, and admin systems</div>
+                    <div class="leaf">🔄 Automated Generation - Excel-based system for easy student code creation and management</div>
+                </div>
+
+                <div class="branch">
+                    <h3>📱 Flutter Mobile Application</h3>
+                    <div class="leaf">🤖 Cross-Platform Support - iOS and Android compatibility with native performance and UI</div>
+                    <div class="leaf">📱 Offline Capabilities - Local data storage, offline quiz taking, and synchronization when online</div>
+                    <div class="leaf">🔔 Push Notifications - Real-time alerts for grades, assignments, and important announcements</div>
+                    <div class="leaf">🎨 Kid-Friendly Interface - Animated UI elements, colorful design, and intuitive navigation for students</div>
+                    <div class="leaf">🔐 Secure Authentication - Biometric login, secure storage, and encrypted communication</div>
+                    <div class="leaf">📊 Real-Time Updates - Live grade updates, attendance tracking, and instant communication</div>
+                </div>
+
+                <div class="branch">
+                    <h3>🔗 Advanced Integrations</h3>
+                    <div class="leaf">📱 SMS Gateway - Automated notifications, alerts, and communication via text messages</div>
+                    <div class="leaf">💳 Payment Processing - Secure payment gateway integration for fees, activities, and services</div>
+                    <div class="leaf">📅 Google Services - Calendar integration, Drive storage, and Gmail communication</div>
+                    <div class="leaf">📧 Email Marketing - Automated email campaigns, newsletters, and communication tools</div>
+                    <div class="leaf">🤖 n8n Automation - Workflow automation, scheduled tasks, and process optimization</div>
+                </div>
+
+                <div class="branch">
+                    <h3>📊 Analytics & Reporting</h3>
+                    <div class="leaf">📈 Performance Analytics - Student progress tracking, grade analysis, and trend identification</div>
+                    <div class="leaf">📊 Custom Reports - Configurable report generation with multiple formats and export options</div>
+                    <div class="leaf">🔮 Predictive Analytics - AI-powered insights, performance predictions, and intervention recommendations</div>
+                    <div class="leaf">📱 Real-Time Dashboards - Live data visualization, instant updates, and interactive charts</div>
+                </div>
+
+                <div class="branch">
+                    <h3>🔄 Workflow Automation</h3>
+                    <div class="leaf">🤖 n8n Integration - Visual workflow builder for automating administrative tasks and processes</div>
+                    <div class="leaf">⏰ Scheduled Tasks - Automated grade calculations, report generation, and notification sending</div>
+                    <div class="leaf">📧 Communication Workflows - Automated email sequences, SMS alerts, and notification management</div>
+                    <div class="leaf">📊 Data Processing - Automated data import, validation, and synchronization processes</div>
+                </div>
+
+                <div class="branch">
+                    <h3>📚 Content Management</h3>
+                    <div class="leaf">📖 Digital Library - Centralized resource repository with search, categorization, and access control</div>
+                    <div class="leaf">📋 Resource Management - File organization, version control, and collaborative editing capabilities</div>
+                    <div class="leaf">🎯 Curriculum Tools - Lesson planning, resource linking, and educational content management</div>
+                    <div class="leaf">📱 Mobile Access - Offline content access, download management, and synchronization</div>
+                </div>
+
+                <div class="branch">
+                    <h3>💬 Communication Tools</h3>
+                    <div class="leaf">💬 In-App Messaging - Real-time chat between teachers, parents, and administrators</div>
+                    <div class="leaf">📢 Announcements - School-wide notifications, important updates, and event reminders</div>
+                    <div class="leaf">📞 Video Conferencing - Virtual parent-teacher meetings and online classroom support</div>
+                    <div class="leaf">📧 Email Integration - Seamless email communication with automatic threading and organization</div>
+                </div>
+
+                <div class="branch">
+                    <h3>🔒 Security & Privacy</h3>
+                    <div class="leaf">🔐 Multi-Factor Authentication - Enhanced login security with multiple verification methods</div>
+                    <div class="leaf">🛡️ Data Encryption - End-to-end encryption for sensitive information and secure communication</div>
+                    <div class="leaf">👥 Role-Based Access - Granular permissions and access control based on user roles</div>
+                    <div class="leaf">📊 Audit Logging - Comprehensive activity tracking and security event monitoring</div>
+                    <div class="leaf">🔒 GDPR Compliance - Data protection, privacy controls, and regulatory compliance features</div>
+                </div>
+
+                <div class="branch">
+                    <h3>📱 Mobile & Responsive</h3>
+                    <div class="leaf">📱 Progressive Web App - Offline functionality, push notifications, and app-like experience</div>
+                    <div class="leaf">🎨 Responsive Design - Optimized layouts for all device sizes and screen orientations</div>
+                    <div class="leaf">🚀 Performance Optimization - Fast loading, efficient data handling, and smooth animations</div>
+                    <div class="leaf">📱 Native App Features - Camera integration, file uploads, and device-specific functionality</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.29/jspdf.plugin.autotable.min.js"></script>
+    <script>
+        function exportToPDF() {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+            
+            // Add title
+            doc.setFontSize(20);
+            doc.text('Student Search App - Complete Site Map', 20, 20);
+            
+            // Add content
+            doc.setFontSize(12);
+            const content = document.getElementById('siteMap').textContent;
+            const splitContent = doc.splitTextToSize(content, 170);
+            
+            let yPosition = 40;
+            for (let i = 0; i < splitContent.length; i++) {
+                if (yPosition > 280) {
+                    doc.addPage();
+                    yPosition = 20;
+                }
+                doc.text(splitContent[i], 20, yPosition);
+                yPosition += 7;
+            }
+            
+            // Save the PDF
+            doc.save('student-search-app-sitemap.pdf');
+        }
+        
+        function exportToExcel() {
+            // Create CSV content
+            const content = document.getElementById('siteMap').textContent;
+            const csvContent = 'data:text/csv;charset=utf-8,' + encodeURIComponent(content);
+            
+            // Create download link
+            const link = document.createElement('a');
+            link.setAttribute('href', csvContent);
+            link.setAttribute('download', 'student-search-app-sitemap.csv');
+            link.style.visibility = 'hidden';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+    </script>
+</body>
+</html>

@@ -36,110 +36,110 @@ class _PerformanceTableState extends State<PerformanceTable> {
         
         // Performance table
         Container(
-          width: double.infinity,
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(AppSizes.borderRadius),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withOpacity(0.05),
-                blurRadius: 8,
-                offset: const Offset(0, 4),
-              ),
-            ],
+      width: double.infinity,
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(AppSizes.borderRadius),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.05),
+            blurRadius: 8,
+            offset: const Offset(0, 4),
           ),
-          child: SingleChildScrollView(
-            scrollDirection: Axis.horizontal,
-            child: Table(
-              border: TableBorder.all(
-                color: AppColors.inputBorderColor,
-                width: 1,
+        ],
+      ),
+      child: SingleChildScrollView(
+        scrollDirection: Axis.horizontal,
+        child: Table(
+          border: TableBorder.all(
+            color: AppColors.inputBorderColor,
+            width: 1,
+          ),
+          children: [
+                // Header row 1 - Month names
+            TableRow(
+              decoration: const BoxDecoration(
+                color: AppColors.tableHeaderColor,
               ),
               children: [
-                // Header row 1 - Month names
-                TableRow(
-                  decoration: const BoxDecoration(
-                    color: AppColors.tableHeaderColor,
+                const TableCell(
+                  child: Padding(
+                    padding: EdgeInsets.all(12),
+                    child: Text(
+                      'Month',
+                      style: AppTextStyles.tableHeader,
+                      textAlign: TextAlign.center,
+                    ),
                   ),
-                  children: [
-                    const TableCell(
-                      child: Padding(
-                        padding: EdgeInsets.all(12),
-                        child: Text(
-                          'Month',
-                          style: AppTextStyles.tableHeader,
-                          textAlign: TextAlign.center,
-                        ),
-                      ),
-                    ),
-                    const TableCell(
-                      child: Padding(
-                        padding: EdgeInsets.all(8),
-                        child: Text(
-                          'Session 1',
-                          style: AppTextStyles.tableSubHeader,
-                          textAlign: TextAlign.center,
-                        ),
-                      ),
-                    ),
-                    const TableCell(
-                      child: Padding(
-                        padding: EdgeInsets.all(8),
-                        child: Text(
-                          'Session 2',
-                          style: AppTextStyles.tableSubHeader,
-                          textAlign: TextAlign.center,
-                        ),
-                      ),
-                    ),
-                    const TableCell(
-                      child: Padding(
-                        padding: EdgeInsets.all(8),
-                        child: Text(
-                          'Session 3',
-                          style: AppTextStyles.tableSubHeader,
-                          textAlign: TextAlign.center,
-                        ),
-                      ),
-                    ),
-                    const TableCell(
-                      child: Padding(
-                        padding: EdgeInsets.all(8),
-                        child: Text(
-                          'Session 4',
-                          style: AppTextStyles.tableSubHeader,
-                          textAlign: TextAlign.center,
-                        ),
-                      ),
-                    ),
-                    const TableCell(
-                      child: Padding(
-                        padding: EdgeInsets.all(12),
-                        child: Text(
-                          'Monthly Total',
-                          style: AppTextStyles.tableHeader,
-                          textAlign: TextAlign.center,
-                        ),
-                      ),
-                    ),
-                  ],
                 ),
-                // Header row 2 - Session details
-                TableRow(
-                  decoration: const BoxDecoration(
-                    color: AppColors.tableHeaderColor,
+                const TableCell(
+                  child: Padding(
+                        padding: EdgeInsets.all(8),
+                    child: Text(
+                      'Session 1',
+                          style: AppTextStyles.tableSubHeader,
+                      textAlign: TextAlign.center,
+                    ),
                   ),
-                  children: const [
-                    TableCell(child: SizedBox.shrink()),
-                    TableCell(
-                      child: Padding(
+                ),
+                const TableCell(
+                  child: Padding(
+                        padding: EdgeInsets.all(8),
+                    child: Text(
+                      'Session 2',
+                          style: AppTextStyles.tableSubHeader,
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                ),
+                const TableCell(
+                  child: Padding(
+                        padding: EdgeInsets.all(8),
+                    child: Text(
+                      'Session 3',
+                          style: AppTextStyles.tableSubHeader,
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                ),
+                const TableCell(
+                  child: Padding(
+                        padding: EdgeInsets.all(8),
+                    child: Text(
+                      'Session 4',
+                          style: AppTextStyles.tableSubHeader,
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                ),
+                const TableCell(
+                  child: Padding(
+                    padding: EdgeInsets.all(12),
+                    child: Text(
+                          'Monthly Total',
+                      style: AppTextStyles.tableHeader,
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+                // Header row 2 - Session details
+            TableRow(
+              decoration: const BoxDecoration(
+                color: AppColors.tableHeaderColor,
+              ),
+              children: const [
+                TableCell(child: SizedBox.shrink()),
+                TableCell(
+                  child: Padding(
                         padding: EdgeInsets.all(4),
                         child: Column(
-                          children: [
-                            Text('Att.', style: AppTextStyles.tableSubHeader, fontSize: 12),
-                            Text('Q1', style: AppTextStyles.tableSubHeader, fontSize: 12),
-                            Text('Q2', style: AppTextStyles.tableSubHeader, fontSize: 12),
-                            Text('Quiz', style: AppTextStyles.tableSubHeader, fontSize: 12),
+                          children: const [
+                            Text('Att.', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w500, color: Colors.grey)),
+                            Text('Q1', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w500, color: Colors.grey)),
+                            Text('Q2', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w500, color: Colors.grey)),
+                            Text('Quiz', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w500, color: Colors.grey)),
                           ],
                         ),
                       ),
@@ -148,11 +148,11 @@ class _PerformanceTableState extends State<PerformanceTable> {
                       child: Padding(
                         padding: EdgeInsets.all(4),
                         child: Column(
-                          children: [
-                            Text('Att.', style: AppTextStyles.tableSubHeader, fontSize: 12),
-                            Text('Q1', style: AppTextStyles.tableSubHeader, fontSize: 12),
-                            Text('Q2', style: AppTextStyles.tableSubHeader, fontSize: 12),
-                            Text('Quiz', style: AppTextStyles.tableSubHeader, fontSize: 12),
+                          children: const [
+                            Text('Att.', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w500, color: Colors.grey)),
+                            Text('Q1', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w500, color: Colors.grey)),
+                            Text('Q2', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w500, color: Colors.grey)),
+                            Text('Quiz', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w500, color: Colors.grey)),
                           ],
                         ),
                       ),
@@ -161,11 +161,24 @@ class _PerformanceTableState extends State<PerformanceTable> {
                       child: Padding(
                         padding: EdgeInsets.all(4),
                         child: Column(
-                          children: [
-                            Text('Att.', style: AppTextStyles.tableSubHeader, fontSize: 12),
-                            Text('Q1', style: AppTextStyles.tableSubHeader, fontSize: 12),
-                            Text('Q2', style: AppTextStyles.tableSubHeader, fontSize: 12),
-                            Text('Quiz', style: AppTextStyles.tableSubHeader, fontSize: 12),
+                          children: const [
+                            Text('Att.', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w500, color: Colors.grey)),
+                            Text('Q1', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w500, color: Colors.grey)),
+                            Text('Q2', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w500, color: Colors.grey)),
+                            Text('Quiz', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w500, color: Colors.grey)),
+                          ],
+                    ),
+                  ),
+                ),
+                TableCell(
+                  child: Padding(
+                        padding: EdgeInsets.all(4),
+                        child: Column(
+                          children: const [
+                            Text('Att.', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w500, color: Colors.grey)),
+                            Text('Q1', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w500, color: Colors.grey)),
+                            Text('Q2', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w500, color: Colors.grey)),
+                            Text('Quiz', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w500, color: Colors.grey)),
                           ],
                         ),
                       ),
@@ -174,24 +187,11 @@ class _PerformanceTableState extends State<PerformanceTable> {
                       child: Padding(
                         padding: EdgeInsets.all(4),
                         child: Column(
-                          children: [
-                            Text('Att.', style: AppTextStyles.tableSubHeader, fontSize: 12),
-                            Text('Q1', style: AppTextStyles.tableSubHeader, fontSize: 12),
-                            Text('Q2', style: AppTextStyles.tableSubHeader, fontSize: 12),
-                            Text('Quiz', style: AppTextStyles.tableSubHeader, fontSize: 12),
-                          ],
-                        ),
-                      ),
-                    ),
-                    TableCell(
-                      child: Padding(
-                        padding: EdgeInsets.all(4),
-                        child: Column(
-                          children: [
-                            Text('Att.', style: AppTextStyles.tableSubHeader, fontSize: 12),
-                            Text('Ques.', style: AppTextStyles.tableSubHeader, fontSize: 12),
-                            Text('Quiz', style: AppTextStyles.tableSubHeader, fontSize: 12),
-                            Text('Total', style: AppTextStyles.tableSubHeader, fontSize: 12),
+                          children: const [
+                            Text('Att.', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w500, color: Colors.grey)),
+                            Text('Ques.', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w500, color: Colors.grey)),
+                            Text('Quiz', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w500, color: Colors.grey)),
+                            Text('Total', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w500, color: Colors.grey)),
                           ],
                         ),
                       ),
@@ -310,8 +310,8 @@ class _PerformanceTableState extends State<PerformanceTable> {
                   ),
                 ),
                 Row(
-                  children: [
-                    Text(
+                      children: [
+                        Text(
                       'Score: $monthScore',
                       style: const TextStyle(
                         fontWeight: FontWeight.w600,
@@ -335,10 +335,10 @@ class _PerformanceTableState extends State<PerformanceTable> {
                       ),
                     ),
                   ],
-                ),
-              ],
-            ),
-          ),
+                        ),
+                      ],
+                    ),
+                  ),
           
           // Sessions Details
           Padding(
@@ -366,8 +366,8 @@ class _PerformanceTableState extends State<PerformanceTable> {
                       // Session Header
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
+                      children: [
+                        Text(
                             'Session $session',
                             style: const TextStyle(
                               fontWeight: FontWeight.bold,
@@ -378,7 +378,7 @@ class _PerformanceTableState extends State<PerformanceTable> {
                           Container(
                             padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                             decoration: BoxDecoration(
-                              color: _getScoreColor(sessionTotal),
+                              color: _getScoreColor(sessionTotal.toInt()),
                               borderRadius: BorderRadius.circular(4),
                             ),
                             child: Text(
@@ -408,9 +408,9 @@ class _PerformanceTableState extends State<PerformanceTable> {
                           ),
                                                      Expanded(
                              child: _buildDetailItem('Quiz', quiz, 20),
-                           ),
-                        ],
-                      ),
+                        ),
+                      ],
+                    ),
                     ],
                   ),
                 );

@@ -1,11 +1,16 @@
 {
-  "buildCommand": "echo 'Using pre-built Flutter web files'",
+  "buildCommand": "flutter build web",
   "outputDirectory": "build/web",
   "framework": null,
-  "rewrites": [
+  "cleanUrls": false,
+  "routes": [
     {
-      "source": "/(.*)",
-      "destination": "/index.html"
+      "src": "/assets/(.*)",
+      "dest": "/assets/$1"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/index.html"
     }
   ],
   "headers": [
@@ -13,17 +18,12 @@
       "source": "/(.*)",
       "headers": [
         {
-          "key": "Cache-Control",
-          "value": "public, max-age=31536000, immutable"
-        }
-      ]
-    },
-    {
-      "source": "/assets/(.*)",
-      "headers": [
+          "key": "Cross-Origin-Embedder-Policy",
+          "value": "credentialless"
+        },
         {
-          "key": "Cache-Control",
-          "value": "public, max-age=31536000, immutable"
+          "key": "Cross-Origin-Opener-Policy",
+          "value": "same-origin"
         }
       ]
     }

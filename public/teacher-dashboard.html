@@ -1,0 +1,1606 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teacher Dashboard - لوحة تحكم المعلم</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f5f7fa;
+            min-height: 100vh;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #FF9800 0%, #F57C00 100%);
+            color: white;
+            padding: 20px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .teacher-icon {
+            font-size: 2.5rem;
+        }
+
+        .header-title {
+            font-size: 1.8rem;
+            font-weight: bold;
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .teacher-info {
+            text-align: right;
+        }
+
+        .teacher-name {
+            font-weight: bold;
+            font-size: 1.1rem;
+        }
+
+        .teacher-subject {
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+
+        .logout-btn {
+            background: rgba(255,255,255,0.2);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .logout-btn:hover {
+            background: rgba(255,255,255,0.3);
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 30px;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            text-align: center;
+            transition: transform 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .stat-icon {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #FF9800;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            color: #666;
+            font-weight: 500;
+        }
+
+        .quick-actions {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+            padding: 30px;
+        }
+
+        .quick-actions h3 {
+            margin-bottom: 20px;
+            color: #333;
+            font-size: 1.3rem;
+        }
+
+        .action-buttons {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+        }
+
+        .action-btn {
+            padding: 15px 25px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1rem;
+        }
+
+        .btn-primary {
+            background: #FF9800;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #F57C00;
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background: #2196F3;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #1976D2;
+            transform: translateY(-2px);
+        }
+
+        .btn-success {
+            background: #4CAF50;
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: #45a049;
+            transform: translateY(-2px);
+        }
+
+        .btn-info {
+            background: #17a2b8;
+            color: white;
+        }
+
+        .btn-info:hover {
+            background: #138496;
+            transform: translateY(-2px);
+        }
+
+        .grade-sections {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        .grade-card {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .grade-header {
+            background: linear-gradient(135deg, #FF9800 0%, #F57C00 100%);
+            color: white;
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .grade-title {
+            font-size: 1.3rem;
+            font-weight: bold;
+        }
+
+        .grade-count {
+            background: rgba(255,255,255,0.2);
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+        }
+
+        .student-list {
+            padding: 20px;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .student-item {
+            display: flex;
+            align-items: center;
+            padding: 12px;
+            border-bottom: 1px solid #e1e5e9;
+            transition: background 0.3s ease;
+            cursor: pointer;
+        }
+
+        .student-item:hover {
+            background: #f8f9fa;
+        }
+
+        .student-item:last-child {
+            border-bottom: none;
+        }
+
+        .student-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            margin-left: 15px;
+        }
+
+        .student-info {
+            flex: 1;
+        }
+
+        .student-name {
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 3px;
+        }
+
+        .student-code {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .student-grade {
+            padding: 3px 8px;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+
+        .grade-a { background: #d4edda; color: #155724; }
+        .grade-b { background: #d1ecf1; color: #0c5460; }
+        .grade-c { background: #fff3cd; color: #856404; }
+        .grade-d { background: #f8d7da; color: #721c24; }
+
+        .recent-activity {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            padding: 30px;
+        }
+
+        .recent-activity h3 {
+            margin-bottom: 20px;
+            color: #333;
+            font-size: 1.3rem;
+        }
+
+        .activity-item {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            border-bottom: 1px solid #e1e5e9;
+            transition: background 0.3s ease;
+        }
+
+        .activity-item:hover {
+            background: #f8f9fa;
+        }
+
+        .activity-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            margin-left: 15px;
+        }
+
+        .activity-quiz { background: #fff3cd; color: #856404; }
+        .activity-grade { background: #d4edda; color: #155724; }
+        .activity-attendance { background: #d1ecf1; color: #0c5460; }
+
+        .activity-content {
+            flex: 1;
+        }
+
+        .activity-title {
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 3px;
+        }
+
+        .activity-time {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+        }
+
+        .modal-content {
+            background-color: white;
+            margin: 5% auto;
+            padding: 0;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 800px;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+            animation: slideIn 0.3s ease-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .modal-header {
+            background: linear-gradient(135deg, #FF9800 0%, #F57C00 100%);
+            color: white;
+            padding: 20px 30px;
+            border-radius: 15px 15px 0 0;
+        }
+
+        .modal-title {
+            font-size: 1.3rem;
+            font-weight: bold;
+        }
+
+        .modal-body {
+            padding: 30px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e1e5e9;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: #FF9800;
+            box-shadow: 0 0 0 3px rgba(255, 152, 0, 0.1);
+        }
+
+        .form-select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e1e5e9;
+            border-radius: 8px;
+            font-size: 1rem;
+            background: white;
+        }
+
+        .modal-footer {
+            padding: 20px 30px;
+            border-top: 1px solid #e9ecef;
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+
+        .close {
+            color: white;
+            float: left;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .close:hover {
+            opacity: 0.7;
+        }
+
+        .quiz-upload-section {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .upload-area {
+            position: relative;
+            border: 2px dashed #e1e5e9;
+            border-radius: 8px;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .upload-area:hover {
+            border-color: #FF9800;
+            background-color: #f8f9fa;
+        }
+
+        .file-upload-label {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            cursor: pointer;
+        }
+
+        .upload-status {
+            margin-top: 10px;
+            font-size: 0.9rem;
+            color: #666;
+        }
+
+        .form-row {
+            display: flex;
+            gap: 15px;
+        }
+
+        .form-col {
+            flex: 1;
+        }
+
+        .checkbox-label {
+            margin-left: 10px;
+            font-size: 0.9rem;
+            color: #666;
+        }
+
+        .btn-warning {
+            background: #ffc107;
+            color: #212529;
+        }
+
+        .btn-warning:hover {
+            background: #e0a800;
+            transform: translateY(-2px);
+        }
+
+        .quiz-management {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+            padding: 30px;
+        }
+
+        .quiz-management h3 {
+            margin-bottom: 20px;
+            color: #333;
+            font-size: 1.3rem;
+        }
+
+        .quiz-filters {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .quiz-filters select {
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 0.9rem;
+        }
+
+        .quiz-table-container {
+            overflow-x: auto;
+        }
+
+        .quiz-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+
+        .quiz-table th,
+        .quiz-table td {
+            padding: 12px;
+            text-align: right;
+            border-bottom: 1px solid #e1e5e9;
+        }
+
+        .quiz-table th {
+            background: #f8f9fa;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .quiz-table tr:hover {
+            background: #f8f9fa;
+        }
+
+        .quiz-status {
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+
+        .status-draft { background: #fff3cd; color: #856404; }
+        .status-active { background: #d4edda; color: #155724; }
+        .status-completed { background: #d1ecf1; color: #0c5460; }
+
+        .quiz-actions {
+            display: flex;
+            gap: 5px;
+        }
+
+        .quiz-actions button {
+            padding: 4px 8px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            transition: all 0.3s ease;
+        }
+
+        .btn-edit { background: #17a2b8; color: white; }
+        .btn-edit:hover { background: #138496; }
+        .btn-delete { background: #dc3545; color: white; }
+        .btn-delete:hover { background: #c82333; }
+        .btn-view { background: #28a745; color: white; }
+        .btn-view:hover { background: #218838; }
+
+        @media (max-width: 768px) {
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .grade-sections {
+                grid-template-columns: 1fr;
+            }
+            
+            .action-buttons {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="header-left">
+            <div class="teacher-icon">👨‍🏫</div>
+            <div class="header-title">Teacher Dashboard</div>
+        </div>
+        <div class="header-right">
+            <div class="teacher-info">
+                <div class="teacher-name" id="teacherName">أحمد حسن</div>
+                <div class="teacher-subject" id="teacherSubject">اللغة العربية</div>
+            </div>
+            <button class="logout-btn" onclick="logout()">Logout</button>
+        </div>
+    </div>
+
+    <div class="container">
+        <!-- Statistics -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-icon">👨‍🎓</div>
+                <div class="stat-number" id="totalStudents">45</div>
+                <div class="stat-label">Total Students</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">📊</div>
+                <div class="stat-number" id="activeQuizzes">8</div>
+                <div class="stat-label">Active Quizzes</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">📈</div>
+                <div class="stat-number" id="avgGrade">85%</div>
+                <div class="stat-label">Average Grade</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">📅</div>
+                <div class="stat-number" id="attendanceRate">92%</div>
+                <div class="stat-label">Attendance Rate</div>
+            </div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="quick-actions">
+            <h3>🚀 Quick Actions</h3>
+            <div class="action-buttons">
+                <button class="action-btn btn-primary" onclick="openModal('quiz')">
+                    <span>📝</span> Create New Quiz
+                </button>
+                <button class="action-btn btn-secondary" onclick="openModal('assignment')">
+                    <span>📋</span> Create Assignment
+                </button>
+                <button class="action-btn btn-success" onclick="openModal('grades')">
+                    <span>📊</span> View Reports
+                </button>
+                <button class="action-btn btn-info" onclick="openModal('message')">
+                    <span>💬</span> Message Parents
+                </button>
+                <button class="action-btn btn-warning" onclick="openQuizInterface()">
+                    <span>🎯</span> Open Quiz Interface
+                </button>
+            </div>
+        </div>
+
+        <!-- Grade Sections -->
+        <div class="grade-sections">
+            <div class="grade-card">
+                <div class="grade-header">
+                    <div class="grade-title">Grade 4</div>
+                    <div class="grade-count">15 Students</div>
+                </div>
+                <div class="student-list" id="grade4Students">
+                    <!-- Students will be populated here -->
+                </div>
+            </div>
+
+            <div class="grade-card">
+                <div class="grade-header">
+                    <div class="grade-title">Grade 5</div>
+                    <div class="grade-count">18 Students</div>
+                </div>
+                <div class="student-list" id="grade5Students">
+                    <!-- Students will be populated here -->
+                </div>
+            </div>
+
+            <div class="grade-card">
+                <div class="grade-header">
+                    <div class="grade-title">Grade 6</div>
+                    <div class="grade-count">12 Students</div>
+                </div>
+                <div class="student-list" id="grade6Students">
+                    <!-- Students will be populated here -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Recent Activity -->
+        <div class="recent-activity">
+            <h3>📈 Recent Activity</h3>
+            <div id="recentActivity">
+                <!-- Activity items will be populated here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal for Quick Actions -->
+    <div id="modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <span class="close" onclick="closeModal()">&times;</span>
+                <div class="modal-title" id="modalTitle">Create New Quiz</div>
+            </div>
+            <div class="modal-body">
+                <div id="modalFields">
+                    <!-- Form fields will be dynamically generated -->
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeModal()">Cancel</button>
+                <button class="btn btn-primary" onclick="saveAction()">Save</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Sample student data organized by grades
+        const studentData = {
+            grade4: [
+                { id: 'G4001', name: 'أحمد علي حسن', code: 'G4001', grade: 'A', avatar: 'أ' },
+                { id: 'G4002', name: 'فاطمة محمد صالح', code: 'G4002', grade: 'B', avatar: 'ف' },
+                { id: 'G4003', name: 'عمر خليل إبراهيم', code: 'G4003', grade: 'A', avatar: 'ع' },
+                { id: 'G4004', name: 'عائشة عبد الله رحمن', code: 'G4004', grade: 'C', avatar: 'ع' },
+                { id: 'G4005', name: 'يوسف حسن علي', code: 'G4005', grade: 'B', avatar: 'ي' }
+            ],
+            grade5: [
+                { id: 'G5001', name: 'ليلى أحمد خليل', code: 'G5001', grade: 'A', avatar: 'ل' },
+                { id: 'G5002', name: 'محمد عمر صالح', code: 'G5002', grade: 'B', avatar: 'م' },
+                { id: 'G5003', name: 'نور إبراهيم حسن', code: 'G5003', grade: 'A', avatar: 'ن' },
+                { id: 'G5004', name: 'زينب خليل علي', code: 'G5004', grade: 'C', avatar: 'ز' },
+                { id: 'G5005', name: 'خالد عبد الله عمر', code: 'G5005', grade: 'B', avatar: 'خ' }
+            ],
+            grade6: [
+                { id: 'G6001', name: 'سارة محمود أحمد', code: 'G6001', grade: 'A', avatar: 'س' },
+                { id: 'G6002', name: 'حسام علي محمد', code: 'G6002', grade: 'B', avatar: 'ح' },
+                { id: 'G6003', name: 'ندى عبد الرحمن', code: 'G6003', grade: 'A', avatar: 'ن' },
+                { id: 'G6004', name: 'طارق حسن علي', code: 'G6004', grade: 'C', avatar: 'ط' }
+            ]
+        };
+
+        const recentActivities = [
+            { type: 'quiz', title: 'Quiz: Arabic Grammar completed', time: '2 hours ago', icon: '📝' },
+            { type: 'grade', title: 'Grades updated for 15 students', time: '4 hours ago', icon: '📊' },
+            { type: 'attendance', title: 'Attendance recorded for today', time: '6 hours ago', icon: '📅' },
+            { type: 'quiz', title: 'New quiz created: Poetry Analysis', time: '1 day ago', icon: '📝' }
+        ];
+
+        let currentModalType = '';
+
+        // Initialize dashboard
+        document.addEventListener('DOMContentLoaded', function() {
+            // Check if teacher is logged in
+            if (localStorage.getItem('teacherLoggedIn') !== 'true') {
+                console.log('Teacher not logged in, redirecting to login...');
+                window.location.href = '/teacher-login';
+                return;
+            }
+
+            // Set teacher info from localStorage or URL parameters
+            const teacherName = new URLSearchParams(window.location.search).get('name') || localStorage.getItem('teacherName') || 'Teacher';
+            const teacherSubject = new URLSearchParams(window.location.search).get('subject') || localStorage.getItem('teacherSubject') || 'Subject';
+            
+            document.getElementById('teacherName').textContent = teacherName;
+            document.getElementById('teacherSubject').textContent = teacherSubject;
+
+            populateStudentLists();
+            populateRecentActivity();
+            updateStats();
+            
+            console.log('Teacher dashboard loaded for:', teacherName, teacherSubject);
+        });
+
+        function populateStudentLists() {
+            // Populate Grade 4 students
+            const grade4Container = document.getElementById('grade4Students');
+            populateGradeContainer(grade4Container, studentData.grade4);
+
+            // Populate Grade 5 students
+            const grade5Container = document.getElementById('grade5Students');
+            populateGradeContainer(grade5Container, studentData.grade5);
+
+            // Populate Grade 6 students
+            const grade6Container = document.getElementById('grade6Students');
+            populateGradeContainer(grade6Container, studentData.grade6);
+        }
+
+        function populateGradeContainer(container, students) {
+            container.innerHTML = '';
+            students.forEach(student => {
+                const studentDiv = document.createElement('div');
+                studentDiv.className = 'student-item';
+                studentDiv.innerHTML = `
+                    <div class="student-avatar">${student.avatar}</div>
+                    <div class="student-info">
+                        <div class="student-name">${student.name}</div>
+                        <div class="student-code">${student.code}</div>
+                    </div>
+                    <div class="student-grade grade-${student.grade.toLowerCase()}">${student.grade}</div>
+                `;
+                studentDiv.onclick = () => viewStudentDetails(student);
+                container.appendChild(studentDiv);
+            });
+        }
+
+        function populateRecentActivity() {
+            const activityContainer = document.getElementById('recentActivity');
+            recentActivities.forEach(activity => {
+                const activityDiv = document.createElement('div');
+                activityDiv.className = 'activity-item';
+                activityDiv.innerHTML = `
+                    <div class="activity-icon activity-${activity.type}">${activity.icon}</div>
+                    <div class="activity-content">
+                        <div class="activity-title">${activity.title}</div>
+                        <div class="activity-time">${activity.time}</div>
+                    </div>
+                `;
+                activityContainer.appendChild(activityDiv);
+            });
+        }
+
+        function updateStats() {
+            const totalStudents = Object.values(studentData).reduce((sum, grade) => sum + grade.length, 0);
+            document.getElementById('totalStudents').textContent = totalStudents;
+        }
+
+        function viewStudentDetails(student) {
+            alert(`Student Details:\nName: ${student.name}\nCode: ${student.code}\nGrade: ${student.grade}`);
+        }
+
+        // Modal functions
+        function openModal(type) {
+            currentModalType = type;
+            const modal = document.getElementById('modal');
+            const modalTitle = document.getElementById('modalTitle');
+            const modalFields = document.getElementById('modalFields');
+
+            switch(type) {
+                case 'quiz':
+                    modalTitle.textContent = 'Create New Quiz';
+                    modalFields.innerHTML = `
+                        <div class="form-group">
+                            <label class="form-label">Quiz Title</label>
+                            <input type="text" class="form-input" id="quizTitle" placeholder="Enter quiz title">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Subject</label>
+                            <input type="text" class="form-input" id="quizSubject" placeholder="e.g., Math, Science, Arabic">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Grade Level</label>
+                            <select class="form-select" id="gradeLevel">
+                                <option value="grade4">Grade 4</option>
+                                <option value="grade5">Grade 5</option>
+                                <option value="grade6">Grade 6</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Duration (minutes)</label>
+                            <input type="number" class="form-input" id="quizDuration" placeholder="30" min="5" max="120">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Total Marks</label>
+                            <input type="number" class="form-input" id="totalMarks" placeholder="20" min="1" max="100">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Quiz Questions</label>
+                            <div class="quiz-upload-section">
+                                <button type="button" class="btn btn-secondary" onclick="downloadQuizTemplate()">
+                                    📥 Download Excel Template
+                                </button>
+                                <div class="upload-area">
+                                    <input type="file" id="quizFile" accept=".csv,.xlsx,.xls" onchange="handleQuizFileUpload(event)">
+                                    <label for="quizFile" class="file-upload-label">
+                                        📁 Upload Filled Template
+                                    </label>
+                                </div>
+                                <div id="uploadStatus" class="upload-status"></div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Notes</label>
+                            <textarea class="form-input" id="quizNotes" placeholder="Additional notes about the quiz" rows="3"></textarea>
+                        </div>
+                    `;
+                    break;
+                case 'assignment':
+                    modalTitle.textContent = 'Create Assignment';
+                    modalFields.innerHTML = `
+                        <div class="form-group">
+                            <label class="form-label">Assignment Title</label>
+                            <input type="text" class="form-input" id="assignmentTitle" placeholder="Enter assignment title">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Subject</label>
+                            <select class="form-select" id="assignmentSubject">
+                                <option value="math">Mathematics</option>
+                                <option value="science">Science</option>
+                                <option value="arabic">Arabic</option>
+                                <option value="english">English</option>
+                                <option value="social">Social Studies</option>
+                                <option value="other">Other</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Grade Level</label>
+                            <select class="form-select" id="assignmentGrade">
+                                <option value="grade4">Grade 4</option>
+                                <option value="grade5">Grade 5</option>
+                                <option value="grade6">Grade 6</option>
+                                <option value="all">All Grades</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Description</label>
+                            <textarea class="form-input" id="assignmentDesc" placeholder="Assignment description" rows="4"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Due Date</label>
+                            <input type="date" class="form-input" id="dueDate">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Total Points</label>
+                            <input type="number" class="form-input" id="assignmentPoints" placeholder="100" min="1" max="1000">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Assignment Type</label>
+                            <select class="form-select" id="assignmentType">
+                                <option value="homework">Homework</option>
+                                <option value="project">Project</option>
+                                <option value="essay">Essay</option>
+                                <option value="presentation">Presentation</option>
+                                <option value="quiz">Quiz</option>
+                                <option value="other">Other</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Attachments</label>
+                            <input type="file" class="form-input" id="assignmentFiles" multiple accept=".pdf,.doc,.docx,.ppt,.pptx,.jpg,.png">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Instructions for Students</label>
+                            <textarea class="form-input" id="studentInstructions" placeholder="Special instructions for students..." rows="3"></textarea>
+                        </div>
+                    `;
+                    break;
+                case 'grades':
+                    modalTitle.textContent = 'View Reports';
+                    modalFields.innerHTML = `
+                        <div class="form-group">
+                            <label class="form-label">Report Type</label>
+                            <select class="form-select" id="reportType" onchange="updateReportFields()">
+                                <option value="performance">Performance Report</option>
+                                <option value="attendance">Attendance Report</option>
+                                <option value="grades">Grades Summary</option>
+                                <option value="quiz">Quiz Results</option>
+                                <option value="assignment">Assignment Completion</option>
+                                <option value="behavior">Behavior Report</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Grade Level</label>
+                            <select class="form-select" id="reportGrade">
+                                <option value="all">All Grades</option>
+                                <option value="grade4">Grade 4</option>
+                                <option value="grade5">Grade 5</option>
+                                <option value="grade6">Grade 6</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Subject</label>
+                            <select class="form-select" id="reportSubject">
+                                <option value="all">All Subjects</option>
+                                <option value="math">Mathematics</option>
+                                <option value="science">Science</option>
+                                <option value="arabic">Arabic</option>
+                                <option value="english">English</option>
+                                <option value="social">Social Studies</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Date Range</label>
+                            <select class="form-select" id="dateRange">
+                                <option value="week">Last Week</option>
+                                <option value="month">Last Month</option>
+                                <option value="quarter">Last Quarter</option>
+                                <option value="semester">This Semester</option>
+                                <option value="year">This Academic Year</option>
+                                <option value="custom">Custom Range</option>
+                            </select>
+                        </div>
+                        <div id="customDateRange" class="form-group" style="display: none;">
+                            <div class="form-row">
+                                <div class="form-col">
+                                    <label class="form-label">From Date</label>
+                                    <input type="date" class="form-input" id="fromDate">
+                                </div>
+                                <div class="form-col">
+                                    <label class="form-label">To Date</label>
+                                    <input type="date" class="form-input" id="toDate">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Report Format</label>
+                            <select class="form-select" id="reportFormat">
+                                <option value="summary">Summary View</option>
+                                <option value="detailed">Detailed View</option>
+                                <option value="charts">Charts & Graphs</option>
+                                <option value="export">Export to Excel</option>
+                                <option value="pdf">Export to PDF</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Include Charts</label>
+                            <input type="checkbox" id="includeCharts" checked>
+                            <span class="checkbox-label">Show visual representations</span>
+                        </div>
+                    `;
+                    break;
+                case 'message':
+                    modalTitle.textContent = 'Message Parents';
+                    modalFields.innerHTML = `
+                        <div class="form-group">
+                            <label class="form-label">Recipients</label>
+                            <select class="form-select" id="recipients">
+                                <option value="all">All Parents</option>
+                                <option value="grade4">Grade 4 Parents</option>
+                                <option value="grade5">Grade 5 Parents</option>
+                                <option value="grade6">Grade 6 Parents</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Subject</label>
+                            <input type="text" class="form-input" id="messageSubject" placeholder="Message subject">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Message</label>
+                            <textarea class="form-input" id="messageContent" placeholder="Your message to parents..." rows="4"></textarea>
+                        </div>
+                    `;
+                    break;
+            }
+
+            modal.style.display = 'block';
+        }
+
+        function closeModal() {
+            document.getElementById('modal').style.display = 'none';
+            currentModalType = '';
+        }
+
+        function saveAction() {
+            switch(currentModalType) {
+                case 'quiz':
+                    const quizTitle = document.getElementById('quizTitle').value;
+                    const quizSubject = document.getElementById('quizSubject').value;
+                    const gradeLevel = document.getElementById('gradeLevel').value;
+                    const duration = document.getElementById('quizDuration').value;
+                    const totalMarks = document.getElementById('totalMarks').value;
+                    const quizNotes = document.getElementById('quizNotes').value;
+                    
+                    if (quizTitle && quizSubject && gradeLevel && duration && totalMarks) {
+                        // Create new quiz object
+                        const newQuiz = {
+                            id: Date.now(), // Simple ID generation
+                            title: quizTitle,
+                            subject: quizSubject.toLowerCase(),
+                            grade: gradeLevel,
+                            duration: parseInt(duration),
+                            totalMarks: parseInt(totalMarks),
+                            questions: 0, // Will be updated when questions are uploaded
+                            status: 'draft',
+                            notes: quizNotes || '',
+                            createdAt: new Date().toISOString()
+                        };
+                        
+                        // Add to quizzes array
+                        quizzes.push(newQuiz);
+                        
+                        // Update the quiz table
+                        populateQuizTable();
+                        
+                        alert(`Quiz "${quizTitle}" created successfully!\nSubject: ${quizSubject}\nGrade: ${gradeLevel}\nDuration: ${duration} minutes\nTotal Marks: ${totalMarks}\nNotes: ${quizNotes}\n\nStatus: Draft - Upload questions to activate the quiz.`);
+                        closeModal();
+                    } else {
+                        alert('Please fill all required fields');
+                    }
+                    break;
+                case 'assignment':
+                    const assignmentTitle = document.getElementById('assignmentTitle').value;
+                    const assignmentSubject = document.getElementById('assignmentSubject').value;
+                    const assignmentGrade = document.getElementById('assignmentGrade').value;
+                    const assignmentDesc = document.getElementById('assignmentDesc').value;
+                    const dueDate = document.getElementById('dueDate').value;
+                    const assignmentPoints = document.getElementById('assignmentPoints').value;
+                    const assignmentType = document.getElementById('assignmentType').value;
+                    const studentInstructions = document.getElementById('studentInstructions').value;
+                    
+                    if (assignmentTitle && assignmentSubject && assignmentGrade && assignmentDesc && dueDate && assignmentPoints && assignmentType) {
+                        alert(`Assignment "${assignmentTitle}" created successfully!\nSubject: ${assignmentSubject}\nGrade: ${assignmentGrade}\nDue Date: ${dueDate}\nTotal Points: ${assignmentPoints}\nType: ${assignmentType}\nInstructions: ${studentInstructions}`);
+                        closeModal();
+                    } else {
+                        alert('Please fill all fields');
+                    }
+                    break;
+                case 'grades':
+                    const reportType = document.getElementById('reportType').value;
+                    const reportGrade = document.getElementById('reportGrade').value;
+                    const reportSubject = document.getElementById('reportSubject').value;
+                    const dateRange = document.getElementById('dateRange').value;
+                    const reportFormat = document.getElementById('reportFormat').value;
+                    const includeCharts = document.getElementById('includeCharts').checked;
+                    
+                    let dateRangeText = dateRange;
+                    if (dateRange === 'custom') {
+                        const fromDate = document.getElementById('fromDate').value;
+                        const toDate = document.getElementById('toDate').value;
+                        if (!fromDate || !toDate) {
+                            alert('Please select both from and to dates for custom range');
+                            return;
+                        }
+                        dateRangeText = `from ${fromDate} to ${toDate}`;
+                    }
+                    
+                    // Generate sample report data
+                    const reportData = generateSampleReport(reportType, reportGrade, reportSubject, dateRangeText);
+                    
+                    if (reportFormat === 'export') {
+                        exportReportToExcel(reportData, reportType);
+                    } else if (reportFormat === 'pdf') {
+                        exportReportToPDF(reportData, reportType);
+                    } else {
+                        displayReport(reportData, reportType, reportFormat, includeCharts);
+                    }
+                    
+                    closeModal();
+                    break;
+                case 'message':
+                    const recipients = document.getElementById('recipients').value;
+                    const messageSubject = document.getElementById('messageSubject').value;
+                    const messageContent = document.getElementById('messageContent').value;
+                    
+                    if (messageSubject && messageContent) {
+                        alert(`Message sent to ${recipients}!\nSubject: ${messageSubject}`);
+                        closeModal();
+                    } else {
+                        alert('Please fill all fields');
+                    }
+                    break;
+            }
+        }
+
+        function logout() {
+            localStorage.removeItem('teacherLoggedIn');
+            localStorage.removeItem('teacherId');
+            localStorage.removeItem('teacherName');
+            localStorage.removeItem('teacherSubject');
+            window.location.href = '/teacher-login';
+        }
+
+        function openQuizInterface() {
+            window.open('/quiz-interface', '_blank');
+        }
+
+        function downloadQuizTemplate() {
+            const templateUrl = '/assets/quiz_template.xlsx'; // Assuming a template file is in the assets folder
+            const link = document.createElement('a');
+            link.href = templateUrl;
+            link.download = 'quiz_template.xlsx'; // Suggest a filename
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        function handleQuizFileUpload(event) {
+            const file = event.target.files[0];
+            const uploadStatus = document.getElementById('uploadStatus');
+            if (file) {
+                uploadStatus.textContent = `Selected file: ${file.name}`;
+                uploadStatus.style.color = 'green';
+                uploadStatus.style.fontWeight = 'bold';
+                
+                // Process the file based on type
+                if (file.name.endsWith('.csv')) {
+                    processCSVFile(file);
+                } else if (file.name.endsWith('.xlsx') || file.name.endsWith('.xls')) {
+                    processExcelFile(file);
+                }
+            } else {
+                uploadStatus.textContent = 'No file selected';
+                uploadStatus.style.color = 'red';
+                uploadStatus.style.fontWeight = 'bold';
+            }
+        }
+
+        function processCSVFile(file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const csv = e.target.result;
+                const lines = csv.split('\n');
+                const questions = [];
+                
+                // Skip header row
+                for (let i = 1; i < lines.length; i++) {
+                    if (lines[i].trim()) {
+                        const values = lines[i].split(',');
+                        if (values.length >= 8) {
+                            questions.push({
+                                number: values[0],
+                                type: values[1],
+                                text: values[2],
+                                optionA: values[3],
+                                optionB: values[4],
+                                optionC: values[5],
+                                optionD: values[6],
+                                correctAnswer: values[7],
+                                notes: values[8] || ''
+                            });
+                        }
+                    }
+                }
+                
+                displayQuizPreview(questions);
+            };
+            reader.readAsText(file);
+        }
+
+        function processExcelFile(file) {
+            // For Excel files, we'll show a message that CSV is preferred
+            const uploadStatus = document.getElementById('uploadStatus');
+            uploadStatus.innerHTML = `
+                <div style="color: orange; font-weight: bold;">
+                    📁 File selected: ${file.name}<br>
+                    ⚠️ For best compatibility, please use CSV format.<br>
+                    💡 You can convert Excel to CSV in Excel: File → Save As → CSV
+                </div>
+            `;
+        }
+
+        function displayQuizPreview(questions) {
+            const uploadStatus = document.getElementById('uploadStatus');
+            let previewHTML = `
+                <div style="color: green; font-weight: bold; margin-bottom: 10px;">
+                    ✅ Successfully processed ${questions.length} questions!
+                </div>
+                <div style="max-height: 200px; overflow-y: auto; border: 1px solid #ddd; padding: 10px; background: #f9f9f9;">
+                    <h4>Preview of Questions:</h4>
+            `;
+            
+            questions.slice(0, 5).forEach((q, index) => {
+                previewHTML += `
+                    <div style="margin-bottom: 10px; padding: 8px; background: white; border-radius: 4px;">
+                        <strong>Q${q.number}:</strong> ${q.text}<br>
+                        <small>Type: ${q.type} | Correct: ${q.correctAnswer}</small>
+                    </div>
+                `;
+            });
+            
+            if (questions.length > 5) {
+                previewHTML += `<div style="text-align: center; color: #666;">... and ${questions.length - 5} more questions</div>`;
+            }
+            
+            previewHTML += '</div>';
+            uploadStatus.innerHTML = previewHTML;
+        }
+
+        function generateSampleReport(reportType, grade, subject, dateRange) {
+            // Generate sample data based on report type
+            const sampleData = {
+                performance: {
+                    title: 'Student Performance Report',
+                    data: [
+                        { student: 'أحمد علي حسن', grade: 'A', score: 95, improvement: '+5%' },
+                        { student: 'فاطمة محمد صالح', grade: 'B+', score: 87, improvement: '+3%' },
+                        { student: 'عمر خليل إبراهيم', grade: 'A-', score: 92, improvement: '+7%' }
+                    ]
+                },
+                attendance: {
+                    title: 'Attendance Report',
+                    data: [
+                        { student: 'أحمد علي حسن', present: 18, absent: 2, rate: '90%' },
+                        { student: 'فاطمة محمد صالح', present: 19, absent: 1, rate: '95%' },
+                        { student: 'عمر خليل إبراهيم', present: 17, absent: 3, rate: '85%' }
+                    ]
+                },
+                grades: {
+                    title: 'Grades Summary Report',
+                    data: [
+                        { subject: 'Mathematics', average: 88, highest: 98, lowest: 75 },
+                        { subject: 'Science', average: 92, highest: 100, lowest: 82 },
+                        { subject: 'Arabic', average: 85, highest: 95, lowest: 70 }
+                    ]
+                },
+                quiz: {
+                    title: 'Quiz Results Report',
+                    data: [
+                        { quiz: 'Math Quiz 1', average: 85, participants: 20, completed: 18 },
+                        { quiz: 'Science Quiz 1', average: 92, participants: 20, completed: 19 },
+                        { quiz: 'Arabic Quiz 1', average: 78, participants: 20, completed: 17 }
+                    ]
+                },
+                assignment: {
+                    title: 'Assignment Completion Report',
+                    data: [
+                        { assignment: 'Math Homework 1', submitted: 18, pending: 2, onTime: 16 },
+                        { assignment: 'Science Project', submitted: 15, pending: 5, onTime: 12 },
+                        { assignment: 'Arabic Essay', submitted: 19, pending: 1, onTime: 18 }
+                    ]
+                },
+                behavior: {
+                    title: 'Behavior Report',
+                    data: [
+                        { student: 'أحمد علي حسن', positive: 15, negative: 2, overall: 'Excellent' },
+                        { student: 'فاطمة محمد صالح', positive: 18, negative: 1, overall: 'Outstanding' },
+                        { student: 'عمر خليل إبراهيم', positive: 12, negative: 3, overall: 'Good' }
+                    ]
+                }
+            };
+            
+            return {
+                type: reportType,
+                grade: grade,
+                subject: subject,
+                dateRange: dateRange,
+                ...sampleData[reportType]
+            };
+        }
+
+        function displayReport(reportData, reportType, format, includeCharts) {
+            // Create a new window to display the report
+            const reportWindow = window.open('', '_blank', 'width=800,height=600');
+            reportWindow.document.write(`
+                <!DOCTYPE html>
+                <html dir="rtl">
+                <head>
+                    <title>${reportData.title}</title>
+                    <style>
+                        body { font-family: Arial, sans-serif; margin: 20px; direction: rtl; }
+                        .header { text-align: center; margin-bottom: 30px; }
+                        .report-info { background: #f5f5f5; padding: 15px; border-radius: 8px; margin-bottom: 20px; }
+                        .data-table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
+                        .data-table th, .data-table td { border: 1px solid #ddd; padding: 10px; text-align: right; }
+                        .data-table th { background: #f0f0f0; font-weight: bold; }
+                        .chart-placeholder { background: #e8f4f8; padding: 20px; text-align: center; border-radius: 8px; margin: 20px 0; }
+                    </style>
+                </head>
+                <body>
+                    <div class="header">
+                        <h1>${reportData.title}</h1>
+                        <p>Grade: ${reportData.grade} | Subject: ${reportData.subject} | Period: ${reportData.dateRange}</p>
+                    </div>
+                    
+                    <div class="report-info">
+                        <strong>Report Generated:</strong> ${new Date().toLocaleString('ar-SA')}<br>
+                        <strong>Report Type:</strong> ${reportType}<br>
+                        <strong>Format:</strong> ${format}
+                    </div>
+                    
+                    ${includeCharts ? '<div class="chart-placeholder">📊 Charts and graphs would be displayed here</div>' : ''}
+                    
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                ${Object.keys(reportData.data[0]).map(key => `<th>${key.charAt(0).toUpperCase() + key.slice(1)}</th>`).join('')}
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${reportData.data.map(row => 
+                                `<tr>${Object.values(row).map(value => `<td>${value}</td>`).join('')}</tr>`
+                            ).join('')}
+                        </tbody>
+                    </table>
+                    
+                    <div style="text-align: center; margin-top: 30px;">
+                        <button onclick="window.print()">🖨️ Print Report</button>
+                        <button onclick="window.close()">❌ Close</button>
+                    </div>
+                </body>
+                </html>
+            `);
+        }
+
+        function exportReportToExcel(reportData, reportType) {
+            // Create CSV content for Excel export
+            let csvContent = '';
+            
+            // Add headers
+            if (reportData.data.length > 0) {
+                csvContent += Object.keys(reportData.data[0]).join(',') + '\n';
+                
+                // Add data rows
+                reportData.data.forEach(row => {
+                    csvContent += Object.values(row).join(',') + '\n';
+                });
+            }
+            
+            // Create and download the file
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement('a');
+            const url = URL.createObjectURL(blob);
+            link.setAttribute('href', url);
+            link.setAttribute('download', `${reportType}_report_${new Date().toISOString().split('T')[0]}.csv`);
+            link.style.visibility = 'hidden';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            
+            alert(`Report exported successfully as ${reportType}_report_${new Date().toISOString().split('T')[0]}.csv`);
+        }
+
+        function exportReportToPDF(reportData, reportType) {
+            // For now, we'll show a message that PDF export would be implemented
+            alert(`PDF export for ${reportType} report would be implemented here.\n\nThis would typically use a library like jsPDF or send the data to a server for PDF generation.`);
+        }
+
+        function updateReportFields() {
+            const reportType = document.getElementById('reportType').value;
+            const customDateRangeDiv = document.getElementById('customDateRange');
+            const fromDateInput = document.getElementById('fromDate');
+            const toDateInput = document.getElementById('toDate');
+
+            if (reportType === 'custom') {
+                customDateRangeDiv.style.display = 'block';
+                fromDateInput.setAttribute('required', 'required');
+                toDateInput.setAttribute('required', 'required');
+            } else {
+                customDateRangeDiv.style.display = 'none';
+                fromDateInput.removeAttribute('required');
+                toDateInput.removeAttribute('required');
+            }
+        }
+
+        // Quiz Management Functions
+        let quizzes = [
+            {
+                id: 1,
+                title: 'Math Quiz 1',
+                subject: 'math',
+                grade: 'grade4',
+                duration: 30,
+                totalMarks: 20,
+                questions: 10,
+                status: 'active',
+                notes: 'Basic arithmetic quiz'
+            },
+            {
+                id: 2,
+                title: 'Science Quiz 1',
+                subject: 'science',
+                grade: 'grade5',
+                duration: 45,
+                totalMarks: 25,
+                questions: 15,
+                status: 'draft',
+                notes: 'General science concepts'
+            }
+        ];
+
+        function refreshQuizzes() {
+            populateQuizTable();
+        }
+
+        function filterQuizzes() {
+            const subjectFilter = document.getElementById('quizSubjectFilter').value;
+            const gradeFilter = document.getElementById('quizGradeFilter').value;
+            
+            const filteredQuizzes = quizzes.filter(quiz => {
+                const subjectMatch = subjectFilter === 'all' || quiz.subject === subjectFilter;
+                const gradeMatch = gradeFilter === 'all' || quiz.grade === gradeFilter;
+                return subjectMatch && gradeMatch;
+            });
+            
+            populateQuizTable(filteredQuizzes);
+        }
+
+        function populateQuizTable(quizList = quizzes) {
+            const tbody = document.getElementById('quizTableBody');
+            tbody.innerHTML = '';
+            
+            if (quizList.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="8" style="text-align: center; padding: 20px; color: #666;">No quizzes found</td></tr>';
+                return;
+            }
+            
+            quizList.forEach(quiz => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${quiz.title}</td>
+                    <td>${getSubjectName(quiz.subject)}</td>
+                    <td>${getGradeName(quiz.grade)}</td>
+                    <td>${quiz.duration} min</td>
+                    <td>${quiz.totalMarks}</td>
+                    <td>${quiz.questions}</td>
+                    <td><span class="quiz-status status-${quiz.status}">${getStatusName(quiz.status)}</span></td>
+                    <td class="quiz-actions">
+                        <button class="btn-view" onclick="viewQuiz(${quiz.id})" title="View Quiz">👁️</button>
+                        <button class="btn-edit" onclick="editQuiz(${quiz.id})" title="Edit Quiz">✏️</button>
+                        <button class="btn-delete" onclick="deleteQuiz(${quiz.id})" title="Delete Quiz">🗑️</button>
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
+        function getSubjectName(subject) {
+            const subjects = {
+                'math': 'Mathematics',
+                'science': 'Science',
+                'arabic': 'Arabic',
+                'english': 'English',
+                'social': 'Social Studies'
+            };
+            return subjects[subject] || subject;
+        }
+
+        function getGradeName(grade) {
+            const grades = {
+                'grade4': 'Grade 4',
+                'grade5': 'Grade 5',
+                'grade6': 'Grade 6'
+            };
+            return grades[grade] || grade;
+        }
+
+        function getStatusName(status) {
+            const statuses = {
+                'draft': 'Draft',
+                'active': 'Active',
+                'completed': 'Completed'
+            };
+            return statuses[status] || status;
+        }
+
+        function viewQuiz(quizId) {
+            const quiz = quizzes.find(q => q.id === quizId);
+            if (quiz) {
+                alert(`Quiz Details:\nTitle: ${quiz.title}\nSubject: ${getSubjectName(quiz.subject)}\nGrade: ${getGradeName(quiz.grade)}\nDuration: ${quiz.duration} minutes\nTotal Marks: ${quiz.totalMarks}\nQuestions: ${quiz.questions}\nStatus: ${getStatusName(quiz.status)}\nNotes: ${quiz.notes}`);
+            }
+        }
+
+        function editQuiz(quizId) {
+            const quiz = quizzes.find(q => q.id === quizId);
+            if (quiz) {
+                // For now, just show an alert. In a real app, this would open an edit modal
+                alert(`Edit functionality for "${quiz.title}" would be implemented here.\n\nThis would typically open a modal with pre-filled form fields for editing the quiz.`);
+            }
+        }
+
+        function deleteQuiz(quizId) {
+            const quiz = quizzes.find(q => q.id === quizId);
+            if (quiz && confirm(`Are you sure you want to delete "${quiz.title}"?`)) {
+                quizzes = quizzes.filter(q => q.id !== quizId);
+                populateQuizTable();
+                alert(`Quiz "${quiz.title}" has been deleted.`);
+            }
+        }
+
+        // Initialize quiz table when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            populateQuizTable();
+        });
+
+        // Close modal when clicking outside
+        window.onclick = function(event) {
+            const modal = document.getElementById('modal');
+            if (event.target === modal) {
+                closeModal();
+            }
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,210 @@
+{
+  "name": "Payment Recognition Workflow",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "payment-recognition",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "webhook-trigger",
+      "name": "Payment Recognition Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [240, 300],
+      "webhookId": "payment-recognition-webhook"
+    },
+    {
+      "parameters": {
+        "operation": "upload",
+        "binaryPropertyName": "data",
+        "options": {}
+      },
+      "id": "ocr-node",
+      "name": "OCR Image Processing",
+      "type": "n8n-nodes-base.googleCloudVision",
+      "typeVersion": 1,
+      "position": [460, 300]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Extract payment information from OCR text\nconst ocrText = $input.first().json.textAnnotations[0].description;\n\n// Regular expressions to find amounts and transfer numbers\nconst amountRegex = /(?:amount|total|paid|payment|\\$)\\s*:?\\s*([0-9,]+(?:\\.\\d{2})?)/gi;\nconst transferRegex = /(?:transfer|transaction|ref|number|id)\\s*:?\\s*([A-Z0-9]{6,})/gi;\n\nlet amount = null;\nlet transferNumber = null;\n\n// Extract amount\nconst amountMatch = amountRegex.exec(ocrText);\nif (amountMatch) {\n  amount = parseFloat(amountMatch[1].replace(/,/g, ''));\n}\n\n// Extract transfer number\nconst transferMatch = transferRegex.exec(ocrText);\nif (transferMatch) {\n  transferNumber = transferMatch[1];\n}\n\n// Calculate confidence based on text quality\nconst confidence = Math.min(95, Math.max(60, ocrText.length / 100 * 100));\n\nreturn {\n  json: {\n    originalText: ocrText,\n    extractedAmount: amount,\n    transferNumber: transferNumber,\n    confidence: Math.round(confidence),\n    success: amount !== null || transferNumber !== null\n  }\n};"
+      },
+      "id": "extract-data",
+      "name": "Extract Payment Data",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [680, 300]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ $json }}",
+        "options": {}
+      },
+      "id": "response",
+      "name": "Return Results",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [900, 300]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "success-check",
+              "leftValue": "={{ $json.success }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "true"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "success-check",
+      "name": "Check Success",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [780, 300]
+    },
+    {
+      "parameters": {
+        "operation": "create",
+        "resource": "database",
+        "tableId": "payment_records",
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "amount": "={{ $json.extractedAmount }}",
+            "transfer_number": "={{ $json.transferNumber }}",
+            "confidence": "={{ $json.confidence }}",
+            "ocr_text": "={{ $json.originalText }}",
+            "processed_at": "={{ new Date().toISOString() }}"
+          },
+          "matchingColumns": []
+        },
+        "options": {}
+      },
+      "id": "save-to-db",
+      "name": "Save to Database",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.4,
+      "position": [1000, 200]
+    },
+    {
+      "parameters": {
+        "operation": "sendMessage",
+        "chatId": "{{ $env.TELEGRAM_CHAT_ID }}",
+        "text": "🤖 Payment Recognition Results:\n\n💰 Amount: ${{ $json.extractedAmount }}\n📋 Transfer: {{ $json.transferNumber }}\n🎯 Confidence: {{ $json.confidence }}%\n\n📝 OCR Text:\n{{ $json.originalText.substring(0, 200) }}...",
+        "additionalFields": {}
+      },
+      "id": "telegram-notify",
+      "name": "Telegram Notification",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1,
+      "position": [1000, 400]
+    }
+  ],
+  "connections": {
+    "Payment Recognition Webhook": {
+      "main": [
+        [
+          {
+            "node": "OCR Image Processing",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OCR Image Processing": {
+      "main": [
+        [
+          {
+            "node": "Extract Payment Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract Payment Data": {
+      "main": [
+        [
+          {
+            "node": "Check Success",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check Success": {
+      "main": [
+        [
+          {
+            "node": "Save to Database",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Return Results",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Save to Database": {
+      "main": [
+        [
+          {
+            "node": "Telegram Notification",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Telegram Notification": {
+      "main": [
+        [
+          {
+            "node": "Return Results",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": [
+    {
+      "createdAt": "2024-01-01T00:00:00.000Z",
+      "updatedAt": "2024-01-01T00:00:00.000Z",
+      "id": "payment-recognition",
+      "name": "Payment Recognition"
+    }
+  ],
+  "triggerCount": 1,
+  "updatedAt": "2024-01-01T00:00:00.000Z",
+  "versionId": "1"
+}

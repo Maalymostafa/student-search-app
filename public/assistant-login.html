@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Assistant Login - تسجيل دخول المساعد</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .login-container {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+        }
+
+        .login-icon {
+            font-size: 4rem;
+            margin-bottom: 20px;
+        }
+
+        .login-title {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .login-subtitle {
+            color: #666;
+            margin-bottom: 30px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+            text-align: right;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e1e5e9;
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: #28a745;
+            box-shadow: 0 0 0 3px rgba(40, 167, 69, 0.1);
+        }
+
+        .login-btn {
+            width: 100%;
+            padding: 15px;
+            background: #28a745;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-bottom: 20px;
+        }
+
+        .login-btn:hover {
+            background: #218838;
+            transform: translateY(-2px);
+        }
+
+        .back-link {
+            color: #28a745;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+
+        .back-link:hover {
+            color: #218838;
+        }
+
+        .alert {
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            display: none;
+        }
+
+        .alert-error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .alert-success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .demo-credentials {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 20px;
+            font-size: 0.9rem;
+            color: #666;
+        }
+
+        .demo-credentials strong {
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <div class="login-icon">👨‍💼</div>
+        <div class="login-title">Assistant Login</div>
+        <div class="login-subtitle">تسجيل دخول المساعد</div>
+        
+        <div id="alertMessage" class="alert"></div>
+        
+        <form id="loginForm" onsubmit="handleLogin(event)">
+            <div class="form-group">
+                <label class="form-label">Assistant ID</label>
+                <input type="text" class="form-input" id="assistantId" placeholder="Enter your Assistant ID" required>
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label">Password</label>
+                <input type="password" class="form-input" id="password" placeholder="Enter your password" required>
+            </div>
+            
+            <button type="submit" class="login-btn">Login - تسجيل الدخول</button>
+        </form>
+        
+        <a href="/" class="back-link">← Back to Main Page</a>
+        
+        <div class="demo-credentials">
+            <strong>Demo Credentials:</strong><br>
+            ID: <strong>assistant1</strong><br>
+            Password: <strong>password123</strong>
+        </div>
+        
+        <div style="margin-top: 20px; text-align: center;">
+            <button onclick="testLogin()" style="background: #6c757d; color: white; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer;">
+                Test Login (assistant1/password123)
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // Sample assistant credentials (in real app, this would come from database)
+        const assistants = [
+            { id: 'assistant1', name: 'Sara Ahmed', password: 'password123' },
+            { id: 'assistant2', name: 'Omar Khalil', password: 'password123' },
+            { id: 'assistant3', name: 'Fatima Ali', password: 'password123' }
+        ];
+
+        function handleLogin(event) {
+            event.preventDefault();
+            
+            const assistantId = document.getElementById('assistantId').value;
+            const password = document.getElementById('password').value;
+            
+            console.log('Login attempt:', { assistantId, password });
+            
+            // Find assistant
+            const assistant = assistants.find(a => a.id === assistantId && a.password === password);
+            
+            console.log('Found assistant:', assistant);
+            
+            if (assistant) {
+                // Store login info
+                localStorage.setItem('assistantLoggedIn', 'true');
+                localStorage.setItem('assistantId', assistant.id);
+                localStorage.setItem('assistantName', assistant.name);
+                
+                console.log('Login successful, redirecting...');
+                
+                // Redirect to data entry page
+                window.location.href = `/assistant-data-entry?name=${encodeURIComponent(assistant.name)}`;
+            } else {
+                console.log('Login failed - invalid credentials');
+                showAlert('Invalid Assistant ID or Password. Please try again.', 'error');
+            }
+        }
+
+        function showAlert(message, type) {
+            const alertDiv = document.getElementById('alertMessage');
+            alertDiv.textContent = message;
+            alertDiv.className = `alert alert-${type}`;
+            alertDiv.style.display = 'block';
+            
+            setTimeout(() => {
+                alertDiv.style.display = 'none';
+            }, 5000);
+        }
+
+        // Test login function
+        function testLogin() {
+            document.getElementById('assistantId').value = 'assistant1';
+            document.getElementById('password').value = 'password123';
+            handleLogin(new Event('submit'));
+        }
+
+        // Check if already logged in
+        document.addEventListener('DOMContentLoaded', function() {
+            if (localStorage.getItem('assistantLoggedIn') === 'true') {
+                const assistantName = localStorage.getItem('assistantName') || 'Assistant';
+                window.location.href = `/assistant-data-entry?name=${encodeURIComponent(assistantName)}`;
+            }
+        });
+    </script>
+</body>
+</html>

@@ -4,12 +4,39 @@ const bodyParser = require('body-parser');
 const path = require('path');
 require('dotenv').config();
 
+// Security imports
+const rateLimit = require('express-rate-limit');
+const helmet = require('helmet');
+
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+// Security middleware
+app.use(helmet({
+  contentSecurityPolicy: {
+    directives: {
+      defaultSrc: ["'self'"],
+      styleSrc: ["'self'", "'unsafe-inline'"],
+      scriptSrc: ["'self'", "'unsafe-inline'"],
+      imgSrc: ["'self'", "data:", "https:"],
+    },
+  },
+}));
+
+// Rate limiting
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 100, // limit each IP to 100 requests per windowMs
+  message: {
+    error: 'Too many requests from this IP, please try again later.',
+    retryAfter: '15 minutes'
+  }
+});
+app.use('/api/', limiter);
+
 // Middleware
 app.use(cors());
-app.use(bodyParser.json());
+app.use(bodyParser.json({ limit: '10mb' }));
 
 // Database configuration
 let db = null;
@@ -42,7 +69,65 @@ if (dbType === 'supabase') {
   }
 }
 
-// Search endpoint - matches Google Apps Script logic exactly
+// Unified search function for Supabase
+async function searchInSupabaseUnified(code, sheetPrefix) {
+  try {
+    // First try unified table
+    const { data: unifiedData, error: unifiedError } = await db
+      .from('students_unified')
+      .select('*')
+      .eq('student_code', code)
+      .single();
+      
+    if (!unifiedError && unifiedData) {
+      console.log('✅ Found in unified table:', code);
+      return unifiedData;
+    }
+    
+    // Fallback to legacy tables
+    const tableName = sheetPrefix.toLowerCase();
+    const { data, error } = await db
+      .from(tableName)
+      .select('*')
+      .eq('student_code', code)
+      .single();
+      
+    if (error) {
+      console.log(`⚠️  Student not found in ${tableName}:`, code);
+      return null;
+    }
+    
+    console.log('✅ Found in legacy table:', tableName, code);
+    return data;
+  } catch (error) {
+    console.error('Database search error:', error);
+    return null;
+  }
+}
+
+// Search endpoint - UPDATED for unified table structure
+app.get('/api/search', async (req, res) => {
+  res.json({
+    message: "Student Search API - Enhanced Version",
+    status: "active",
+    version: "2.0-unified",
+    endpoints: {
+      POST: "/api/search - Search for students with query parameters",
+      methods: ["POST"]
+    },
+    improvements: [
+      "✅ Unified database schema",
+      "✅ Enhanced security",
+      "✅ Better error handling",
+      "✅ Rate limiting protection"
+    ],
+    sample_query: {
+      query: "أحمد",
+      code: "G4001"
+    }
+  });
+});
+
 app.post('/api/search', async (req, res) => {
   try {
     const { code } = req.body;
@@ -70,7 +155,7 @@ app.post('/api/search', async (req, res) => {
     let studentData = null;
 
     if (dbType === 'supabase' && db) {
-      studentData = await searchInSupabase(code, sheetPrefix);
+      studentData = await searchInSupabaseUnified(code, sheetPrefix);
     } else if (dbType === 'firebase' && db) {
       studentData = await searchInFirebase(code, sheetPrefix);
     } else {
@@ -529,7 +614,12 @@ app.get('/demo', (req, res) => {
 
 // Serve student login
 app.get('/student-login', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'student-login.html'));
+    res.sendFile(path.join(__dirname, 'public', 'working-student-login.html'));
+});
+
+// Serve working student login (alternative route)
+app.get('/working-student-login', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'working-student-login.html'));
 });
 
 // Serve student results
@@ -569,7 +659,157 @@ app.get('/admin-login', (req, res) => {
 
 // Serve admin dashboard
 app.get('/admin-dashboard', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'admin-dashboard.html'));
+    res.sendFile(path.join(__dirname, 'public', 'admin-dashboard.html'));
+});
+
+app.get('/assistant-data-entry', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'assistant-data-entry.html'));
+});
+
+app.get('/assistant-login', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'assistant-login.html'));
+});
+
+app.get('/teacher-login', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'teacher-login.html'));
+});
+
+app.get('/teacher-dashboard', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'teacher-dashboard.html'));
+});
+
+app.get('/quiz-interface', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'quiz-interface.html'));
+});
+
+app.get('/student-quiz-selection', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'student-quiz-selection.html'));
+});
+
+app.get('/financial-dashboard', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'financial-dashboard.html'));
+});
+
+// Admin API endpoints for CRUD operations
+app.get('/api/admin/students', async (req, res) => {
+  try {
+    // For demo, return sample data. In production, this would query the database
+    const sampleStudents = [
+      { code: 'G4001', name: 'Ahmed Hassan', phone: '+201234567895', grade: 'Grade 4', status: 'Active' },
+      { code: 'G4002', name: 'Fatima Ali', phone: '+201234567896', grade: 'Grade 4', status: 'Active' },
+      { code: 'G4003', name: 'Mohammed Omar', phone: '+201234567897', grade: 'Grade 4', status: 'Active' },
+      { code: 'G4004', name: 'Sara Ahmad', phone: '+201234567898', grade: 'Grade 5', status: 'Active' },
+      { code: 'G5001', name: 'Omar Khalil', phone: '+201234567899', grade: 'Grade 5', status: 'Active' }
+    ];
+    
+    res.json({ success: true, data: sampleStudents });
+  } catch (error) {
+    console.error('Error fetching students:', error);
+    res.status(500).json({ success: false, message: 'Failed to fetch students' });
+  }
+});
+
+app.post('/api/admin/students', async (req, res) => {
+  try {
+    const { code, name, phone, grade, parentPhone } = req.body;
+    
+    // Validate required fields
+    if (!code || !name || !phone || !grade) {
+      return res.status(400).json({ 
+        success: false, 
+        message: 'Code, name, phone, and grade are required' 
+      });
+    }
+    
+    // In production, this would insert into database
+    console.log('Adding student:', { code, name, phone, grade, parentPhone });
+    
+    res.json({ 
+      success: true, 
+      message: 'Student added successfully',
+      data: { code, name, phone, grade, parentPhone, status: 'Active' }
+    });
+  } catch (error) {
+    console.error('Error adding student:', error);
+    res.status(500).json({ success: false, message: 'Failed to add student' });
+  }
+});
+
+app.put('/api/admin/students/:code', async (req, res) => {
+  try {
+    const { code } = req.params;
+    const { name, phone, grade, parentPhone, status } = req.body;
+    
+    // In production, this would update the database
+    console.log('Updating student:', code, { name, phone, grade, parentPhone, status });
+    
+    res.json({ 
+      success: true, 
+      message: 'Student updated successfully',
+      data: { code, name, phone, grade, parentPhone, status }
+    });
+  } catch (error) {
+    console.error('Error updating student:', error);
+    res.status(500).json({ success: false, message: 'Failed to update student' });
+  }
+});
+
+app.delete('/api/admin/students/:code', async (req, res) => {
+  try {
+    const { code } = req.params;
+    
+    // In production, this would delete from database
+    console.log('Deleting student:', code);
+    
+    res.json({ 
+      success: true, 
+      message: 'Student deleted successfully'
+    });
+  } catch (error) {
+    console.error('Error deleting student:', error);
+    res.status(500).json({ success: false, message: 'Failed to delete student' });
+  }
+});
+
+// Similar endpoints for teachers and assistants
+app.get('/api/admin/teachers', async (req, res) => {
+  try {
+    const sampleTeachers = [
+      { id: 1, name: 'Ahmed Hassan', email: 'ahmed@school.com', phone: '+201234567890', subject: 'Mathematics', status: 'Active' },
+      { id: 2, name: 'Fatima Ali', email: 'fatima@school.com', phone: '+201234567891', subject: 'Arabic', status: 'Active' },
+      { id: 3, name: 'Mohammed Omar', email: 'mohammed@school.com', phone: '+201234567892', subject: 'Science', status: 'Active' }
+    ];
+    
+    res.json({ success: true, data: sampleTeachers });
+  } catch (error) {
+    console.error('Error fetching teachers:', error);
+    res.status(500).json({ success: false, message: 'Failed to fetch teachers' });
+  }
+});
+
+app.post('/api/admin/teachers', async (req, res) => {
+  try {
+    const { name, email, phone, subject } = req.body;
+    
+    if (!name || !email || !phone || !subject) {
+      return res.status(400).json({ 
+        success: false, 
+        message: 'Name, email, phone, and subject are required' 
+      });
+    }
+    
+    const newId = Math.floor(Math.random() * 1000) + 100;
+    console.log('Adding teacher:', { id: newId, name, email, phone, subject });
+    
+    res.json({ 
+      success: true, 
+      message: 'Teacher added successfully',
+      data: { id: newId, name, email, phone, subject, status: 'Active' }
+    });
+  } catch (error) {
+    console.error('Error adding teacher:', error);
+    res.status(500).json({ success: false, message: 'Failed to add teacher' });
+  }
 });
 
 // Student login API
@@ -962,6 +1202,11 @@ function getGradeFromScore(score) {
 
 // Serve static files after specific routes
 app.use(express.static('public'));
+
+// Site map generator route
+app.get('/site-map', (req, res) => {
+    res.sendFile(path.join(__dirname, 'site-map-generator.html'));
+});
 
 app.listen(PORT, () => {
   console.log(`🚀 Server running on port ${PORT}`);

@@ -71,6 +71,45 @@
             font-weight: bold;
         }
 
+        .action-buttons {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+            justify-content: center;
+        }
+
+        .btn {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-primary {
+            background: linear-gradient(45deg, #FF6B6B, #4ECDC4);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .btn-secondary {
+            background: linear-gradient(45deg, #6c757d, #495057);
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
         .content {
             padding: 30px;
         }
@@ -314,6 +353,10 @@
                     <div class="info-label">Student Code</div>
                     <div class="info-value" id="studentCode">Loading...</div>
                 </div>
+            </div>
+            <div class="action-buttons">
+                <button class="btn btn-primary" onclick="openQuizSelection()">🎯 Take Quiz</button>
+                <button class="btn btn-secondary" onclick="viewSubjectResults()">📚 View Subject Results</button>
             </div>
         </div>
 
@@ -642,6 +685,20 @@
             if (grade === 'B+') return 'good-grade';
             if (grade === 'B') return 'average-grade';
             return 'needs-improvement';
+        }
+
+        function openQuizSelection() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const studentCode = urlParams.get('code');
+            const studentName = document.getElementById('studentName').textContent;
+            
+            window.location.href = `/student-quiz-selection?code=${studentCode}&name=${encodeURIComponent(studentName)}`;
+        }
+
+        function viewSubjectResults() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const studentCode = urlParams.get('code');
+            window.location.href = `/subject-selection?code=${studentCode}`;
         }
 
         function goBack() {

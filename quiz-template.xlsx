@@ -1,0 +1,13 @@
+# This is a placeholder for an Excel file
+# The actual Excel file would have the following columns:
+# Column 1: Auto-count for questions (1, 2, 3, etc.)
+# Column 2: Question type (Multiple Choice, True/False, Fill in Blank, Matching, Short Answer)
+# Column 3: Question text
+# Column 4: Multiple choice option A
+# Column 5: Multiple choice option B  
+# Column 6: Multiple choice option C
+# Column 7: Multiple choice option D
+# Column 8: Correct answer
+# Column 9: Notes
+
+# Since I cannot create actual Excel files, I'll create a CSV template instead

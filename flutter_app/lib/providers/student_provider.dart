@@ -55,12 +55,12 @@ class StudentProvider extends ChangeNotifier {
     final normalizedCode = code.toUpperCase().replaceAll(RegExp(r'[^A-Z0-9]'), '');
     
     // Check if code exists in demo data
-    if (DemoData.students.containsKey(normalizedCode)) {
-      final studentData = DemoData.students[normalizedCode]!;
+    if (DemoData.demoStudents.containsKey(normalizedCode)) {
+      final studentData = DemoData.demoStudents[normalizedCode]!;
       _student = Student.fromDemoData(normalizedCode, studentData);
     } else {
-      // Check for partial matches
-      for (final entry in DemoData.students.entries) {
+      // Search by name if code not found
+      for (final entry in DemoData.demoStudents.entries) {
         if (entry.key.contains(normalizedCode) || normalizedCode.contains(entry.key)) {
           _student = Student.fromDemoData(entry.key, entry.value);
           return;
