@@ -407,8 +407,10 @@
         
         function generateStudentCode(grade) {
             const gradePrefix = grade.toUpperCase();
-            const randomNumber = Math.floor(Math.random() * 900) + 100;
-            return `${gradePrefix}${randomNumber}`;
+            // Generate 4-digit hexadecimal number (0000-FFFF)
+            const randomHex = Math.floor(Math.random() * 65536); // 0 to 65535 (0x0000 to 0xFFFF)
+            const hexCode = randomHex.toString(16).toUpperCase().padStart(4, '0');
+            return `${gradePrefix}${hexCode}`;
         }
         
         // Auto-fill WhatsApp with parent phone if empty

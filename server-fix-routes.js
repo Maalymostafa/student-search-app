@@ -398,11 +398,15 @@ app.get('*', (req, res) => {
 
 // Mock data function for testing
 function getMockData(code, sheetPrefix) {
+  // Validate hexadecimal format
+  const hexPart = code.slice(2); // Get last 4 characters
+  const isValidHex = /^[0-9A-F]{4}$/i.test(hexPart);
+  
   return {
     id: Math.floor(Math.random() * 1000),
     student_code: code,
-    name: `طالب تجريبي ${code}`,
-    full_name_arabic: `طالب تجريبي ${code}`,
+    name: `طالب تجريبي ${code}${isValidHex ? ' (كود صحيح)' : ' (كود قديم)'}`,
+    full_name_arabic: `طالب تجريبي ${code}${isValidHex ? ' - كود هيكساديسيمال' : ' - كود عادي'}`,
     grade_level: sheetPrefix,
     is_confirmed: true,
     september: {

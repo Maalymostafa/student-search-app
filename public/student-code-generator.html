@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>مولد أكواد الطلاب - النظام الهيكساديسيمال</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        .content {
+            padding: 40px;
+        }
+        
+        .format-info {
+            background: #e8f4fd;
+            border: 2px solid #3498db;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .format-info h3 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .code-examples {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .code-example {
+            background: white;
+            border: 2px solid #27ae60;
+            border-radius: 8px;
+            padding: 15px;
+            text-align: center;
+            font-family: 'Courier New', monospace;
+            font-size: 16px;
+            font-weight: bold;
+        }
+        
+        .code-part {
+            margin: 5px 0;
+        }
+        
+        .grade-part {
+            color: #e74c3c;
+        }
+        
+        .hex-part {
+            color: #3498db;
+        }
+        
+        .generator-section {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 30px;
+            margin-bottom: 30px;
+        }
+        
+        .grade-selector {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+        
+        .grade-btn {
+            background: white;
+            border: 2px solid #3498db;
+            color: #3498db;
+            padding: 15px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+        
+        .grade-btn:hover, .grade-btn.active {
+            background: #3498db;
+            color: white;
+        }
+        
+        .generate-controls {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-bottom: 25px;
+        }
+        
+        .quantity-input {
+            padding: 12px;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            font-size: 16px;
+            width: 100px;
+            text-align: center;
+        }
+        
+        .generate-btn {
+            background: #27ae60;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+        
+        .generate-btn:hover {
+            background: #229954;
+            transform: translateY(-2px);
+        }
+        
+        .results {
+            background: #2c3e50;
+            color: #ecf0f1;
+            padding: 20px;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            max-height: 300px;
+            overflow-y: auto;
+            white-space: pre-line;
+            direction: ltr;
+            text-align: left;
+        }
+        
+        .copy-btn {
+            background: #3498db;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 10px;
+            font-size: 14px;
+        }
+        
+        .validation-section {
+            background: #fff3cd;
+            border: 2px solid #ffc107;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .validate-input {
+            padding: 12px;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            font-size: 16px;
+            width: 200px;
+            font-family: 'Courier New', monospace;
+        }
+        
+        .validate-result {
+            margin-top: 15px;
+            padding: 10px;
+            border-radius: 5px;
+            font-weight: bold;
+        }
+        
+        .valid {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        
+        .invalid {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🔢 مولد أكواد الطلاب الهيكساديسيمال</h1>
+            <p>إنشاء أكواد طلاب فريدة بنظام الأرقام الستة عشرية</p>
+        </div>
+        
+        <div class="content">
+            <!-- Format Information -->
+            <div class="format-info">
+                <h3>📋 صيغة الكود المطلوبة</h3>
+                <p><strong>الصيغة:</strong> [الصف][4 أرقام هيكساديسيمال]</p>
+                
+                <div class="code-examples">
+                    <div class="code-example">
+                        <div class="code-part grade-part">G6</div>
+                        <div class="code-part hex-part">016F</div>
+                        <div style="color: #7f8c8d; font-size: 12px;">الصف السادس</div>
+                    </div>
+                    <div class="code-example">
+                        <div class="code-part grade-part">G4</div>
+                        <div class="code-part hex-part">00D6</div>
+                        <div style="color: #7f8c8d; font-size: 12px;">الصف الرابع</div>
+                    </div>
+                    <div class="code-example">
+                        <div class="code-part grade-part">P1</div>
+                        <div class="code-part hex-part">A3F2</div>
+                        <div style="color: #7f8c8d; font-size: 12px;">الأول الإعدادي</div>
+                    </div>
+                    <div class="code-example">
+                        <div class="code-part grade-part">G5</div>
+                        <div class="code-part hex-part">FF00</div>
+                        <div style="color: #7f8c8d; font-size: 12px;">الصف الخامس</div>
+                    </div>
+                </div>
+                
+                <p style="color: #7f8c8d; font-size: 14px; margin-top: 10px;">
+                    💡 الأرقام الهيكساديسيمال: 0-9, A-F (من 0000 إلى FFFF = 65,536 كود مختلف لكل صف)
+                </p>
+            </div>
+            
+            <!-- Code Generator -->
+            <div class="generator-section">
+                <h3 style="color: #2c3e50; margin-bottom: 20px;">🎯 مولد الأكواد</h3>
+                
+                <div class="grade-selector">
+                    <div class="grade-btn" onclick="selectGrade('G4')">الصف الرابع<br>(G4)</div>
+                    <div class="grade-btn" onclick="selectGrade('G5')">الصف الخامس<br>(G5)</div>
+                    <div class="grade-btn" onclick="selectGrade('G6')">الصف السادس<br>(G6)</div>
+                    <div class="grade-btn" onclick="selectGrade('P1')">الأول الإعدادي<br>(P1)</div>
+                </div>
+                
+                <div class="generate-controls">
+                    <label>عدد الأكواد:</label>
+                    <input type="number" id="quantity" class="quantity-input" value="10" min="1" max="100">
+                    <button onclick="generateCodes()" class="generate-btn">🚀 إنشاء الأكواد</button>
+                </div>
+                
+                <div id="results" class="results" style="display: none;"></div>
+                <button id="copyBtn" class="copy-btn" onclick="copyResults()" style="display: none;">📋 نسخ النتائج</button>
+            </div>
+            
+            <!-- Code Validator -->
+            <div class="validation-section">
+                <h3 style="color: #2c3e50; margin-bottom: 15px;">✅ فحص صحة الكود</h3>
+                <div style="display: flex; gap: 15px; align-items: center; flex-wrap: wrap;">
+                    <input type="text" id="validateCode" class="validate-input" placeholder="مثال: G6016F" oninput="validateCode()">
+                    <button onclick="validateCode()" class="generate-btn" style="background: #f39c12;">🔍 فحص</button>
+                </div>
+                <div id="validateResult" class="validate-result" style="display: none;"></div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        let selectedGrade = 'G4';
+        let generatedCodes = '';
+        
+        function selectGrade(grade) {
+            selectedGrade = grade;
+            document.querySelectorAll('.grade-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+        }
+        
+        function generateHexCode() {
+            // Generate random number from 0 to 65535 (0x0000 to 0xFFFF)
+            const randomNum = Math.floor(Math.random() * 65536);
+            return randomNum.toString(16).toUpperCase().padStart(4, '0');
+        }
+        
+        function generateCodes() {
+            if (!selectedGrade) {
+                alert('برجاء اختيار الصف أولاً');
+                return;
+            }
+            
+            const quantity = parseInt(document.getElementById('quantity').value);
+            if (!quantity || quantity < 1 || quantity > 100) {
+                alert('برجاء إدخال عدد صحيح من 1 إلى 100');
+                return;
+            }
+            
+            const codes = [];
+            const usedCodes = new Set();
+            
+            // Generate unique codes
+            while (codes.length < quantity) {
+                const hexCode = generateHexCode();
+                const fullCode = selectedGrade + hexCode;
+                
+                if (!usedCodes.has(fullCode)) {
+                    usedCodes.add(fullCode);
+                    codes.push(fullCode);
+                }
+            }
+            
+            // Format results
+            const timestamp = new Date().toLocaleString('ar-EG');
+            generatedCodes = `# أكواد الطلاب - ${selectedGrade} - تم الإنشاء في ${timestamp}
+# العدد: ${quantity} كود
+# الصيغة: ${selectedGrade}[هيكساديسيمال]
+
+${codes.join('\n')}
+
+# ملاحظة: كل كود فريد ويمكن استخدامه مرة واحدة فقط`;
+            
+            // Display results
+            const resultsDiv = document.getElementById('results');
+            resultsDiv.textContent = generatedCodes;
+            resultsDiv.style.display = 'block';
+            
+            document.getElementById('copyBtn').style.display = 'inline-block';
+        }
+        
+        function copyResults() {
+            navigator.clipboard.writeText(generatedCodes).then(() => {
+                alert('تم نسخ الأكواد بنجاح!');
+            }).catch(err => {
+                console.error('فشل في النسخ:', err);
+                // Fallback method
+                const textarea = document.createElement('textarea');
+                textarea.value = generatedCodes;
+                document.body.appendChild(textarea);
+                textarea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textarea);
+                alert('تم نسخ الأكواد!');
+            });
+        }
+        
+        function validateCode() {
+            const code = document.getElementById('validateCode').value.toUpperCase().trim();
+            const resultDiv = document.getElementById('validateResult');
+            
+            if (!code) {
+                resultDiv.style.display = 'none';
+                return;
+            }
+            
+            // Check format
+            const validFormat = /^(G[456]|P1)[0-9A-F]{4}$/;
+            const isValidFormat = validFormat.test(code);
+            
+            if (isValidFormat) {
+                const grade = code.substr(0, 2);
+                const hexPart = code.substr(2, 4);
+                const decimal = parseInt(hexPart, 16);
+                
+                let gradeName = '';
+                switch(grade) {
+                    case 'G4': gradeName = 'الصف الرابع'; break;
+                    case 'G5': gradeName = 'الصف الخامس'; break;
+                    case 'G6': gradeName = 'الصف السادس'; break;
+                    case 'P1': gradeName = 'الأول الإعدادي'; break;
+                }
+                
+                resultDiv.className = 'validate-result valid';
+                resultDiv.innerHTML = `
+                    ✅ <strong>كود صحيح</strong><br>
+                    📚 الصف: ${gradeName}<br>
+                    🔢 الجزء الهيكساديسيمال: ${hexPart}<br>
+                    🔢 القيمة العشرية: ${decimal}
+                `;
+            } else {
+                resultDiv.className = 'validate-result invalid';
+                resultDiv.innerHTML = `
+                    ❌ <strong>كود غير صحيح</strong><br>
+                    الصيغة المطلوبة: [G4/G5/G6/P1][4 أرقام هيكساديسيمال]<br>
+                    مثال: G6016F أو P1A3F2
+                `;
+            }
+            
+            resultDiv.style.display = 'block';
+        }
+        
+        // Auto-select G4 by default
+        document.addEventListener('DOMContentLoaded', function() {
+            selectGrade('G4');
+        });
+    </script>
+</body>
+</html>
