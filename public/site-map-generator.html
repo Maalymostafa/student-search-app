@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>مولد خريطة الموقع - نظام الطلاب</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        .header {
+            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        .content {
+            padding: 30px;
+        }
+        .section {
+            margin-bottom: 30px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            border-right: 4px solid #007bff;
+        }
+        .section h3 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .url-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        .url-item {
+            background: white;
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #e9ecef;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .url-item a {
+            color: #007bff;
+            text-decoration: none;
+        }
+        .url-item a:hover {
+            text-decoration: underline;
+        }
+        .generate-btn {
+            background: #28a745;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 10px;
+            transition: all 0.3s ease;
+        }
+        .generate-btn:hover {
+            background: #218838;
+            transform: translateY(-2px);
+        }
+        .output {
+            background: #2c3e50;
+            color: #ecf0f1;
+            padding: 20px;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            max-height: 400px;
+            overflow-y: auto;
+            white-space: pre-wrap;
+            margin-top: 20px;
+            direction: ltr;
+            text-align: left;
+        }
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        .stat-item {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+            border: 2px solid #e9ecef;
+        }
+        .stat-number {
+            font-size: 24px;
+            font-weight: bold;
+            color: #007bff;
+        }
+        .stat-label {
+            color: #6c757d;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🗺️ مولد خريطة الموقع</h1>
+            <p>إنشاء ملف sitemap.xml لتحسين محركات البحث</p>
+        </div>
+        
+        <div class="content">
+            <div class="stats">
+                <div class="stat-item">
+                    <div class="stat-number" id="totalPages">0</div>
+                    <div class="stat-label">إجمالي الصفحات</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number" id="apiEndpoints">0</div>
+                    <div class="stat-label">نقاط API</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number" id="userPages">0</div>
+                    <div class="stat-label">صفحات المستخدمين</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number" id="adminPages">0</div>
+                    <div class="stat-label">صفحات الإدارة</div>
+                </div>
+            </div>
+            
+            <div class="section">
+                <h3>🏠 الصفحات الرئيسية</h3>
+                <div class="url-list" id="mainPages"></div>
+            </div>
+            
+            <div class="section">
+                <h3>👥 صفحات المستخدمين</h3>
+                <div class="url-list" id="userPages"></div>
+            </div>
+            
+            <div class="section">
+                <h3>⚙️ صفحات الإدارة</h3>
+                <div class="url-list" id="adminPages"></div>
+            </div>
+            
+            <div class="section">
+                <h3>🔗 نقاط API</h3>
+                <div class="url-list" id="apiPages"></div>
+            </div>
+            
+            <div style="text-align: center; margin: 30px 0;">
+                <button onclick="generateSitemap()" class="generate-btn">🚀 إنشاء خريطة الموقع</button>
+                <button onclick="downloadSitemap()" class="generate-btn" style="background: #007bff;">💾 تحميل الملف</button>
+                <button onclick="copySitemap()" class="generate-btn" style="background: #6c757d;">📋 نسخ</button>
+            </div>
+            
+            <div id="output" class="output" style="display: none;"></div>
+        </div>
+    </div>
+    
+    <script>
+        const baseUrl = 'https://student-search-glxio0q0b-maaly-el-mansys-projects.vercel.app';
+        
+        const siteStructure = {
+            main: [
+                { url: '/', priority: '1.0', changefreq: 'daily' },
+                { url: '/demo', priority: '0.8', changefreq: 'weekly' }
+            ],
+            user: [
+                { url: '/student-login', priority: '0.9', changefreq: 'weekly' },
+                { url: '/working-student-login', priority: '0.8', changefreq: 'weekly' },
+                { url: '/secure-student-login', priority: '0.8', changefreq: 'weekly' },
+                { url: '/parent-login', priority: '0.9', changefreq: 'weekly' },
+                { url: '/teacher-login', priority: '0.9', changefreq: 'weekly' },
+                { url: '/student-results', priority: '0.8', changefreq: 'daily' },
+                { url: '/parent-dashboard', priority: '0.8', changefreq: 'daily' },
+                { url: '/teacher-dashboard', priority: '0.8', changefreq: 'daily' },
+                { url: '/subject-selection', priority: '0.7', changefreq: 'weekly' },
+                { url: '/subject-results', priority: '0.8', changefreq: 'daily' },
+                { url: '/quiz-interface', priority: '0.7', changefreq: 'weekly' },
+                { url: '/student-quiz-selection', priority: '0.7', changefreq: 'weekly' },
+                { url: '/student-quiz', priority: '0.6', changefreq: 'weekly' },
+                { url: '/test-quiz', priority: '0.6', changefreq: 'weekly' },
+                { url: '/enhanced-registration', priority: '0.7', changefreq: 'monthly' }
+            ],
+            admin: [
+                { url: '/admin-login', priority: '0.9', changefreq: 'weekly' },
+                { url: '/admin-dashboard', priority: '0.8', changefreq: 'daily' },
+                { url: '/assistant-login', priority: '0.7', changefreq: 'weekly' },
+                { url: '/assistant-data-entry', priority: '0.8', changefreq: 'daily' },
+                { url: '/financial-dashboard', priority: '0.8', changefreq: 'daily' }
+            ],
+            api: [
+                { url: '/api/search', priority: '0.9', changefreq: 'daily' },
+                { url: '/api/health', priority: '0.6', changefreq: 'daily' },
+                { url: '/sitemap.xml', priority: '0.5', changefreq: 'monthly' }
+            ]
+        };
+        
+        function initializePage() {
+            displayUrls('main', 'mainPages');
+            displayUrls('user', 'userPages');
+            displayUrls('admin', 'adminPages');
+            displayUrls('api', 'apiPages');
+            updateStats();
+        }
+        
+        function displayUrls(category, containerId) {
+            const container = document.getElementById(containerId);
+            const urls = siteStructure[category];
+            
+            container.innerHTML = urls.map(item => `
+                <div class="url-item">
+                    <span>${getIconForUrl(item.url)}</span>
+                    <a href="${baseUrl}${item.url}" target="_blank">${item.url}</a>
+                </div>
+            `).join('');
+        }
+        
+        function getIconForUrl(url) {
+            if (url.includes('api')) return '🔗';
+            if (url.includes('login')) return '🔐';
+            if (url.includes('dashboard')) return '📊';
+            if (url.includes('quiz')) return '📝';
+            if (url.includes('result')) return '📈';
+            if (url === '/') return '🏠';
+            return '📄';
+        }
+        
+        function updateStats() {
+            const stats = {
+                total: Object.values(siteStructure).flat().length,
+                api: siteStructure.api.length,
+                user: siteStructure.user.length,
+                admin: siteStructure.admin.length
+            };
+            
+            document.getElementById('totalPages').textContent = stats.total;
+            document.getElementById('apiEndpoints').textContent = stats.api;
+            document.getElementById('userPages').textContent = stats.user;
+            document.getElementById('adminPages').textContent = stats.admin;
+        }
+        
+        function generateSitemap() {
+            const now = new Date().toISOString().split('T')[0];
+            
+            let sitemap = `<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">`;
+
+            Object.values(siteStructure).flat().forEach(item => {
+                sitemap += `
+  <url>
+    <loc>${baseUrl}${item.url}</loc>
+    <lastmod>${now}</lastmod>
+    <changefreq>${item.changefreq}</changefreq>
+    <priority>${item.priority}</priority>
+  </url>`;
+            });
+            
+            sitemap += `
+</urlset>`;
+            
+            const output = document.getElementById('output');
+            output.textContent = sitemap;
+            output.style.display = 'block';
+            
+            // Store for download
+            window.generatedSitemap = sitemap;
+        }
+        
+        function downloadSitemap() {
+            if (!window.generatedSitemap) {
+                alert('برجاء إنشاء خريطة الموقع أولاً');
+                return;
+            }
+            
+            const blob = new Blob([window.generatedSitemap], { type: 'application/xml' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'sitemap.xml';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+        
+        function copySitemap() {
+            if (!window.generatedSitemap) {
+                alert('برجاء إنشاء خريطة الموقع أولاً');
+                return;
+            }
+            
+            navigator.clipboard.writeText(window.generatedSitemap).then(() => {
+                alert('تم نسخ خريطة الموقع إلى الحافظة');
+            }).catch(err => {
+                console.error('فشل في النسخ:', err);
+                // Fallback for older browsers
+                const textarea = document.createElement('textarea');
+                textarea.value = window.generatedSitemap;
+                document.body.appendChild(textarea);
+                textarea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textarea);
+                alert('تم نسخ خريطة الموقع');
+            });
+        }
+        
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', initializePage);
+    </script>
+</body>
+</html>

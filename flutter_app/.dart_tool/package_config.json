@@ -309,8 +309,8 @@
     }
   ],
   "generator": "pub",
-  "generatorVersion": "3.9.0",
+  "generatorVersion": "3.9.2",
   "flutterRoot": "file:///Users/maaly/development",
-  "flutterVersion": "3.35.1",
+  "flutterVersion": "3.35.3",
   "pubCache": "file:///Users/maaly/.pub-cache"
 }

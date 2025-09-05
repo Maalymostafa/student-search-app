@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تسجيل طالب جديد - النظام المطور</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .registration-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+            color: white;
+            padding: 40px;
+            text-align: center;
+        }
+        
+        .form-container {
+            padding: 50px;
+        }
+        
+        .form-section {
+            margin-bottom: 40px;
+            padding: 30px;
+            background: #f8f9fa;
+            border-radius: 15px;
+            border-right: 5px solid #3498db;
+        }
+        
+        .section-title {
+            color: #2c3e50;
+            font-size: 20px;
+            margin-bottom: 25px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .form-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 25px;
+            margin-bottom: 25px;
+        }
+        
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .form-group label {
+            margin-bottom: 8px;
+            color: #2c3e50;
+            font-weight: bold;
+            font-size: 16px;
+        }
+        
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            padding: 15px;
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            background: white;
+        }
+        
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #3498db;
+            box-shadow: 0 0 10px rgba(52, 152, 219, 0.2);
+        }
+        
+        .form-group textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+        
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        
+        .checkbox-group input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+        }
+        
+        .required {
+            color: #e74c3c;
+        }
+        
+        .submit-section {
+            background: #e8f5e8;
+            padding: 30px;
+            border-radius: 15px;
+            text-align: center;
+            border: 2px dashed #27ae60;
+        }
+        
+        .submit-btn {
+            background: linear-gradient(135deg, #27ae60 0%, #2ecc71 100%);
+            color: white;
+            border: none;
+            padding: 18px 50px;
+            border-radius: 12px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin: 10px;
+        }
+        
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(39, 174, 96, 0.3);
+        }
+        
+        .reset-btn {
+            background: #6c757d;
+        }
+        
+        .reset-btn:hover {
+            background: #5a6268;
+        }
+        
+        .info-box {
+            background: #d1ecf1;
+            border: 1px solid #bee5eb;
+            color: #0c5460;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+        }
+        
+        .grade-options {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 15px;
+        }
+        
+        .grade-option {
+            background: white;
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            padding: 15px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .grade-option:hover {
+            border-color: #3498db;
+            background: #ebf3fd;
+        }
+        
+        .grade-option.selected {
+            border-color: #27ae60;
+            background: #d5f4e6;
+        }
+        
+        .grade-option input[type="radio"] {
+            margin-bottom: 8px;
+        }
+    </style>
+</head>
+<body>
+    <div class="registration-container">
+        <div class="header">
+            <h1>📝 تسجيل طالب جديد</h1>
+            <p>النظام المطور لإدارة الطلاب - سجل بياناتك بسهولة</p>
+        </div>
+        
+        <div class="form-container">
+            <div class="info-box">
+                <strong>📋 تعليمات مهمة:</strong><br>
+                • املأ جميع الحقول المطلوبة (المميزة بـ *)<br>
+                • تأكد من صحة البيانات قبل الإرسال<br>
+                • سيتم إنشاء كود طالب تلقائياً بعد التسجيل<br>
+                • ستتلقى رسالة تأكيد على رقم الهاتف المسجل
+            </div>
+            
+            <form id="registrationForm">
+                <!-- Student Information -->
+                <div class="form-section">
+                    <h3 class="section-title">👤 البيانات الشخصية</h3>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="fullName">الاسم الكامل <span class="required">*</span></label>
+                            <input type="text" id="fullName" name="fullName" required placeholder="أدخل الاسم الكامل">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="birthDate">تاريخ الميلاد <span class="required">*</span></label>
+                            <input type="date" id="birthDate" name="birthDate" required>
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="nationalId">الرقم القومي</label>
+                            <input type="text" id="nationalId" name="nationalId" placeholder="اختياري">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="gender">الجنس <span class="required">*</span></label>
+                            <select id="gender" name="gender" required>
+                                <option value="">اختر...</option>
+                                <option value="male">ذكر</option>
+                                <option value="female">أنثى</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Academic Information -->
+                <div class="form-section">
+                    <h3 class="section-title">🎓 البيانات الأكاديمية</h3>
+                    
+                    <div class="form-group">
+                        <label>الصف الدراسي <span class="required">*</span></label>
+                        <div class="grade-options">
+                            <div class="grade-option" onclick="selectGrade('g4')">
+                                <input type="radio" name="grade" value="g4" required>
+                                <div>الصف الرابع</div>
+                            </div>
+                            <div class="grade-option" onclick="selectGrade('g5')">
+                                <input type="radio" name="grade" value="g5" required>
+                                <div>الصف الخامس</div>
+                            </div>
+                            <div class="grade-option" onclick="selectGrade('g6')">
+                                <input type="radio" name="grade" value="g6" required>
+                                <div>الصف السادس</div>
+                            </div>
+                            <div class="grade-option" onclick="selectGrade('p1')">
+                                <input type="radio" name="grade" value="p1" required>
+                                <div>الأول الإعدادي</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="previousSchool">المدرسة السابقة</label>
+                            <input type="text" id="previousSchool" name="previousSchool" placeholder="اسم المدرسة السابقة (اختياري)">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="previousGrade">الدرجة في العام السابق</label>
+                            <input type="number" id="previousGrade" name="previousGrade" min="0" max="100" placeholder="المجموع (اختياري)">
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Contact Information -->
+                <div class="form-section">
+                    <h3 class="section-title">📞 بيانات التواصل</h3>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="parentPhone">هاتف ولي الأمر <span class="required">*</span></label>
+                            <input type="tel" id="parentPhone" name="parentPhone" required placeholder="+20 1xxxxxxxxx">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="whatsappPhone">رقم الواتساب</label>
+                            <input type="tel" id="whatsappPhone" name="whatsappPhone" placeholder="+20 1xxxxxxxxx (اختياري)">
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="parentName">اسم ولي الأمر <span class="required">*</span></label>
+                            <input type="text" id="parentName" name="parentName" required placeholder="اسم الأب أو الأم">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="parentRelation">صلة القرابة</label>
+                            <select id="parentRelation" name="parentRelation">
+                                <option value="father">الأب</option>
+                                <option value="mother">الأم</option>
+                                <option value="guardian">ولي أمر</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="address">العنوان</label>
+                        <textarea id="address" name="address" placeholder="العنوان التفصيلي (اختياري)"></textarea>
+                    </div>
+                </div>
+                
+                <!-- Subscription Information -->
+                <div class="form-section">
+                    <h3 class="section-title">💳 بيانات الاشتراك</h3>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="subscriptionType">نوع الاشتراك <span class="required">*</span></label>
+                            <select id="subscriptionType" name="subscriptionType" required>
+                                <option value="">اختر نوع الاشتراك...</option>
+                                <option value="monthly">اشتراك شهري</option>
+                                <option value="quarterly">اشتراك ربع سنوي</option>
+                                <option value="yearly">اشتراك سنوي</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="paymentMethod">طريقة الدفع</label>
+                            <select id="paymentMethod" name="paymentMethod">
+                                <option value="transfer">تحويل بنكي</option>
+                                <option value="cash">نقدي</option>
+                                <option value="installments">أقساط</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Terms and Submit -->
+                <div class="submit-section">
+                    <div class="checkbox-group">
+                        <input type="checkbox" id="terms" name="terms" required>
+                        <label for="terms">أوافق على الشروط والأحكام <span class="required">*</span></label>
+                    </div>
+                    
+                    <div class="checkbox-group">
+                        <input type="checkbox" id="newsletter" name="newsletter">
+                        <label for="newsletter">أرغب في تلقي الإشعارات والأخبار</label>
+                    </div>
+                    
+                    <div style="margin-top: 30px;">
+                        <button type="submit" class="submit-btn">✅ تسجيل الطالب</button>
+                        <button type="reset" class="submit-btn reset-btn">🔄 إعادة تعيين</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <script>
+        function selectGrade(gradeValue) {
+            // Remove selection from all grade options
+            document.querySelectorAll('.grade-option').forEach(option => {
+                option.classList.remove('selected');
+            });
+            
+            // Add selection to clicked option
+            event.currentTarget.classList.add('selected');
+            
+            // Check the radio button
+            document.querySelector(`input[value="${gradeValue}"]`).checked = true;
+        }
+        
+        document.getElementById('registrationForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Get form data
+            const formData = new FormData(this);
+            const data = Object.fromEntries(formData);
+            
+            // Validate required fields
+            const required = ['fullName', 'birthDate', 'gender', 'grade', 'parentPhone', 'parentName', 'subscriptionType'];
+            const missing = required.filter(field => !data[field]);
+            
+            if (missing.length > 0) {
+                alert('برجاء ملء جميع الحقول المطلوبة');
+                return;
+            }
+            
+            if (!data.terms) {
+                alert('يجب الموافقة على الشروط والأحكام');
+                return;
+            }
+            
+            // Simulate registration process
+            alert('جاري تسجيل البيانات...');
+            
+            setTimeout(() => {
+                const studentCode = generateStudentCode(data.grade);
+                alert(`تم التسجيل بنجاح!\\nكود الطالب: ${studentCode}\\nسيتم التواصل معكم قريباً`);
+                
+                // Redirect to student login
+                window.location.href = `/student-login?code=${studentCode}`;
+            }, 2000);
+        });
+        
+        function generateStudentCode(grade) {
+            const gradePrefix = grade.toUpperCase();
+            const randomNumber = Math.floor(Math.random() * 900) + 100;
+            return `${gradePrefix}${randomNumber}`;
+        }
+        
+        // Auto-fill WhatsApp with parent phone if empty
+        document.getElementById('parentPhone').addEventListener('blur', function() {
+            const whatsappField = document.getElementById('whatsappPhone');
+            if (!whatsappField.value && this.value) {
+                whatsappField.value = this.value;
+            }
+        });
+    </script>
+</body>
+</html>

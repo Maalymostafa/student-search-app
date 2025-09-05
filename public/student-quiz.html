@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>الاختبار - نظام الطلاب</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f5f6fa;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .quiz-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        .quiz-header {
+            background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+            position: relative;
+        }
+        
+        .timer {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: rgba(255,255,255,0.2);
+            padding: 10px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+        }
+        
+        .progress-bar {
+            background: rgba(255,255,255,0.2);
+            height: 8px;
+            border-radius: 4px;
+            margin-top: 20px;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            background: white;
+            height: 100%;
+            border-radius: 4px;
+            transition: width 0.3s ease;
+        }
+        
+        .question-container {
+            padding: 40px;
+        }
+        
+        .question-number {
+            color: #7f8c8d;
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
+        
+        .question {
+            font-size: 20px;
+            color: #2c3e50;
+            margin-bottom: 30px;
+            line-height: 1.6;
+        }
+        
+        .options {
+            display: grid;
+            gap: 15px;
+        }
+        
+        .option {
+            background: #f8f9fa;
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            padding: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .option:hover {
+            border-color: #3498db;
+            background: #ebf3ff;
+        }
+        
+        .option.selected {
+            border-color: #27ae60;
+            background: #d5f4e6;
+        }
+        
+        .option-letter {
+            background: #3498db;
+            color: white;
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            flex-shrink: 0;
+        }
+        
+        .option.selected .option-letter {
+            background: #27ae60;
+        }
+        
+        .quiz-navigation {
+            padding: 30px 40px;
+            background: #f8f9fa;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .nav-btn {
+            background: #3498db;
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+        
+        .nav-btn:hover {
+            background: #2980b9;
+            transform: translateY(-2px);
+        }
+        
+        .nav-btn:disabled {
+            background: #95a5a6;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .submit-btn {
+            background: #e74c3c;
+        }
+        
+        .submit-btn:hover {
+            background: #c0392b;
+        }
+        
+        .question-nav {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        
+        .question-dot {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background: #bdc3c7;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .question-dot.answered {
+            background: #27ae60;
+        }
+        
+        .question-dot.current {
+            background: #3498db;
+            transform: scale(1.2);
+        }
+    </style>
+</head>
+<body>
+    <div class="quiz-container">
+        <div class="quiz-header">
+            <div class="timer" id="timer">⏱️ 29:45</div>
+            <h1 id="quizTitle">اختبار الرياضيات</h1>
+            <p>الصف الرابع الابتدائي</p>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill" style="width: 5%"></div>
+            </div>
+        </div>
+        
+        <div class="question-container">
+            <div class="question-number" id="questionNumber">السؤال 1 من 20</div>
+            <div class="question" id="questionText">
+                ما ناتج جمع العددين 25 + 37؟
+            </div>
+            
+            <div class="options" id="optionsContainer">
+                <div class="option" onclick="selectOption(0)">
+                    <div class="option-letter">أ</div>
+                    <span>52</span>
+                </div>
+                <div class="option" onclick="selectOption(1)">
+                    <div class="option-letter">ب</div>
+                    <span>62</span>
+                </div>
+                <div class="option" onclick="selectOption(2)">
+                    <div class="option-letter">ج</div>
+                    <span>72</span>
+                </div>
+                <div class="option" onclick="selectOption(3)">
+                    <div class="option-letter">د</div>
+                    <span>82</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="quiz-navigation">
+            <button class="nav-btn" id="prevBtn" onclick="previousQuestion()" disabled>
+                السؤال السابق
+            </button>
+            
+            <div class="question-nav" id="questionNav">
+                <!-- Question dots will be generated here -->
+            </div>
+            
+            <button class="nav-btn" id="nextBtn" onclick="nextQuestion()">
+                السؤال التالي
+            </button>
+        </div>
+    </div>
+    
+    <script>
+        let currentQuestion = 0;
+        let totalQuestions = 20;
+        let answers = new Array(totalQuestions).fill(null);
+        let timeRemaining = 30 * 60; // 30 minutes in seconds
+        
+        // Sample questions
+        const questions = [
+            {
+                question: "ما ناتج جمع العددين 25 + 37؟",
+                options: ["52", "62", "72", "82"],
+                correct: 1
+            },
+            {
+                question: "كم عدد أضلاع المثلث؟",
+                options: ["2", "3", "4", "5"],
+                correct: 1
+            },
+            // Add more questions as needed
+        ];
+        
+        function initializeQuiz() {
+            generateQuestionNav();
+            startTimer();
+            loadQuestion();
+        }
+        
+        function generateQuestionNav() {
+            const nav = document.getElementById('questionNav');
+            nav.innerHTML = '';
+            for (let i = 0; i < totalQuestions; i++) {
+                const dot = document.createElement('div');
+                dot.className = 'question-dot';
+                if (i === 0) dot.classList.add('current');
+                dot.textContent = i + 1;
+                dot.onclick = () => goToQuestion(i);
+                nav.appendChild(dot);
+            }
+        }
+        
+        function loadQuestion() {
+            const question = questions[currentQuestion] || questions[0];
+            document.getElementById('questionNumber').textContent = `السؤال ${currentQuestion + 1} من ${totalQuestions}`;
+            document.getElementById('questionText').textContent = question.question;
+            
+            const optionsContainer = document.getElementById('optionsContainer');
+            const options = optionsContainer.querySelectorAll('.option');
+            
+            options.forEach((option, index) => {
+                option.classList.remove('selected');
+                option.querySelector('span').textContent = question.options[index];
+                if (answers[currentQuestion] === index) {
+                    option.classList.add('selected');
+                }
+            });
+            
+            updateProgress();
+            updateNavigation();
+        }
+        
+        function selectOption(optionIndex) {
+            // Clear previous selection
+            document.querySelectorAll('.option').forEach(opt => {
+                opt.classList.remove('selected');
+            });
+            
+            // Select new option
+            document.querySelectorAll('.option')[optionIndex].classList.add('selected');
+            answers[currentQuestion] = optionIndex;
+            
+            // Update question nav
+            const dots = document.querySelectorAll('.question-dot');
+            dots[currentQuestion].classList.add('answered');
+        }
+        
+        function nextQuestion() {
+            if (currentQuestion < totalQuestions - 1) {
+                currentQuestion++;
+                updateCurrentQuestionDot();
+                loadQuestion();
+            } else {
+                finishQuiz();
+            }
+        }
+        
+        function previousQuestion() {
+            if (currentQuestion > 0) {
+                currentQuestion--;
+                updateCurrentQuestionDot();
+                loadQuestion();
+            }
+        }
+        
+        function goToQuestion(questionIndex) {
+            currentQuestion = questionIndex;
+            updateCurrentQuestionDot();
+            loadQuestion();
+        }
+        
+        function updateCurrentQuestionDot() {
+            document.querySelectorAll('.question-dot').forEach((dot, index) => {
+                dot.classList.remove('current');
+                if (index === currentQuestion) {
+                    dot.classList.add('current');
+                }
+            });
+        }
+        
+        function updateProgress() {
+            const progress = ((currentQuestion + 1) / totalQuestions) * 100;
+            document.getElementById('progressFill').style.width = progress + '%';
+        }
+        
+        function updateNavigation() {
+            const prevBtn = document.getElementById('prevBtn');
+            const nextBtn = document.getElementById('nextBtn');
+            
+            prevBtn.disabled = currentQuestion === 0;
+            
+            if (currentQuestion === totalQuestions - 1) {
+                nextBtn.textContent = 'إنهاء الاختبار';
+                nextBtn.className = 'nav-btn submit-btn';
+            } else {
+                nextBtn.textContent = 'السؤال التالي';
+                nextBtn.className = 'nav-btn';
+            }
+        }
+        
+        function startTimer() {
+            const timerElement = document.getElementById('timer');
+            const countdown = setInterval(() => {
+                const minutes = Math.floor(timeRemaining / 60);
+                const seconds = timeRemaining % 60;
+                timerElement.textContent = `⏱️ ${minutes}:${seconds.toString().padStart(2, '0')}`;
+                
+                if (timeRemaining <= 0) {
+                    clearInterval(countdown);
+                    finishQuiz();
+                }
+                
+                timeRemaining--;
+            }, 1000);
+        }
+        
+        function finishQuiz() {
+            const answeredQuestions = answers.filter(answer => answer !== null).length;
+            const message = `لقد أجبت على ${answeredQuestions} من ${totalQuestions} سؤال.\nهل أنت متأكد من إنهاء الاختبار؟`;
+            
+            if (confirm(message)) {
+                alert('تم إرسال الاختبار بنجاح! ستظهر النتيجة قريباً.');
+                window.location.href = '/student-results';
+            }
+        }
+        
+        // Initialize when page loads
+        window.onload = initializeQuiz;
+        
+        // Prevent accidental page refresh
+        window.addEventListener('beforeunload', function (e) {
+            e.preventDefault();
+            e.returnValue = '';
+        });
+    </script>
+</body>
+</html>

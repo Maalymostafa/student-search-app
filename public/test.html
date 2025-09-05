@@ -1,117 +1,159 @@
 <!DOCTYPE html>
-<html lang="ar">
+<html lang="ar" dir="rtl">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Test Performance Table</title>
-  <style>
-    body {
-      font-family: 'Poppins', sans-serif;
-      background: url('https://i.imgur.com/ulaJxcO.jpg') no-repeat center center fixed;
-      background-size: cover;
-      color: #1B1B1B;
-    }
-
-    .form-container {
-      margin: 20px;
-      padding: 25px;
-      background-color: rgba(224, 247, 250, 0.8);
-      border-radius: 12px;
-      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.08);
-      text-align: center;
-    }
-
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 20px;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
-    }
-
-    table, th, td {
-      border: 1px solid #81D4FA;
-      padding: 12px;
-      text-align: center;
-    }
-
-    th {
-      background-color: #0288D1;
-      color: white;
-    }
-
-    td {
-      background-color: #FFFFFF;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>صفحة الاختبار - نظام الطلاب</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #74b9ff 0%, #0984e3 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        .header {
+            background: linear-gradient(135deg, #2d3436 0%, #636e72 100%);
+            color: white;
+            padding: 40px;
+            text-align: center;
+        }
+        .content {
+            padding: 40px;
+        }
+        .test-card {
+            background: #f8f9fa;
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            padding: 30px;
+            margin-bottom: 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .test-card:hover {
+            border-color: #007bff;
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0,123,255,0.2);
+        }
+        .test-icon {
+            font-size: 48px;
+            margin-bottom: 20px;
+        }
+        .test-title {
+            color: #2c3e50;
+            font-size: 24px;
+            margin-bottom: 15px;
+        }
+        .test-description {
+            color: #7f8c8d;
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+        .start-btn {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+        .start-btn:hover {
+            background: #0056b3;
+            transform: translateY(-2px);
+        }
+    </style>
 </head>
 <body>
-  <div class="form-container">
-    <h1>Test Performance Table</h1>
-    
-    <div id="testResult">
-      <table><thead><tr><th>Name</th><th>Student Code</th></tr></thead><tbody><tr><td style="font-size: 30px; font-weight: bold;">Ahmed Mohamed</td><td style="font-size: 30px; font-weight: bold;">G4001</td></tr></tbody></table>
-      
-      <table>
-        <thead>
-          <tr>
-            <th rowspan="2" style="font-size: 18px; font-weight: bold;">Month</th>
-            <th colspan="2" style="font-size: 18px; font-weight: bold;">Session 1</th>
-            <th colspan="2" style="font-size: 18px; font-weight: bold;">Session 2</th>
-            <th colspan="2" style="font-size: 18px; font-weight: bold;">Session 3</th>
-            <th colspan="2" style="font-size: 18px; font-weight: bold;">Session 4</th>
-            <th rowspan="2" style="font-size: 18px; font-weight: bold;">Final Evaluation</th>
-          </tr>
-          <tr>
-            <th style="font-size: 16px; font-weight: bold;">Perf.</th>
-            <th style="font-size: 16px; font-weight: bold;">Quiz</th>
-            <th style="font-size: 16px; font-weight: bold;">Perf.</th>
-            <th style="font-size: 16px; font-weight: bold;">Quiz</th>
-            <th style="font-size: 16px; font-weight: bold;">Perf.</th>
-            <th style="font-size: 16px; font-weight: bold;">Quiz</th>
-            <th style="font-size: 16px; font-weight: bold;">Perf.</th>
-            <th style="font-size: 16px; font-weight: bold;">Quiz</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>September</td>
-            <td>A</td><td>90</td>
-            <td>A</td><td>85</td>
-            <td>B+</td><td>88</td>
-            <td>A</td><td>92</td>
-            <td></td>
-          </tr>
-          <tr>
-            <td>October</td>
-            <td>A</td><td>95</td>
-            <td>A</td><td>87</td>
-            <td>A</td><td>91</td>
-            <td>B+</td><td>89</td>
-            <td></td>
-          </tr>
-          <tr>
-            <td>November</td>
-            <td>A</td><td>93</td>
-            <td>A</td><td>88</td>
-            <td>A</td><td>90</td>
-            <td>A</td><td>94</td>
-            <td></td>
-          </tr>
-          <tr>
-            <td>December</td>
-            <td>A</td><td>96</td>
-            <td>A</td><td>89</td>
-            <td>A</td><td>92</td>
-            <td>A</td><td>95</td>
-            <td></td>
-          </tr>
-        </tbody>
-      </table>
-      
-      <p style="color: green; font-weight: bold; font-size: 50px;">
-        تم تأكيد الحجز
-      </p>
+    <div class="container">
+        <div class="header">
+            <h1>🧪 مركز الاختبارات</h1>
+            <p>اختبر معلوماتك ومهاراتك في مختلف المواد</p>
+        </div>
+        
+        <div class="content">
+            <div class="test-card" onclick="startTest('quick')">
+                <div class="test-icon">⚡</div>
+                <h3 class="test-title">اختبار سريع</h3>
+                <p class="test-description">
+                    اختبار سريع يحتوي على 5 أسئلة متنوعة
+                    <br>المدة: 5 دقائق
+                </p>
+                <button class="start-btn">ابدأ الاختبار السريع</button>
+            </div>
+            
+            <div class="test-card" onclick="startTest('comprehensive')">
+                <div class="test-icon">📚</div>
+                <h3 class="test-title">اختبار شامل</h3>
+                <p class="test-description">
+                    اختبار شامل يغطي جميع المواد الدراسية
+                    <br>المدة: 30 دقيقة - 20 سؤال
+                </p>
+                <button class="start-btn">ابدأ الاختبار الشامل</button>
+            </div>
+            
+            <div class="test-card" onclick="startTest('practice')">
+                <div class="test-icon">💪</div>
+                <h3 class="test-title">اختبار تدريبي</h3>
+                <p class="test-description">
+                    اختبار للتدريب بدون درجات أو وقت محدد
+                    <br>مناسب للمراجعة والتحضير
+                </p>
+                <button class="start-btn">ابدأ التدريب</button>
+            </div>
+            
+            <div style="text-align: center; margin-top: 30px;">
+                <p style="color: #6c757d; font-size: 14px;">
+                    💡 نصيحة: ابدأ بالاختبار السريع لتقييم مستواك العام
+                </p>
+                <p style="margin-top: 15px;">
+                    <a href="/" style="color: #007bff; text-decoration: none;">← العودة للصفحة الرئيسية</a>
+                </p>
+            </div>
+        </div>
     </div>
-  </div>
+    
+    <script>
+        function startTest(type) {
+            switch(type) {
+                case 'quick':
+                    alert('سيتم تشغيل الاختبار السريع قريباً!');
+                    window.location.href = '/test-quiz';
+                    break;
+                case 'comprehensive':
+                    alert('الاختبار الشامل قيد التطوير!');
+                    // TODO: Navigate to comprehensive test
+                    break;
+                case 'practice':
+                    alert('الاختبار التدريبي قيد التطوير!');
+                    // TODO: Navigate to practice test
+                    break;
+                default:
+                    alert('نوع الاختبار غير محدد');
+            }
+        }
+        
+        // Add some interactivity
+        document.querySelectorAll('.test-card').forEach(card => {
+            card.addEventListener('mouseenter', function() {
+                this.style.backgroundColor = '#f0f8ff';
+            });
+            
+            card.addEventListener('mouseleave', function() {
+                this.style.backgroundColor = '#f8f9fa';
+            });
+        });
+    </script>
 </body>
 </html>

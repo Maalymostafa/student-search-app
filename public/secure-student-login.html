@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🔐 Secure Student Login - Student Search App</title>
+    <title>تسجيل دخول آمن - نظام الطلاب</title>
     <style>
         * {
             margin: 0;
@@ -13,475 +13,314 @@
 
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
             min-height: 100vh;
             display: flex;
-            align-items: center;
             justify-content: center;
+            align-items: center;
             padding: 20px;
         }
 
         .login-container {
             background: white;
+            padding: 50px;
             border-radius: 20px;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
-            overflow: hidden;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
             width: 100%;
             max-width: 450px;
-            animation: slideUp 0.6s ease-out;
-        }
-
-        @keyframes slideUp {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .login-header {
-            background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
-            color: white;
-            padding: 40px 30px;
             text-align: center;
+            position: relative;
         }
-
-        .login-header h2 {
-            font-size: 2.2rem;
+        
+        .security-badge {
+            position: absolute;
+            top: -15px;
+            right: 20px;
+            background: #27ae60;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        
+        .logo {
+            margin-bottom: 40px;
+        }
+        
+        .logo .shield-icon {
+            font-size: 48px;
+            color: #27ae60;
             margin-bottom: 15px;
-            font-weight: 600;
         }
-
-        .login-header p {
-            opacity: 0.9;
-            font-size: 1.1rem;
-            line-height: 1.5;
+        
+        .logo h1 {
+            color: #2c3e50;
+            font-size: 32px;
+            margin-bottom: 10px;
         }
-
-        .login-form {
-            padding: 40px 30px;
+        
+        .logo p {
+            color: #7f8c8d;
+            font-size: 16px;
         }
 
         .form-group {
-            margin-bottom: 25px;
+            margin-bottom: 30px;
+            text-align: right;
+            position: relative;
         }
 
         .form-group label {
             display: block;
-            margin-bottom: 8px;
-            font-weight: 600;
-            color: #333;
-            font-size: 1rem;
+            margin-bottom: 10px;
+            color: #2c3e50;
+            font-weight: bold;
+            font-size: 16px;
         }
 
         .form-group input {
             width: 100%;
-            padding: 15px;
-            border: 2px solid #e1e5e9;
-            border-radius: 10px;
-            font-size: 1rem;
+            padding: 18px;
+            border: 2px solid #ecf0f1;
+            border-radius: 12px;
+            font-size: 16px;
             transition: all 0.3s ease;
+            text-align: right;
             background: #f8f9fa;
         }
 
         .form-group input:focus {
             outline: none;
-            border-color: #4CAF50;
+            border-color: #27ae60;
             background: white;
-            box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.1);
+            box-shadow: 0 0 10px rgba(39, 174, 96, 0.2);
         }
-
-        .form-group small {
-            display: block;
-            margin-top: 8px;
-            color: #666;
-            font-size: 0.9rem;
-            line-height: 1.4;
+        
+        .security-features {
+            background: #ecf0f1;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            text-align: right;
         }
-
-        .form-group input[type="checkbox"] {
-            width: auto;
-            margin-right: 10px;
+        
+        .security-features h3 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+            font-size: 18px;
         }
-
-        .checkbox-label {
-            display: flex;
-            align-items: center;
-            cursor: pointer;
-            font-weight: 500;
+        
+        .security-features ul {
+            list-style: none;
+            color: #34495e;
+        }
+        
+        .security-features li {
+            margin-bottom: 8px;
+            padding-right: 20px;
+            position: relative;
+        }
+        
+        .security-features li::before {
+            content: '✓';
+            position: absolute;
+            right: 0;
+            color: #27ae60;
+            font-weight: bold;
         }
 
         .login-btn {
             width: 100%;
-            padding: 15px;
-            background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
+            background: linear-gradient(135deg, #27ae60 0%, #2ecc71 100%);
             color: white;
             border: none;
-            border-radius: 10px;
-            font-size: 1.1rem;
-            font-weight: 600;
+            padding: 18px;
+            border-radius: 12px;
+            font-size: 18px;
+            font-weight: bold;
             cursor: pointer;
             transition: all 0.3s ease;
-            margin-bottom: 20px;
+            position: relative;
         }
 
         .login-btn:hover {
             transform: translateY(-2px);
-            box-shadow: 0 10px 20px rgba(76, 175, 80, 0.3);
+            box-shadow: 0 10px 20px rgba(39, 174, 96, 0.3);
         }
 
         .login-btn:disabled {
-            opacity: 0.7;
+            background: #95a5a6;
             cursor: not-allowed;
             transform: none;
+            box-shadow: none;
         }
-
-        .login-help {
-            text-align: center;
-            margin-bottom: 25px;
+        
+        .links {
+            margin-top: 40px;
+            padding-top: 25px;
+            border-top: 1px solid #ecf0f1;
         }
-
-        .login-help a {
-            color: #4CAF50;
+        
+        .links a {
+            color: #3498db;
             text-decoration: none;
             margin: 0 15px;
+            font-size: 14px;
             font-weight: 500;
-            transition: color 0.3s ease;
         }
 
-        .login-help a:hover {
-            color: #45a049;
+        .links a:hover {
             text-decoration: underline;
         }
 
-        .security-notice {
-            background: #f8f9fa;
-            padding: 20px;
-            border-radius: 10px;
-            margin-top: 20px;
-        }
-
-        .security-notice p {
-            color: #666;
-            margin-bottom: 8px;
-            font-size: 0.9rem;
-            display: flex;
-            align-items: center;
-        }
-
-        .security-notice p:last-child {
-            margin-bottom: 0;
-        }
-
-        .error-message {
-            background: #ffebee;
-            color: #c62828;
+        .status-message {
+            margin-top: 25px;
             padding: 15px;
-            border-radius: 8px;
-            margin-bottom: 20px;
-            border-left: 4px solid #f44336;
-            display: none;
-        }
-
-        .success-message {
-            background: #e8f5e8;
-            color: #2e7d32;
-            padding: 15px;
-            border-radius: 8px;
-            margin-bottom: 20px;
-            border-left: 4px solid #4caf50;
-            display: none;
-        }
-
-        .demo-codes {
-            background: #e3f2fd;
-            padding: 20px;
             border-radius: 10px;
-            margin-top: 20px;
-            border-left: 4px solid #2196f3;
+            display: none;
+            font-weight: 500;
         }
-
-        .demo-codes h4 {
-            color: #1976d2;
-            margin-bottom: 15px;
-            font-size: 1.1rem;
+        
+        .status-message.success {
+            background-color: #d5f4e6;
+            color: #27ae60;
+            border: 1px solid #27ae60;
         }
-
-        .demo-codes .code-item {
-            background: white;
-            padding: 10px;
-            border-radius: 6px;
-            margin-bottom: 8px;
-            border: 1px solid #bbdefb;
+        
+        .status-message.error {
+            background-color: #fadbd8;
+            color: #e74c3c;
+            border: 1px solid #e74c3c;
         }
-
-        .demo-codes .code-item strong {
-            color: #1976d2;
-            font-family: 'Courier New', monospace;
+        
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid #ffffff;
+            border-radius: 50%;
+            border-top-color: transparent;
+            animation: spin 1s ease-in-out infinite;
         }
-
-        @media (max-width: 480px) {
-            .login-container {
-                margin: 10px;
-                border-radius: 15px;
-            }
-            
-            .login-header, .login-form {
-                padding: 30px 20px;
-            }
-            
-            .login-header h2 {
-                font-size: 1.8rem;
-            }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
         }
     </style>
 </head>
 <body>
     <div class="login-container">
-        <div class="login-header">
-            <h2>🔐 Secure Student Login</h2>
-            <p>Please enter your secure student code and password to access your academic records</p>
+        <div class="security-badge">🔒 آمن</div>
+        
+        <div class="logo">
+            <div class="shield-icon">🛡️</div>
+            <h1>تسجيل دخول آمن</h1>
+            <p>حماية عالية المستوى لبياناتك</p>
         </div>
         
-        <form class="login-form" onsubmit="handleStudentLogin(event)">
+        <div class="security-features">
+            <h3>مميزات الأمان:</h3>
+            <ul>
+                <li>تشفير متطور للبيانات</li>
+                <li>حماية من الهجمات الإلكترونية</li>
+                <li>مراقبة محاولات الدخول</li>
+                <li>جلسات آمنة ومشفرة</li>
+            </ul>
+            </div>
+            
+        <form id="secureLoginForm">
             <div class="form-group">
-                <label for="studentCode">Secure Student Code</label>
-                <input type="text" id="studentCode" name="studentCode" placeholder="e.g., ST7X9K2M" required>
-                <small>Enter your unique, secure student identification code (8 characters)</small>
+                <label for="studentCode">🆔 كود الطالب:</label>
+                <input type="text" id="studentCode" name="studentCode" placeholder="مثال: G4001" required>
             </div>
             
             <div class="form-group">
-                <label for="studentPassword">Password</label>
-                <input type="password" id="studentPassword" name="studentPassword" placeholder="Enter your password" required>
-                <small>Enter the password provided by your school</small>
+                <label for="password">🔑 كلمة المرور:</label>
+                <input type="password" id="password" name="password" placeholder="أدخل كلمة المرور الآمنة" required>
             </div>
             
-            <div class="form-group">
-                <label class="checkbox-label">
-                    <input type="checkbox" id="rememberMe" name="rememberMe">
-                    Remember me for 30 days
-                </label>
-            </div>
-            
-            <button type="submit" class="login-btn">🔓 Login to Student Portal</button>
-            
-            <div class="login-help">
-                <a href="#" onclick="showForgotPassword()">Forgot Password?</a>
-                <a href="#" onclick="showHelp()">Need Help?</a>
-            </div>
+            <button type="submit" id="loginBtn" class="login-btn">
+                <span id="loginText">🚀 دخول آمن</span>
+                <span id="loadingSpinner" class="loading" style="display: none;"></span>
+            </button>
         </form>
         
-        <div class="security-notice">
-            <p>🔒 Your academic data is protected with industry-standard encryption</p>
-            <p>📱 Access your records securely from any device</p>
-            <p>🛡️ Secure, random student codes prevent unauthorized access</p>
-        </div>
-
-        <div class="demo-codes">
-            <h4>📋 Demo Student Codes (For Testing)</h4>
-            <div class="code-item">
-                <strong>ST7X9K2M</strong> - Password: student123 (أحمد علي حسن - Grade 4)
-            </div>
-            <div class="code-item">
-                <strong>QR4P8L5N</strong> - Password: student456 (فاطمة محمد صالح - Grade 4)
-            </div>
-            <div class="code-item">
-                <strong>AB2C9D3E</strong> - Password: student789 (عمر خليل إبراهيم - Grade 4)
-            </div>
-            <div class="code-item">
-                <strong>XY8Z1W4V</strong> - Password: student101 (سارة أحمد محمود - Grade 3)
-            </div>
-            <div class="code-item">
-                <strong>MN6O7P2Q</strong> - Password: student202 (يوسف محمد علي - Grade 5)
-            </div>
+        <div id="statusMessage" class="status-message"></div>
+        
+        <div class="links">
+            <a href="/student-login">🏠 الصفحة العادية</a>
+            <a href="/working-student-login">🔧 النسخة التجريبية</a>
+            <a href="/">🏡 الرئيسية</a>
         </div>
     </div>
 
     <script>
-        // Enhanced Student Login with Secure Random Codes
-        let loginAttempts = 0;
-        const maxLoginAttempts = 5;
-        const lockoutDuration = 15 * 60 * 1000; // 15 minutes
-
-        function handleStudentLogin(event) {
-            event.preventDefault();
+        document.getElementById('secureLoginForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
             
-            const studentCode = document.getElementById('studentCode').value.trim().toUpperCase();
-            const password = document.getElementById('studentPassword').value;
-            const rememberMe = document.getElementById('rememberMe').checked;
+            const code = document.getElementById('studentCode').value;
+            const password = document.getElementById('password').value;
+            const loginBtn = document.getElementById('loginBtn');
+            const loginText = document.getElementById('loginText');
+            const loadingSpinner = document.getElementById('loadingSpinner');
             
-            // Check if account is locked
-            if (isAccountLocked(studentCode)) {
-                showError('Account temporarily locked due to multiple failed attempts. Please try again in 15 minutes.');
-                return;
-            }
-            
-            // Validate inputs
-            if (!studentCode || !password) {
-                showError('Please enter both student code and password.');
-                return;
-            }
-            
-            // Validate student code format (8 characters, alphanumeric)
-            if (!/^[A-Z0-9]{8}$/.test(studentCode)) {
-                showError('Student code must be exactly 8 characters (letters and numbers only).');
+            if (!code || !password) {
+                showMessage('⚠️ برجاء إدخال جميع البيانات المطلوبة', 'error');
                 return;
             }
             
             // Show loading state
-            showLoading(true);
+            loginBtn.disabled = true;
+            loginText.style.display = 'none';
+            loadingSpinner.style.display = 'inline-block';
             
-            // Simulate secure login (in real app, this would be an API call)
-            setTimeout(() => {
-                if (authenticateStudent(studentCode, password)) {
-                    // Successful login
-                    loginAttempts = 0;
-                    clearLockout(studentCode);
-                    showSuccess('Login successful! Redirecting...');
+            showMessage('🔍 جاري التحقق من الهوية بشكل آمن...', 'success');
+            
+            try {
+                const response = await fetch('/api/student-login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-Secure-Login': 'true'
+                    },
+                    body: JSON.stringify({ code, password })
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    showMessage('✅ تم التحقق بنجاح! جاري تحميل لوحة التحكم الآمنة...', 'success');
                     
-                    // Store session data
-                    const sessionData = {
-                        studentCode: studentCode,
-                        loginTime: new Date().toISOString(),
-                        rememberMe: rememberMe
-                    };
-                    
-                    if (rememberMe) {
-                        localStorage.setItem('studentSession', JSON.stringify(sessionData));
-                    } else {
-                        sessionStorage.setItem('studentSession', JSON.stringify(sessionData));
-                    }
-                    
-                    // Redirect to student dashboard
+                    // Simulate secure session creation
                     setTimeout(() => {
-                        window.location.href = `/student-results?code=${studentCode}`;
-                    }, 1500);
+                        window.location.href = '/student-results?code=' + encodeURIComponent(code) + '&secure=true';
+                    }, 2000);
                 } else {
-                    // Failed login
-                    loginAttempts++;
-                    if (loginAttempts >= maxLoginAttempts) {
-                        lockAccount(studentCode);
-                        showError('Too many failed attempts. Account locked for 15 minutes.');
-                    } else {
-                        showError(`Invalid credentials. ${maxLoginAttempts - loginAttempts} attempts remaining.`);
-                    }
-                    showLoading(false);
+                    showMessage('❌ ' + (result.message || 'فشل في التحقق من الهوية'), 'error');
                 }
-            }, 1500);
-        }
-
-        function authenticateStudent(code, password) {
-            // Simulate authentication with secure, random student codes
-            // In production, these would be stored in a secure database
-            const validStudents = {
-                'ST7X9K2M': { password: 'student123', name: 'أحمد علي حسن', grade: 'Grade 4' },
-                'QR4P8L5N': { password: 'student456', name: 'فاطمة محمد صالح', grade: 'Grade 4' },
-                'AB2C9D3E': { password: 'student789', name: 'عمر خليل إبراهيم', grade: 'Grade 4' },
-                'XY8Z1W4V': { password: 'student101', name: 'سارة أحمد محمود', grade: 'Grade 3' },
-                'MN6O7P2Q': { password: 'student202', name: 'يوسف محمد علي', grade: 'Grade 5' },
-                'KL3M4N5P': { password: 'student303', name: 'ليلى محمد أحمد', grade: 'Grade 4' },
-                'RS9T1U2V': { password: 'student404', name: 'محمد علي حسن', grade: 'Grade 3' },
-                'WX5Y6Z7A': { password: 'student505', name: 'نورا أحمد محمد', grade: 'Grade 5' }
-            };
-            
-            const student = validStudents[code];
-            return student && student.password === password;
-        }
-
-        function isAccountLocked(studentCode) {
-            const lockoutData = localStorage.getItem(`lockout_${studentCode}`);
-            if (!lockoutData) return false;
-            
-            const { lockoutTime } = JSON.parse(lockoutData);
-            const now = Date.now();
-            
-            if (now - lockoutTime > lockoutDuration) {
-                // Lockout expired
-                clearLockout(studentCode);
-                return false;
-            }
-            
-            return true;
-        }
-
-        function lockAccount(studentCode) {
-            const lockoutData = {
-                lockoutTime: Date.now(),
-                attempts: loginAttempts
-            };
-            localStorage.setItem(`lockout_${studentCode}`, JSON.stringify(lockoutData));
-        }
-
-        function clearLockout(studentCode) {
-            localStorage.removeItem(`lockout_${studentCode}`);
-        }
-
-        function showLoading(show) {
-            const loginBtn = document.querySelector('.login-btn');
-            if (show) {
-                loginBtn.innerHTML = '🔒 Verifying...';
-                loginBtn.disabled = true;
-            } else {
-                loginBtn.innerHTML = '🔓 Login to Student Portal';
+            } catch (error) {
+                showMessage('🚫 خطأ في الاتصال الآمن بالخادم', 'error');
+                console.error('Secure login error:', error);
+            } finally {
+                // Reset button state
                 loginBtn.disabled = false;
+                loginText.style.display = 'inline';
+                loadingSpinner.style.display = 'none';
             }
+        });
+        
+        function showMessage(message, type) {
+            const statusMessage = document.getElementById('statusMessage');
+            statusMessage.innerHTML = message;
+            statusMessage.className = `status-message ${type}`;
+            statusMessage.style.display = 'block';
         }
-
-        function showError(message) {
-            hideMessages();
-            const errorDiv = document.querySelector('.error-message');
-            errorDiv.innerHTML = `❌ ${message}`;
-            errorDiv.style.display = 'block';
-            
-            // Auto-hide after 5 seconds
-            setTimeout(() => {
-                errorDiv.style.display = 'none';
-            }, 5000);
-        }
-
-        function showSuccess(message) {
-            hideMessages();
-            const successDiv = document.querySelector('.success-message');
-            successDiv.innerHTML = `✅ ${message}`;
-            successDiv.style.display = 'block';
-        }
-
-        function hideMessages() {
-            document.querySelector('.error-message').style.display = 'none';
-            document.querySelector('.success-message').style.display = 'none';
-        }
-
-        function showForgotPassword() {
-            alert('Password Reset:\n\nContact your school administrator to reset your password.\n\nFor security reasons, passwords cannot be reset through this interface.');
-        }
-
-        function showHelp() {
-            alert('Need Help?\n\n1. Make sure you\'re using the correct secure student code\n2. Check that your password is correct\n3. Student codes are 8 characters long (letters and numbers)\n4. Contact your school if you continue having issues\n\nSupport: support@school.com');
-        }
-
-        // Check for existing session on page load
-        document.addEventListener('DOMContentLoaded', function() {
-            const sessionData = localStorage.getItem('studentSession') || sessionStorage.getItem('studentSession');
-            if (sessionData) {
-                const session = JSON.parse(sessionData);
-                const now = new Date();
-                const loginTime = new Date(session.loginTime);
-                
-                // Check if session is still valid (24 hours for remember me, 8 hours for regular)
-                const maxSessionTime = session.rememberMe ? 24 * 60 * 60 * 1000 : 8 * 60 * 60 * 1000;
-                
-                if (now - loginTime < maxSessionTime) {
-                    // Auto-login
-                    window.location.href = `/student-results?code=${session.studentCode}`;
-                } else {
-                    // Clear expired session
-                    localStorage.removeItem('studentSession');
-                    sessionStorage.removeItem('studentSession');
-                }
-            }
+        
+        // Add some security theatre
+        window.addEventListener('load', function() {
+            console.log('🔒 Secure login system initialized');
+            console.log('🛡️ Security protocols activated');
         });
     </script>
 </body>

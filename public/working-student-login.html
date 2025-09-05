@@ -1,397 +1,208 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>👨‍🎓 Student Login - Student Search App</title>
+    <title>تسجيل دخول الطالب - نسخة محدثة</title>
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
-
+        
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
             display: flex;
-            align-items: center;
             justify-content: center;
+            align-items: center;
             padding: 20px;
         }
-
+        
         .login-container {
             background: white;
-            border-radius: 20px;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
-            overflow: hidden;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
             width: 100%;
-            max-width: 500px;
-        }
-
-        .header {
-            background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
-            color: white;
-            padding: 30px;
+            max-width: 400px;
             text-align: center;
         }
-
-        .header h1 {
-            font-size: 2rem;
+        
+        .logo {
+            margin-bottom: 30px;
+        }
+        
+        .logo h1 {
+            color: #667eea;
+            font-size: 28px;
             margin-bottom: 10px;
         }
-
-        .header p {
-            opacity: 0.9;
-            font-size: 1.1rem;
+        
+        .logo p {
+            color: #666;
+            font-size: 16px;
         }
-
-        .notification-box {
-            background: #fff3cd;
-            border: 1px solid #ffeaa7;
-            border-radius: 10px;
-            padding: 20px;
-            margin: 20px;
-            display: flex;
-            align-items: center;
-            gap: 15px;
-        }
-
-        .notification-icon {
-            font-size: 2rem;
-        }
-
-        .notification-title {
-            font-weight: bold;
-            color: #856404;
-            margin-bottom: 5px;
-        }
-
-        .notification-text {
-            color: #856404;
-            font-size: 0.9rem;
-        }
-
-        .form-container {
-            padding: 20px;
-        }
-
-        .error-message {
-            background: #ffebee;
-            color: #c62828;
-            padding: 15px;
-            border-radius: 8px;
-            margin-bottom: 20px;
-            border-left: 4px solid #f44336;
-            display: none;
-        }
-
+        
         .form-group {
-            margin-bottom: 20px;
+            margin-bottom: 25px;
+            text-align: right;
         }
-
+        
         .form-group label {
             display: block;
             margin-bottom: 8px;
-            font-weight: 600;
             color: #333;
+            font-weight: bold;
         }
-
+        
         .form-group input {
             width: 100%;
             padding: 15px;
             border: 2px solid #e1e5e9;
-            border-radius: 10px;
-            font-size: 1rem;
-            transition: all 0.3s ease;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s ease;
+            text-align: right;
         }
-
+        
         .form-group input:focus {
             outline: none;
-            border-color: #4CAF50;
-            box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.1);
+            border-color: #667eea;
         }
-
-        .choice-buttons {
-            display: flex;
-            gap: 15px;
-            margin-top: 10px;
-        }
-
-        .choice-btn {
-            flex: 1;
-            padding: 20px;
-            border: 2px solid #e1e5e9;
-            border-radius: 10px;
-            text-align: center;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            background: #f8f9fa;
-        }
-
-        .choice-btn:hover {
-            border-color: #4CAF50;
-            background: #e8f5e8;
-            transform: translateY(-2px);
-        }
-
-        .choice-btn.active {
-            border-color: #4CAF50;
-            background: #4CAF50;
-            color: white;
-            box-shadow: 0 5px 15px rgba(76, 175, 80, 0.3);
-        }
-
-        .choice-btn small {
-            display: block;
-            margin-top: 5px;
-            font-size: 0.8rem;
-            opacity: 0.8;
-        }
-
-        .loading {
-            text-align: center;
-            margin: 20px 0;
-            display: none;
-        }
-
-        .spinner {
-            border: 4px solid #f3f3f3;
-            border-top: 4px solid #4CAF50;
-            border-radius: 50%;
-            width: 40px;
-            height: 40px;
-            animation: spin 1s linear infinite;
-            margin: 0 auto 15px;
-        }
-
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
-        .submit-btn {
+        
+        .login-btn {
             width: 100%;
-            padding: 15px;
-            background: #4CAF50;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
             border: none;
-            border-radius: 10px;
-            font-size: 1.1rem;
-            font-weight: 600;
+            padding: 15px;
+            border-radius: 8px;
+            font-size: 18px;
+            font-weight: bold;
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: transform 0.2s ease;
         }
-
-        .submit-btn:hover {
-            background: #45a049;
+        
+        .login-btn:hover {
             transform: translateY(-2px);
         }
-
-        .submit-btn:disabled {
-            opacity: 0.7;
-            cursor: not-allowed;
-            transform: none;
+        
+        .links {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
         }
-
-        .back-link {
-            text-align: center;
-            margin-top: 20px;
-        }
-
-        .back-link a {
-            color: #4CAF50;
+        
+        .links a {
+            color: #667eea;
             text-decoration: none;
-            font-weight: 500;
+            margin: 0 10px;
+            font-size: 14px;
         }
-
-        .back-link a:hover {
+        
+        .links a:hover {
             text-decoration: underline;
         }
-
-        .demo-codes {
-            background: #e3f2fd;
-            padding: 20px;
-            border-radius: 10px;
-            margin: 20px;
-            border-left: 4px solid #2196f3;
-        }
-
-        .demo-codes h4 {
-            color: #1976d2;
-            margin-bottom: 15px;
-            font-size: 1.1rem;
-        }
-
-        .demo-codes .code-item {
-            background: white;
+        
+        .status-message {
+            margin-top: 20px;
             padding: 10px;
-            border-radius: 6px;
-            margin-bottom: 8px;
-            border: 1px solid #bbdefb;
+            border-radius: 5px;
+            display: none;
         }
-
-        .demo-codes .code-item strong {
-            color: #1976d2;
-            font-family: 'Courier New', monospace;
+        
+        .status-message.success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        
+        .status-message.error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
         }
     </style>
 </head>
 <body>
     <div class="login-container">
-        <div class="header">
-            <h1>👨‍🎓 Student Login</h1>
-            <p>تسجيل دخول الطالب</p>
+        <div class="logo">
+            <h1>🎓 منصة الطلاب</h1>
+            <p>نسخة محدثة - تسجيل دخول آمن</p>
         </div>
-
-        <div class="notification-box">
-            <div class="notification-icon">🎯</div>
-            <div class="notification-content">
-                <div class="notification-title">Quiz Alert!</div>
-                <div class="notification-text">
-                    Quiz will be closed in 2 days!<br>
-                    New session starts on: <strong>2025-01-28</strong>
-                </div>
+        
+        <form id="loginForm">
+            <div class="form-group">
+                <label for="studentCode">كود الطالب:</label>
+                <input type="text" id="studentCode" name="studentCode" placeholder="مثال: G4001" required>
             </div>
-        </div>
-
-        <div class="form-container">
-            <div class="error-message" id="errorMessage">
-                ❌ Invalid student code or phone number
+            
+            <div class="form-group">
+                <label for="password">كلمة المرور:</label>
+                <input type="password" id="password" name="password" placeholder="أدخل كلمة المرور" required>
             </div>
-
-            <form id="studentLoginForm">
-                <div class="form-group">
-                    <label for="studentCode">Student Code - كود الطالب *</label>
-                    <input type="text" id="studentCode" name="studentCode" required 
-                           placeholder="Enter your student code (e.g., G4001)">
-                </div>
-
-                <div class="form-group">
-                    <label for="studentPhone">Phone Number - رقم الموبيل *</label>
-                    <input type="tel" id="studentPhone" name="studentPhone" required 
-                           placeholder="Enter your phone number">
-                </div>
-
-                <div class="form-group">
-                    <label>What would you like to do?</label>
-                    <div class="choice-buttons">
-                        <div class="choice-btn" onclick="selectChoice('quiz')">
-                            🎯 Attend Quiz<br>
-                            <small>حضور الاختبار</small>
-                        </div>
-                        <div class="choice-btn" onclick="selectChoice('results')">
-                            📊 View Results<br>
-                            <small>عرض النتائج</small>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="loading" id="loading">
-                    <div class="spinner"></div>
-                    <p>جاري التحقق... Verifying...</p>
-                </div>
-
-                <button type="submit" class="submit-btn" id="submitBtn">
-                    Continue - متابعة
-                </button>
-            </form>
-
-            <div class="back-link">
-                <a href="/">← Back to Home - العودة للرئيسية</a>
-            </div>
-        </div>
-
-        <div class="demo-codes">
-            <h4>📋 Demo Student Codes (For Testing)</h4>
-            <div class="code-item">
-                <strong>G4001</strong> - Phone: +966501234567 (أحمد علي حسن - Grade 4)
-            </div>
-            <div class="code-item">
-                <strong>G4002</strong> - Phone: +966501234568 (فاطمة محمد صالح - Grade 4)
-            </div>
-            <div class="code-item">
-                <strong>G5001</strong> - Phone: +966501234572 (ليلى محمد أحمد - Grade 5)
-            </div>
-            <div class="code-item">
-                <strong>G7001</strong> - Phone: +966501234575 (علي محمد أحمد - Prep 1)
-            </div>
+            
+            <button type="submit" class="login-btn">تسجيل الدخول</button>
+        </form>
+        
+        <div id="statusMessage" class="status-message"></div>
+        
+        <div class="links">
+            <a href="/student-login">الصفحة الأساسية</a>
+            <a href="/secure-student-login">تسجيل دخول آمن</a>
+            <a href="/">العودة للرئيسية</a>
         </div>
     </div>
-
+    
     <script>
-        let selectedChoice = '';
-
-        function selectChoice(choice) {
-            selectedChoice = choice;
-            
-            // Remove active class from all buttons
-            document.querySelectorAll('.choice-btn').forEach(btn => {
-                btn.classList.remove('active');
-            });
-            
-            // Add active class to selected button
-            event.target.classList.add('active');
-        }
-
-        document.getElementById('studentLoginForm').addEventListener('submit', async function(e) {
+        document.getElementById('loginForm').addEventListener('submit', async function(e) {
             e.preventDefault();
-
-            if (!selectedChoice) {
-                alert('Please select what you want to do');
+            
+            const code = document.getElementById('studentCode').value;
+            const password = document.getElementById('password').value;
+            const statusMessage = document.getElementById('statusMessage');
+            
+            if (!code || !password) {
+                showMessage('برجاء إدخال الكود وكلمة المرور', 'error');
                 return;
             }
-
-            const studentCode = document.getElementById('studentCode').value;
-            const studentPhone = document.getElementById('studentPhone').value;
-
-            // Show loading
-            document.getElementById('loading').style.display = 'block';
-            document.getElementById('submitBtn').disabled = true;
-            document.getElementById('errorMessage').style.display = 'none';
-
+            
+            showMessage('جاري التحقق...', 'success');
+            
             try {
-                // Simulate authentication with formula-based student codes
-                const validStudents = {
-                    'G4001': { phone: '+966501234567', name: 'أحمد علي حسن' },
-                    'G4002': { phone: '+966501234568', name: 'فاطمة محمد صالح' },
-                    'G4003': { phone: '+966501234569', name: 'عمر خليل إبراهيم' },
-                    'G4004': { phone: '+966501234570', name: 'سارة أحمد محمود' },
-                    'G4005': { phone: '+966501234571', name: 'يوسف محمد علي' },
-                    'G5001': { phone: '+966501234572', name: 'ليلى محمد أحمد' },
-                    'G5002': { phone: '+966501234573', name: 'محمد علي حسن' },
-                    'G5003': { phone: '+966501234574', name: 'نورا أحمد محمد' },
-                    'G7001': { phone: '+966501234575', name: 'علي محمد أحمد' },
-                    'G7002': { phone: '+966501234576', name: 'فاطمة علي محمد' },
-                    'G7003': { phone: '+966501234577', name: 'أحمد محمد علي' }
-                };
-
-                const student = validStudents[studentCode];
+                const response = await fetch('/api/student-login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ code, password })
+                });
                 
-                if (student && student.phone === studentPhone) {
-                    // Successful login
-                    if (selectedChoice === 'quiz') {
-                        window.location.href = `/student-quiz-selection?code=${studentCode}`;
-                    } else {
-                        window.location.href = `/student-results?code=${studentCode}`;
-                    }
+                const result = await response.json();
+                
+                if (result.success) {
+                    showMessage('تم تسجيل الدخول بنجاح! جاري التوجيه...', 'success');
+                    setTimeout(() => {
+                        window.location.href = '/student-results?code=' + encodeURIComponent(code);
+                    }, 1500);
                 } else {
-                    document.getElementById('errorMessage').textContent = 'Invalid student code or phone number';
-                    document.getElementById('errorMessage').style.display = 'block';
+                    showMessage(result.message || 'فشل في تسجيل الدخول', 'error');
                 }
             } catch (error) {
-                console.error('Error:', error);
-                document.getElementById('errorMessage').textContent = 'Connection error. Please try again.';
-                document.getElementById('errorMessage').style.display = 'block';
-            } finally {
-                document.getElementById('loading').style.display = 'none';
-                document.getElementById('submitBtn').disabled = false;
+                showMessage('حدث خطأ في الاتصال بالخادم', 'error');
+                console.error('Login error:', error);
             }
         });
-
-        // Auto-focus on first input
-        document.getElementById('studentCode').focus();
+        
+        function showMessage(message, type) {
+            const statusMessage = document.getElementById('statusMessage');
+            statusMessage.textContent = message;
+            statusMessage.className = `status-message ${type}`;
+            statusMessage.style.display = 'block';
+        }
     </script>
 </body>
 </html>

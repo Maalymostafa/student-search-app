@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <!-- Main Application Routes -->
+  <url>
+    <loc>https://student-search-glxio0q0b-maaly-el-mansys-projects.vercel.app/</loc>
+    <lastmod>2024-12-05</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>1.0</priority>
+  </url>
+  
+  <!-- Student Routes -->
+  <url>
+    <loc>https://student-search-glxio0q0b-maaly-el-mansys-projects.vercel.app/student-login</loc>
+    <lastmod>2024-12-05</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://student-search-glxio0q0b-maaly-el-mansys-projects.vercel.app/student-results</loc>
+    <lastmod>2024-12-05</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://student-search-glxio0q0b-maaly-el-mansys-projects.vercel.app/subject-selection</loc>
+    <lastmod>2024-12-05</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://student-search-glxio0q0b-maaly-el-mansys-projects.vercel.app/subject-results</loc>
+    <lastmod>2024-12-05</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
+  </url>
+  
+  <!-- Parent Routes -->
+  <url>
+    <loc>https://student-search-glxio0q0b-maaly-el-mansys-projects.vercel.app/parent-login</loc>
+    <lastmod>2024-12-05</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://student-search-glxio0q0b-maaly-el-mansys-projects.vercel.app/parent-dashboard</loc>
+    <lastmod>2024-12-05</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
+  </url>
+  
+  <!-- Teacher Routes -->
+  <url>
+    <loc>https://student-search-glxio0q0b-maaly-el-mansys-projects.vercel.app/teacher-login</loc>
+    <lastmod>2024-12-05</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://student-search-glxio0q0b-maaly-el-mansys-projects.vercel.app/teacher-dashboard</loc>
+    <lastmod>2024-12-05</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
+  </url>
+  
+  <!-- Assistant Routes -->
+  <url>
+    <loc>https://student-search-glxio0q0b-maaly-el-mansys-projects.vercel.app/assistant-login</loc>
+    <lastmod>2024-12-05</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://student-search-glxio0q0b-maaly-el-mansys-projects.vercel.app/assistant-data-entry</loc>
+    <lastmod>2024-12-05</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
+  </url>
+  
+  <!-- Admin Routes -->
+  <url>
+    <loc>https://student-search-glxio0q0b-maaly-el-mansys-projects.vercel.app/admin-login</loc>
+    <lastmod>2024-12-05</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://student-search-glxio0q0b-maaly-el-mansys-projects.vercel.app/admin-dashboard</loc>
+    <lastmod>2024-12-05</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
+  </url>
+  
+  <!-- Financial Routes -->
+  <url>
+    <loc>https://student-search-glxio0q0b-maaly-el-mansys-projects.vercel.app/financial-dashboard</loc>
+    <lastmod>2024-12-05</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
+  </url>
+  
+  <!-- API Endpoints -->
+  <url>
+    <loc>https://student-search-glxio0q0b-maaly-el-mansys-projects.vercel.app/api/search</loc>
+    <lastmod>2024-12-05</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://student-search-glxio0q0b-maaly-el-mansys-projects.vercel.app/api/health</loc>
+    <lastmod>2024-12-05</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <!-- Demo Routes -->
+  <url>
+    <loc>https://student-search-glxio0q0b-maaly-el-mansys-projects.vercel.app/demo</loc>
+    <lastmod>2024-12-05</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <!-- Quiz System Routes -->
+  <url>
+    <loc>https://student-search-glxio0q0b-maaly-el-mansys-projects.vercel.app/quiz-interface</loc>
+    <lastmod>2024-12-05</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://student-search-glxio0q0b-maaly-el-mansys-projects.vercel.app/student-quiz-selection</loc>
+    <lastmod>2024-12-05</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://student-search-glxio0q0b-maaly-el-mansys-projects.vercel.app/test-subject-selection</loc>
+    <lastmod>2024-12-05</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+</urlset>
